@@ -1,0 +1,17 @@
+{
+  "@appTitle": {
+    "description": "app标题",
+    "type": "text",
+    "placeholders": {}
+  },
+  "title": "Hello World",
+  "@title": {
+    "description": "Title for the Demo application",
+    "type": "text"
+  },
+  "desc": "Description",
+  "@desc": {
+    "description": "Description for the L10n application",
+    "type": "text"
+  }
+}

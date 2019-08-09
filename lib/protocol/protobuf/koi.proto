@@ -1,0 +1,509 @@
+
+syntax = "proto3";
+
+package kproto;
+
+message Error {
+  string Code = 1;
+  string Message = 2;
+}
+
+message Success {}
+
+message Paging {
+  int64 AllCount = 1;
+  int64 PageIndex = 2;
+  int64 PageSize = 3;
+}
+
+message TimeRange {
+  int64 StartTime = 1;
+  int64 EndTime = 2;
+}
+
+// 确认收到消息
+message StateAck {
+  int64 ChatID = 1;
+  uint64 MessageID = 2;
+  uint64 State = 3;
+}
+
+// todo : 改为数组形式批量更新, 减少消息数量, 提高效率
+message StateUpdate {
+  int64 ChatID = 1;
+  int64 SenderID = 2;
+  uint64 MessageID = 3;
+  int32 MessageType = 4;
+  uint64 State = 5;
+  int64 ActionTime = 6;
+  UpdateMessage UpdateMessage = 7; // union message, must set one of UpdateMessage
+}
+
+message UpdateMessage {
+  UpdateMessageChatAddMember UpdateMessageChatAddMember = 1;
+  UpdateMessageChatSendMessage UpdateMessageChatSendMessage = 2;
+  UpdateMessageChatReadMessage UpdateMessageChatReadMessage = 3;
+  UpdateMessageChatDeleteMember UpdateMessageChatDeleteMember = 4;
+  UpdateMessageChatSetTyping UpdateMessageChatSetTyping = 5;
+  UpdateMessageChatDeleteMessage UpdateMessageChatDeleteMessage = 6;
+}
+
+message UpdateMessageChatAddMember {
+  int64 ChatID = 1;
+  string SenderName = 2;
+  string AddedMemeberName = 3;
+}
+
+message UpdateMessageChatDeleteMember {
+  int64 ChatID = 1;
+  string SenderName = 2;
+  string DeletedMemeberName = 3;
+}
+
+message UpdateMessageChatSendMessage {
+  int64 ChatID = 1;
+  string SenderName = 2;
+  string Message = 3;
+  int32 ContentType = 4;
+  int64 FileID = 5;
+  int64 ActionTime = 6;
+}
+
+message UpdateMessageChatDeleteMessage {
+  int64 ChatID = 1;
+  string SenderName = 2;
+  uint64 StateDeleted = 3;
+}
+
+message UpdateMessageChatReadMessage {
+  int64 ChatID = 1;
+  string SenderName = 2;
+  uint64 StateRead = 3;
+}
+
+message UpdateMessageChatSetTyping {
+  int64 ChatID = 1;
+  string SenderName = 2;
+}
+
+// request and response
+message AuthPQReq { // 服务端每次为连接随机生成大质数
+}
+
+message AuthPQResp {
+}
+
+message AuthKeyReq {
+}
+
+message AuthKeyResp {
+}
+
+message HeartbeatReq {
+}
+
+message HeartbeatResp {
+}
+
+message InitConnectionReq {
+}
+
+message InitConnectionResp {
+}
+
+message RequestVerificationCodeReq {
+}
+
+message RequestVerificationCodeResp {
+}
+
+message CheckAppUpdateReq {
+}
+
+message CheckAppUpdateResp {
+}
+
+message User {
+  int64 UserID = 1;
+  string UserName = 2;
+  int64 AvatarFileID = 3;
+}
+
+message UserRegisterReq {
+  string UserName = 1;
+  string Password = 2;
+}
+
+message UserRegisterResp {
+  User User = 1;
+}
+
+message UserLoginReq {
+  string UserName = 1;
+  string Password = 2;
+  string Token = 3;
+  string ClientApplication = 4;
+}
+
+message UserLoginResp {
+  uint64 SessionID = 1;
+  string Token  = 2;
+  User User = 3;
+}
+
+message BotLoginReq {
+  string BotToken = 1;
+}
+
+message BotLoginResp {
+  uint64 SessionID = 1;
+  string Token  = 2;
+  User User = 3;
+}
+
+message UserLogoutReq {
+}
+
+message UserLogoutResp {
+}
+
+message UserUpdateProfileReq {
+  int64 AvatarFileID = 1;
+}
+
+message UserUpdateProfileResp {
+}
+
+message UserChangePasswordReq {
+  string OldPassword = 1;
+  string NewPassword = 2;
+}
+
+message UserChangePasswordResp {
+}
+
+message UserGetFullUserReq {
+  int64 UserID = 1;
+}
+
+message UserGetFullUserResp {
+  User User = 1;
+}
+
+message UserGetFullUsersReq {
+  repeated int64 UserIDs = 1;
+}
+
+message UserGetFullUsersResp {
+  repeated User Users = 1;
+}
+
+message UserGetUsersCondition {
+  string UserName = 1;
+}
+
+message UserGetUsersReq {
+  Paging Paging = 1;
+  UserGetUsersCondition Condition = 2;
+}
+
+message UserGetUsersResp {
+  Paging Paging = 1;
+  repeated User Users = 2;
+}
+
+message ChatUserState {
+  int64 ChatID = 1;
+  int64 UserID = 2;
+  uint64 State = 3;
+  uint64 StateRead = 4;
+}
+
+message UserGetChatUserStateReq {
+  int64 ChatID = 1;
+}
+
+message UserGetChatUserStateResp {
+  ChatUserState State = 1;
+}
+
+message UserGetChatUserSuperscriptReq {
+  int64 ChatID = 1;
+}
+
+message UserGetChatUserSuperscriptResp {
+  uint64 SuperscriptNumber = 1;
+}
+
+message UserSetOptionReq {
+  string Name = 1;
+  string Value = 2;
+}
+
+message UserSetOptionResp {
+}
+
+message UserGetOptionReq {
+  string Name = 1;
+}
+
+message UserGetOptionResp {
+  string Name = 1;
+  string Value = 2;
+}
+
+// message Contact {
+//   int64 UserID = 1;
+// }
+
+message ContactAddReq {
+  int64 UserID = 1;
+}
+
+message ContactAddResp {
+}
+
+message ContactUpdateReq {
+}
+
+message ContactUpdateResp {
+}
+
+message ContactDeleteReq {
+  int64 UserID = 1;
+}
+
+message ContactDeleteResp {
+}
+
+message ContactGetContactsReq {
+}
+
+message ContactGetContactsResp {
+  repeated Member Contacts = 1;
+}
+
+// chat struct
+// 协议结构里, 时间类型统一使用时间戳 int64
+message Chat {
+  int64 ChatID = 1;
+  int64 CreateAt = 2;
+  int64 UpdatedAt = 3;
+  int32 ChatType = 4;
+  string Title = 5;
+  int64 AvatarFileID = 6;
+  int32 Disabled = 7;
+}
+
+// 用户只能创建普通群
+// 其他类型的群由系统自动创建
+message ChatCreateReq {
+  string Title = 1;
+  // int32 ChatType = 2;
+  // int64 PeerID = 3;
+}
+
+message ChatCreateResp {
+  Chat Chat = 1;
+}
+
+// 发起聊天 one on one
+// 联系人或者陌生人
+message ChatInitiateReq {
+  int64 PeerID = 1;
+}
+
+message ChatInitiateResp {
+  Chat Chat = 1;
+}
+
+message ChatGetChatsReq {
+}
+
+message ChatGetChatsResp {
+  repeated Chat Chats = 1;
+}
+
+message ChatAddMemberReq {
+  int64 ChatID = 1;
+  int64 UserID = 2;
+}
+
+message ChatAddMemberResp {
+}
+
+message ChatDeleteMemberReq {
+  int64 ChatID = 1;
+  int64 UserID = 2;
+}
+
+message ChatDeleteMemberResp {
+}
+
+message ChatUpdateProfileReq {
+  int64 ChatID = 1;
+  string Title = 2;
+  int64 AvatarFileID = 3;
+}
+
+message ChatUpdateProfileResp {
+}
+
+message Member {
+  int64 UserID = 1;
+}
+
+message ChatGetMembersReq {
+  int64 ChatID = 1;
+}
+
+message ChatGetMembersResp {
+  repeated Member Members = 1;
+}
+
+message ChatSendMessageReq {
+  int64 ChatID = 1;
+  int32 ContentType = 2;
+  string Message = 3;
+  int64 FileID = 4;
+}
+
+message ChatSendMessageResp {
+}
+
+message ChatDeleteMessageReq {
+  int64 ChatID = 1;
+  uint64 StateDeleted = 2;
+}
+
+message ChatDeleteMessageResp {
+}
+
+
+message ChatGetStateReadReq {
+  int64 ChatID = 1;
+}
+
+message ChatGetStateReadResp {
+  uint64 StateRead  = 1;
+}
+
+message ChatSetTypingReq {
+  int64 ChatID = 1;
+}
+
+message ChatSetTypingResp {
+}
+
+message ChatSyncChatStateMessagesReq {
+  int64 ChatID = 1;
+  uint64 State = 2;
+  uint32 Limit = 3;
+}
+
+message ChatSyncChatStateMessagesResp {
+  repeated StateUpdate StateUpdates = 1;
+}
+
+message ChatGetChatStateMessagesCondition {
+  int64 SenderID = 1;
+  int64 ChatID = 2;
+  uint64 State = 3;
+  repeated int32 MessageTypes = 4;
+  string MessageContent = 5;
+  TimeRange ActionTimeRange = 6;
+}
+
+message ChatGetChatStateMessagesReq {
+  Paging Paging = 1;
+  ChatGetChatStateMessagesCondition Condition = 2;
+}
+
+message ChatGetChatStateMessagesResp {
+  Paging Paging = 1;
+  repeated StateUpdate StateUpdates = 2;
+}
+
+// 已读消息
+message ChatReadMessageReq {
+  int64 ChatID = 1;
+  uint64 StateRead = 2;
+}
+
+message ChatReadMessageResp {
+}
+
+// dfs file
+message DfsFile {
+  int64 FileID = 1;
+  string Caption = 2;
+  int64 FileSize = 3;
+  string Ext = 4;
+  int32 ContentType = 5;
+  int32 Width = 6;
+  int32 Height = 7;
+  string URL = 8;
+}
+
+message UtilityUploadReq {
+  int64 ChatID = 1;
+  int32 ContentType = 2;
+  string FileName = 3;
+  string Caption = 4;
+  int32 Width = 5;
+  int32 Height = 6;
+  bytes Data = 7;
+}
+
+message UtilityUploadResp {
+  DfsFile File = 1;
+}
+
+// 分片上传 new upload, upload part, complete upload
+message UtilityNewMultipartUploadReq {
+  int64 ChatID = 1;
+  int32 ContentType = 2;
+  string FileName = 3;
+  string Caption = 4;
+  int32 Width = 5;
+  int32 Height = 6;
+}
+
+message UtilityNewMultipartUploadResp {
+  string UploadID = 1;
+}
+
+message UtilityUploadPartReq {
+  string UploadID = 1;
+  int32 PartSequence = 2;
+  bytes Data = 3;
+}
+
+message UtilityUploadPartResp {
+}
+
+message UtilityCompleteMultipartUploadReq {
+  string UploadID = 1;
+}
+
+message UtilityCompleteMultipartUploadResp {
+  DfsFile File = 1;
+}
+
+message UtilityDownloadReq {
+  int64 FileID = 1;
+  int64 Offset = 2;
+  int64 Length = 3;
+}
+
+message UtilityDownloadResp {
+  bytes Data = 1;
+}
+
+message UtilityFileStatReq {
+  int64 FileID = 1;
+}
+
+message UtilityFileStatResp {
+  DfsFile File = 1;
+}

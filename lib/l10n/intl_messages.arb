@@ -1,0 +1,21 @@
+{
+  "@@last_modified": "2019-07-29T15:38:24.681315",
+  "appTitle": "kChat",
+  "@appTitle": {
+    "description": "app标题",
+    "type": "text",
+    "placeholders": {}
+  },
+  "title": "您好，世界",
+  "@title": {
+    "description": "Title for the L10n application",
+    "type": "text",
+    "placeholders": {}
+  },
+  "desc": "描述",
+  "@desc": {
+    "description": "Title for the L10n application",
+    "type": "text",
+    "placeholders": {}
+  }
+}

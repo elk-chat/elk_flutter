@@ -1,0 +1,17 @@
+{
+  "@appTitle": {
+    "description": "app标题",
+    "type": "text",
+    "placeholders": {}
+  },
+  "title": "你好，世界",
+  "@title": {
+    "description": "问好",
+    "type": "text"
+  },
+  "desc": "描述",
+  "@desc": {
+    "description": "应用描述",
+    "type": "text"
+  }
+}

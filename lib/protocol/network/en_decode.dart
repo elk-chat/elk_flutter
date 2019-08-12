@@ -64,8 +64,6 @@ Uint8List encodeData(String method, Uint8List protobufData, BigInt requestID) {
   header.addAll(
       {'Len': totalLength, 'Sig': getSig(method), 'RequestID': requestID});
 
-  print('header: $header');
-
   ByteData byteData = ByteData(totalLength);
 
   byteData.setUint32(HBYTEOFFSET_LEN, header['Len'], little);

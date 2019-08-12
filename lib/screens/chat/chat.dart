@@ -3,12 +3,21 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'new_chat.dart';
+import '../../repositorys/repositorys.dart';
+import 'chat_item.dart';
+import '../new_chat.dart';
 
 class ChatScreen extends StatefulWidget {
   final title;
+  final ChatRepository chatRepository;
+  final AuthAuthenticated authState;
 
-  ChatScreen({Key key, @required this.title}) : super(key: key);
+  ChatScreen(
+      {Key key,
+      @required this.title,
+      @required this.chatRepository,
+      @required this.authState})
+      : super(key: key);
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
@@ -24,7 +33,6 @@ class _ChatScreenState extends State<ChatScreen>
     super.initState();
 
     _chatBloc = BlocProvider.of<ChatBloc>(context);
-
   }
 
   @override
@@ -62,12 +70,12 @@ class _ChatScreenState extends State<ChatScreen>
             return ListView.separated(
               physics: const BouncingScrollPhysics(),
               itemBuilder: (BuildContext context, int index) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    Container(child: Text('${state.chats[index]}')),
-                  ],
-                );
+                var chat = state.chats[index];
+                return ChatItem(
+                    key: ValueKey(chat.chatID),
+                    chat: chat,
+                    authState: widget.authState,
+                    chatRepository: widget.chatRepository);
               },
               itemCount: state.chats.length,
               controller: _scrollController,

@@ -63,7 +63,8 @@ createChatAndAddMember(Map formData, WebsocketCallback cb) {
 }
 
 /// 发送聊天消息
-sendChatMsg(ChatSendMessageReq proto, WebsocketCallback cb, [ChatSendMessageResp resp]) {
+sendChatMsg(ChatSendMessageReq proto, WebsocketCallback cb,
+    [ChatSendMessageResp resp]) {
   return $WS.send(method: "ChatSendMessageReq", protobuf: proto, cb: cb);
 }
 
@@ -94,7 +95,8 @@ getChatsStates(Map formData, WebsocketCallback cb) {
 }
 
 /// 获取 Chat 中的联系人列表 ID
-getChatMemberIDs(ChatGetMembersReq proto, WebsocketCallback cb) {
+getChatMemberIDs(ChatGetMembersReq proto, WebsocketCallback cb,
+    [ChatGetMembersResp resp]) {
   return $WS.send(method: "ChatGetMembersReq", protobuf: proto, cb: cb);
 }
 

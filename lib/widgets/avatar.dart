@@ -8,17 +8,25 @@ import 'package:elk_chat/protocol/api/api.dart';
 // todo 缓存到本地
 Map<Int64, String> avatarCacher = {};
 
+// 头像类型
+Map<int, IconData> avatarTypeMap = {
+  1: Icons.group,
+  2: Icons.person,
+};
+
 // 头像
 class Avatar extends StatefulWidget {
+  final int type;
   final double width;
   final double height;
   final Int64 avatarFileID;
-  final String userName;
+  final String title;
 
   Avatar(
       {Key key,
+      this.type = 2,
       @required this.avatarFileID,
-      @required this.userName,
+      @required this.title,
       @required this.width,
       @required this.height})
       : super(key: key);
@@ -43,7 +51,7 @@ class _AvatarState extends State<Avatar> {
     }
     _UtilityFileStatReq.fileID = widget.avatarFileID;
     getFileState(_UtilityFileStatReq, (data) {
-      if (!data.hasError) {
+      if (!data.hasError && mounted) {
         setState(() {
           imgSrc = '${data.res.file.uRL}';
           avatarCacher[widget.avatarFileID] = imgSrc;
@@ -60,7 +68,7 @@ class _AvatarState extends State<Avatar> {
         color: Color(0xffeeeeee),
         child: Center(
             child: Icon(
-          Icons.person,
+          avatarTypeMap[widget.type],
           color: Color(0xffa4a5a7),
           size: widget.width / 1.5,
         )));

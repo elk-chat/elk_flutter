@@ -49,6 +49,7 @@ void main() {
     final authRepository = AuthRepository(prefs: prefs);
     final contactRepository = ContactRepository();
     final chatRepository = ChatRepository();
+
     var App = MyApp(
         authRepository: authRepository,
         chatRepository: chatRepository,
@@ -64,7 +65,7 @@ void main() {
 
     if (Platform.isAndroid) {
       SystemUiOverlayStyle systemUiOverlayStyle =
-          SystemUiOverlayStyle(statusBarColor: Colors.transparent);
+          SystemUiOverlayStyle(statusBarColor: Colors.white);
       SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
     }
   }

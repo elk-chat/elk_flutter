@@ -6,16 +6,20 @@ import 'package:elk_chat/repositorys/repositorys.dart';
 import 'package:elk_chat/widgets/icon_badge.dart';
 import 'package:elk_chat/blocs/blocs.dart';
 import '../widgets/widgets.dart';
-import 'chat.dart';
+import 'chat/chat.dart';
 import 'contact.dart';
 import 'more.dart';
 
 class TabsScreen extends StatefulWidget {
   final AuthAuthenticated authState;
   final ContactRepository contactRepository;
+  final ChatRepository chatRepository;
 
   TabsScreen(
-      {Key key, @required this.authState, @required this.contactRepository})
+      {Key key,
+      @required this.authState,
+      @required this.contactRepository,
+      @required this.chatRepository})
       : super(key: key);
 
   @override
@@ -65,10 +69,14 @@ class _TabsScreenState extends State<TabsScreen> {
       ),
     ];
     final List<Widget> tabBodies = [
-      ChatScreen(title: Connection(title: '消息')),
+      ChatScreen(
+          title: Connection(title: '消息'),
+          chatRepository: widget.chatRepository,
+          authState: widget.authState),
       ContactScreen(
           title: Connection(title: '通讯录'),
-          contactRepository: widget.contactRepository),
+          contactRepository: widget.contactRepository,
+          authState: widget.authState),
       MoreScreen(title: Connection(title: '设置'), authState: widget.authState),
     ];
 

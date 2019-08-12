@@ -2,6 +2,7 @@ import 'package:elk_chat/repositorys/contact_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../blocs/blocs.dart';
 import 'contact_detail.dart';
 import 'new_contact.dart';
 import 'package:elk_chat/blocs/contact/contact.dart';
@@ -10,9 +11,13 @@ import '../widgets/widgets.dart';
 class ContactScreen extends StatefulWidget {
   final title;
   final ContactRepository contactRepository;
+  final AuthAuthenticated authState;
 
   ContactScreen(
-      {Key key, @required this.title, @required this.contactRepository})
+      {Key key,
+      @required this.title,
+      @required this.contactRepository,
+      @required this.authState})
       : super(key: key);
 
   @override
@@ -78,8 +83,9 @@ class _ContactScreenState extends State<ContactScreen>
               physics: const BouncingScrollPhysics(),
               itemBuilder: (BuildContext context, int index) {
                 var contact = state.contacts[index];
-                
+
                 return ContactWidget(
+                    key: ValueKey(contact.userID),
                     avatarSize: 42.0,
                     contact: contact,
                     onTap: () {

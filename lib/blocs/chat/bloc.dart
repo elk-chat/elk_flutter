@@ -39,7 +39,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         final chats = await chatRepository.getChats();
         // 提示更新完成+1
         $WS.emit(UPDATING);
-        print('chats: $chats');
         yield ChatLoaded(chats: chats, hasReachedMax: false);
       } catch (_) {
         print('FetchChatList error: $_');

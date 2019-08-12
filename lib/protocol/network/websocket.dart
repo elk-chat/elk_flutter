@@ -387,6 +387,7 @@ class WebSocket extends EventEmitter {
 
     // 加入队列函数
     void queueFn() {
+      // todo queue需要移除，因为同一个请求方法，会发多次不同ID的请求查询数据
       if (!queue) {
         if (_queues[method] != null && _queues[method].isNotEmpty) {
           _queues.remove(method);

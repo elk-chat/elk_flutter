@@ -34,7 +34,9 @@ class RootScreen extends StatelessWidget {
             // 如果已经登录。渲染首页
             if (state is AuthAuthenticated) {
               tmp = TabsScreen(
-                  authState: state, contactRepository: contactRepository);
+                  authState: state,
+                  contactRepository: contactRepository,
+                  chatRepository: chatRepository);
             } else if (state is AuthUnauthenticated) {
               // 如果没有token信息。渲染登录页
               tmp =

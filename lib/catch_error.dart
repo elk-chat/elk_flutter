@@ -4,8 +4,9 @@ import 'package:elk_chat/auth_config.dart';
 
 initCatchZone(Function getdApp) {
   CatcherOptions debugOptions =
-      CatcherOptions(DialogReportMode(), [ConsoleHandler()]);
-  CatcherOptions releaseOptions = CatcherOptions(DialogReportMode(), [
+      CatcherOptions(PageReportMode(), [ConsoleHandler()]);
+  CatcherOptions releaseOptions = CatcherOptions(PageReportMode(), [
+    ToastHandler(),
     EmailAutoHandler(AuthConfig.smtp, AuthConfig.port, AuthConfig.mail,
         "Catcher", AuthConfig.pwd, [AuthConfig.mail],
         enableSsl: true, sendHtml: false, emailTitle: AuthConfig.title)

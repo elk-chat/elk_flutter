@@ -20,18 +20,22 @@ class _LoginFormState extends State<LoginForm> {
   final _usernameController = TextEditingController(text: '');
   final _passwordController = TextEditingController(text: '');
   FocusNode _passwordFocusNode;
-  String _text;
+  FocusNode _usernameFocusNode;
+  String _text = '';
   bool _obscureText = true;
 
   @override
   void initState() {
     super.initState();
     _passwordFocusNode = FocusNode();
+    _usernameFocusNode = FocusNode();
+
     if (widget.authState.account != null) {
-      if (widget.authState.account.user.userName.isNotEmpty) {
-        _usernameController.text = widget.authState.account.user.userName;
+      var userName = widget.authState.account.user.userName;
+      if (userName.isNotEmpty) {
+        _usernameController.text = userName;
         setState(() {
-          //
+          _text = userName;
         });
       }
     }
@@ -41,13 +45,13 @@ class _LoginFormState extends State<LoginForm> {
   void dispose() {
     _usernameController.dispose();
     _passwordController.dispose();
+    _usernameFocusNode.dispose();
     _passwordFocusNode.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    print(widget.authState);
     final loginBloc = BlocProvider.of<LoginBloc>(context);
 
     _onLoginButtonPressed() {
@@ -62,14 +66,6 @@ class _LoginFormState extends State<LoginForm> {
       listener: (context, state) {
         if (state is LoginFailure) {
           showFlushBar(state.error, context);
-
-          // 如果登录失败，那么展示失败提示
-          // Scaffold.of(context).showSnackBar(
-          //   SnackBar(
-          //     content: Text('${state.error}'),
-          //     backgroundColor: Colors.red[400],
-          //   ),
-          // );
         }
       },
       // 绑定
@@ -109,14 +105,17 @@ class _LoginFormState extends State<LoginForm> {
                             height: 10.0,
                           ),
                           Container(
-                              padding: EdgeInsets.symmetric(horizontal: 20.0),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20.0),
                               child: TextField(
                                   onChanged: (val) {
+                                    print(val);
                                     setState(() {
                                       _text = val;
                                     });
                                   },
                                   controller: _usernameController,
+                                  focusNode: _usernameFocusNode,
                                   textInputAction: TextInputAction.next,
                                   onSubmitted: (term) {
                                     FocusScope.of(context)
@@ -132,10 +131,7 @@ class _LoginFormState extends State<LoginForm> {
                                         Icons.person_outline,
                                         color: Colors.blue,
                                       ),
-                                      suffixIcon: (_text == null
-                                                  ? _usernameController.text
-                                                  : _text)
-                                              .isEmpty
+                                      suffixIcon: _text.isEmpty
                                           ? null
                                           : IconButton(
                                               icon: Icon(
@@ -146,10 +142,17 @@ class _LoginFormState extends State<LoginForm> {
                                                 size: 18,
                                               ),
                                               onPressed: () {
-                                                _usernameController.clear();
                                                 setState(() {
                                                   _text = '';
                                                 });
+                                                WidgetsBinding.instance
+                                                    .addPostFrameCallback((_) =>
+                                                        _usernameController
+                                                            .clear());
+
+                                                FocusScope.of(context)
+                                                    .requestFocus(
+                                                        _usernameFocusNode);
                                               })))),
                           Container(
                             child: Divider(

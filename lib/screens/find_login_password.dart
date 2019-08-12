@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 
 class FindLoginPwdScreen extends StatelessWidget {
   Widget _buildPageContent(BuildContext context) {
@@ -22,13 +23,13 @@ class FindLoginPwdScreen extends StatelessWidget {
               SizedBox(
                 height: 60.0,
               ),
-              _buildForm(),
+              _buildForm(context),
             ],
           ),
         ));
   }
 
-  Container _buildForm() {
+  Container _buildForm(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(20.0),
       child: Stack(
@@ -99,7 +100,7 @@ class FindLoginPwdScreen extends StatelessWidget {
               alignment: Alignment.bottomCenter,
               child: RaisedButton(
                 onPressed: () {
-                  print('提交');
+                  _launchURL(context);
                 },
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(40.0)),
@@ -118,5 +119,38 @@ class FindLoginPwdScreen extends StatelessWidget {
     return Scaffold(
       body: _buildPageContent(context),
     );
+  }
+
+  void _launchURL(BuildContext context) async {
+    try {
+      await launch(
+        'https://v2ex.com',
+        option: CustomTabsOption(
+          toolbarColor: Theme.of(context).primaryColor,
+          enableDefaultShare: true,
+          enableUrlBarHiding: true,
+          showPageTitle: true,
+          // animation: CustomTabsAnimation.slideIn(),
+          // or user defined animation.
+          animation: const CustomTabsAnimation(
+            startEnter: 'slide_up',
+            startExit: 'android:anim/fade_out',
+            endEnter: 'android:anim/fade_in',
+            endExit: 'slide_down',
+          ),
+          extraCustomTabs: const <String>[
+            // ref. https://play.google.com/store/apps/details?id=org.mozilla.firefox
+            'org.mozilla.firefox',
+            // ref. https://play.google.com/store/apps/details?id=com.microsoft.emmx
+            'com.microsoft.emmx',
+            'com.UCMobile.intl',
+            'com.tencent.mtt',
+          ],
+        ),
+      );
+    } catch (e) {
+      // An exception is thrown if browser app is not installed on Android device.
+      debugPrint(e.toString());
+    }
   }
 }

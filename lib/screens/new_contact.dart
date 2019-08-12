@@ -74,14 +74,14 @@ class _NewContactScreenState extends State<NewContactScreen> {
   @override
   Widget build(BuildContext context) {
     Widget tips = Container(
-      padding: EdgeInsets.symmetric(vertical: 20),
+      padding: const EdgeInsets.symmetric(vertical: 20),
     );
     Widget container = Container();
     // 初始化
     if (_status == 'init') {
       if (_users.isNotEmpty) {
         tips = Container(
-          padding: EdgeInsets.only(left: 10.0, top: 10.0, bottom: 5.0),
+          padding: const EdgeInsets.only(left: 10.0, top: 10.0, bottom: 5.0),
           child: Text('搜索结果',
               style: TextStyle(fontSize: 14, color: Colors.black45)),
         );
@@ -121,7 +121,7 @@ class _NewContactScreenState extends State<NewContactScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Container(
-              padding: EdgeInsets.only(left: 5.0, right: 5.0, top: 0.0),
+              padding: const EdgeInsets.only(left: 5.0, right: 5.0, top: 0.0),
               child: TextField(
                 autofocus: true,
                 controller: _controller,
@@ -157,7 +157,7 @@ class _NewContactScreenState extends State<NewContactScreen> {
             child: Divider(
               height: 2,
             ),
-            padding: EdgeInsets.symmetric(horizontal: 10.0),
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
           ),
           tips,
           container

@@ -10,14 +10,15 @@ class ContactRepository {
     Completer _completer = Completer<List<User>>();
 
     getContactList(_ContactGetContactsReq, (data) {
-      if (data.type == 'delay') {
-        return;
-      }
       if (data.hasError) {
         _completer.completeError(data.res);
       } else {
         getFullUsers(data.res.contacts, _UserGetFullUsersReq, (result) {
-          _completer.complete(result.res.users);
+          if (result.hasError) {
+            _completer.completeError(result.res);
+          } else {
+            _completer.complete(result.res.users);
+          }
         });
       }
     });

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:elk_chat/init_websocket.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:bloc/bloc.dart';
@@ -36,11 +37,14 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
     if (event is FetchContactList && !_hasReachedMax(currentState)) {
       try {
         final contacts = await contactRepository.getContacts();
+        // 提示更新完成+1
+        $WS.emit(UPDATING);
         print('contacts: $contacts');
         yield ContactLoaded(contacts: contacts, hasReachedMax: false);
         return;
       } catch (_) {
-        print(_);
+        $WS.emit(UPDATING);
+        print('FetchContactList error: $_');
         yield ContactError();
       }
     }

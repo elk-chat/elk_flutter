@@ -49,7 +49,7 @@ packages:
       name: catcher
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.0"
+    version: "0.2.1"
   charcode:
     dependency: transitive
     description:
@@ -188,6 +188,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.4"
+  flutter_custom_tabs:
+    dependency: "direct main"
+    description:
+      name: flutter_custom_tabs
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.6.0"
   flutter_icons:
     dependency: "direct main"
     description:
@@ -201,7 +208,7 @@ packages:
       name: flutter_local_notifications
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.7.1+3"
+    version: "0.8.1"
   flutter_localizations:
     dependency: "direct main"
     description: flutter
@@ -297,7 +304,7 @@ packages:
     source: hosted
     version: "0.11.3+2"
   mailer:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: mailer
       url: "https://pub.dartlang.org"
@@ -531,7 +538,7 @@ packages:
       name: web_socket_channel
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.14"
+    version: "1.0.15"
   yaml:
     dependency: transitive
     description:

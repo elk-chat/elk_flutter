@@ -69,6 +69,7 @@ class _MoreScreenState extends State<MoreScreen>
                     color: Colors.red,
                     onPressed: () {
                       showDialog(
+                          barrierDismissible: false,
                           context: context,
                           builder: (context) {
                             // SystemChrome.setEnabledSystemUIOverlays([]);

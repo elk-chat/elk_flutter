@@ -1,10 +1,11 @@
 import 'dart:async';
 
+import 'package:elk_chat/init_websocket.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:bloc/bloc.dart';
 import 'chat.dart';
-import '../../repositorys/chat_repository.dart';
+import 'package:elk_chat/repositorys/chat_repository.dart';
 
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final ChatRepository chatRepository;
@@ -36,11 +37,13 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     if (event is FetchChatList && !_hasReachedMax(currentState)) {
       try {
         final chats = await chatRepository.getChats();
+        // 提示更新完成+1
+        $WS.emit(UPDATING);
         print('chats: $chats');
         yield ChatLoaded(chats: chats, hasReachedMax: false);
-        return;
       } catch (_) {
-        print(_);
+        print('FetchChatList error: $_');
+        $WS.emit(UPDATING);
         yield ChatError();
       }
     }

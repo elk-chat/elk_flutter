@@ -40,7 +40,7 @@ void main() {
   // log
   Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen((LogRecord rec) {
-    print('${rec.level.name}: ${rec.time}: ${rec.message}');
+    print('${rec.loggerName}-${rec.level.name}: ${rec.time}: ${rec.message}');
   });
 
   Future start() async {
@@ -49,12 +49,11 @@ void main() {
     final authRepository = AuthRepository(prefs: prefs);
     final contactRepository = ContactRepository();
     final chatRepository = ChatRepository();
-    log.info('start finish config repos');
     var App = MyApp(
         authRepository: authRepository,
         chatRepository: chatRepository,
         contactRepository: contactRepository);
-    log.info('start finish App');
+
     try {
       // 正式环境中 assert(1 == 2) 不会执行，所以不会报错
       assert(1 == 2);
@@ -62,12 +61,11 @@ void main() {
     } catch (_) {
       runApp(App);
     }
+
     if (Platform.isAndroid) {
-      log.info('android config statusBarColor');
       SystemUiOverlayStyle systemUiOverlayStyle =
           SystemUiOverlayStyle(statusBarColor: Colors.transparent);
       SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
-      log.info('android finish config statusBarColor');
     }
   }
 

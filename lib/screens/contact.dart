@@ -6,7 +6,6 @@ import 'contact_detail.dart';
 import 'new_contact.dart';
 import 'package:elk_chat/blocs/contact/contact.dart';
 import '../widgets/widgets.dart';
-import 'package:elk_chat/init_websocket.dart';
 
 class ContactScreen extends StatefulWidget {
   final title;
@@ -24,25 +23,15 @@ class _ContactScreenState extends State<ContactScreen>
     with AutomaticKeepAliveClientMixin<ContactScreen> {
   final _scrollController = ScrollController();
   ContactBloc _contactBloc;
-  Function updateSubscription;
 
   @override
   void initState() {
     super.initState();
     _contactBloc = BlocProvider.of<ContactBloc>(context);
-    _contactBloc.dispatch(FetchContactList());
-
-    updateSubscription = $WS.on(WS_STATUS, (payload) {
-      if (payload.type == WSStatus.updating) {
-        _contactBloc.dispatch(FetchContactList());
-      }
-    });
-    // $WS.emitUpdating();
   }
 
   @override
   void dispose() {
-    updateSubscription();
     _scrollController.dispose();
     super.dispose();
   }
@@ -84,14 +73,16 @@ class _ContactScreenState extends State<ContactScreen>
                 child: Text('no contacts'),
               );
             }
-            return ListView.separated(
+            return Scrollbar(
+                child: ListView.separated(
               physics: const BouncingScrollPhysics(),
               itemBuilder: (BuildContext context, int index) {
+                var contact = state.contacts[index];
+                
                 return ContactWidget(
                     avatarSize: 42.0,
-                    contact: state.contacts[index],
+                    contact: contact,
                     onTap: () {
-                      var contact = state.contacts[index];
                       Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -106,7 +97,7 @@ class _ContactScreenState extends State<ContactScreen>
               separatorBuilder: (context, index) {
                 return Divider(height: 0, indent: 66);
               },
-            );
+            ));
           }
           return Center(
             child: CupertinoActivityIndicator(),

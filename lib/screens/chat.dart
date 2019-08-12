@@ -24,7 +24,7 @@ class _ChatScreenState extends State<ChatScreen>
     super.initState();
 
     _chatBloc = BlocProvider.of<ChatBloc>(context);
-    _chatBloc.dispatch(FetchChatList());
+
   }
 
   @override

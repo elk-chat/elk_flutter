@@ -1,14 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:elk_chat/repositorys/repositorys.dart';
 import 'package:elk_chat/blocs/blocs.dart';
 import 'package:elk_chat/widgets/widgets.dart';
 import 'index.dart';
 import 'tabs.dart';
-
-// 初始化连接 websocket
 
 class RootScreen extends StatelessWidget {
   final AuthRepository authRepository;
@@ -29,27 +26,26 @@ class RootScreen extends StatelessWidget {
         child: BlocBuilder<AuthBloc, AuthState>(
           bloc: _authBloc,
           builder: (context, state) {
+            List<Widget> children = <Widget>[
+              ConnectionWatcher(
+                  authState: state, authRepository: authRepository),
+            ];
+            Widget tmp;
             // 如果已经登录。渲染首页
             if (state is AuthAuthenticated) {
-              return Stack(children: <Widget>[
-                TabsScreen(
-                    authState: state, contactRepository: contactRepository),
-                ConnectionWatcher(authRepository: authRepository),
-              ]);
+              tmp = TabsScreen(
+                  authState: state, contactRepository: contactRepository);
+            } else if (state is AuthUnauthenticated) {
+              // 如果没有token信息。渲染登录页
+              tmp =
+                  LoginScreen(authRepository: authRepository, authState: state);
+            } else {
+              tmp = Scaffold(body: Center(child: CupertinoActivityIndicator()));
             }
-            // 如果没有token信息。渲染登录页
-            if (state is AuthUnauthenticated) {
-              return LoginScreen(
-                  authRepository: authRepository, authState: state);
-            }
-            var loading =
-                Scaffold(body: Center(child: CupertinoActivityIndicator()));
-            // 如果正在请求中，渲染 loading
-            if (state is AuthLoading) {
-              return loading;
-            }
-            // 渲染启动页
-            return loading;
+            children.add(tmp);
+            return Stack(
+              children: children,
+            );
           },
         ),
         onWillPop: () {
@@ -60,9 +56,9 @@ class RootScreen extends StatelessWidget {
   /// 单击提示退出
   Future<bool> _dialogExitApp(BuildContext context) {
     return showDialog(
+        barrierDismissible: false,
         context: context,
         builder: (context) {
-          // SystemChrome.setEnabledSystemUIOverlays([]);
           return WillPopScope(
               child: CupertinoAlertDialog(
                 title: Text('温馨提示'),
@@ -72,23 +68,17 @@ class RootScreen extends StatelessWidget {
                 actions: <Widget>[
                   CupertinoDialogAction(
                       onPressed: () {
-                        // SystemChrome.setEnabledSystemUIOverlays(
-                        //     SystemUiOverlay.values);
                         return Navigator.of(context).pop(false);
                       },
                       child: Text('取消')),
                   CupertinoDialogAction(
                       onPressed: () {
-                        // SystemChrome.setEnabledSystemUIOverlays(
-                        //     SystemUiOverlay.values);
                         return Navigator.of(context).pop(true);
                       },
                       child: Text('确定'))
                 ],
               ),
               onWillPop: () async {
-                // await SystemChrome.setEnabledSystemUIOverlays(
-                //     SystemUiOverlay.values);
                 return true;
               });
         });

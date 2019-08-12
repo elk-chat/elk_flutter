@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:elk_chat/protocol/protobuf/koi.pb.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:elk_chat/protocol/api/api.dart';
@@ -27,6 +28,7 @@ class Avatar extends StatefulWidget {
 
 class _AvatarState extends State<Avatar> {
   String imgSrc = '';
+  UtilityFileStatReq _UtilityFileStatReq = UtilityFileStatReq();
 
   @override
   void initState() {
@@ -39,7 +41,8 @@ class _AvatarState extends State<Avatar> {
       });
       return;
     }
-    getFileState({'fileID': Int64.parseInt('${widget.avatarFileID}')}, (data) {
+    _UtilityFileStatReq.fileID = widget.avatarFileID;
+    getFileState(_UtilityFileStatReq, (data) {
       if (!data.hasError) {
         setState(() {
           imgSrc = '${data.res.file.uRL}';

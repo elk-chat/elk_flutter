@@ -8,45 +8,25 @@ import 'package:elk_chat/init_websocket.dart';
 import 'package:elk_chat/protocol/api/api.dart';
 
 class AuthRepository {
-  final String AUTH_INFO = 'AUTH_INFO_2';
+  final String AUTH_INFO = 'AUTH_INFO';
   SharedPreferences prefs;
   AuthRepository({@required this.prefs});
   final UserLoginReq _UserLoginReq = UserLoginReq();
 
-  // 获取登录账户，当前登录账户信息，已保存账户列表
+  // 获取当前登录账户信息，已保存账户列表
   Future<dynamic> getAuthInfo() async {
     List<String> auth_info = await prefs.getStringList(AUTH_INFO);
     Completer _completer = Completer();
 
     if (auth_info != null) {
-      List<int> a = auth_info.map((i) => int.parse(i)).toList();
-      var res = UserLoginResp.fromBuffer(Uint8List.fromList(a));
-      // 自动登录
-      if (res.token.isEmpty) {
-        _completer.complete(res);
-      } else {
-        _UserLoginReq.clear();
-        _UserLoginReq.token = res.token;
-        login(_UserLoginReq, (data) {
-          if (data.type == 'delay') {
-            return;
-          }
-          if (data.hasError) {
-            // todo 如果自动登录验证失败，需要使用用户名密码登录
-            _completer.complete(res);
-          } else {
-            UserLoginResp res = data.res;
-            persistAuthInfo(res);
-            $WS.setSSID(data.res?.sessionID);
-            $WS.heartBeat();
-
-            _completer.complete(res);
-          }
-        });
+      List<int> info = auth_info.map((i) => int.parse(i)).toList();
+      var account = UserLoginResp.fromBuffer(Uint8List.fromList(info));
+      if (account.token.isNotEmpty) {
+        $WS.setSSID(account.sessionID);
       }
-    } else {
-      UserLoginResp account = UserLoginResp();
       _completer.complete(account);
+    } else {
+      _completer.complete(UserLoginResp());
     }
     return _completer.future;
   }
@@ -59,21 +39,25 @@ class AuthRepository {
     if (userName.isEmpty || password.isEmpty) {
       throw '用户名或密码必填';
     }
-    Completer _completer = Completer();
-
     _UserLoginReq.clear();
     _UserLoginReq.userName = userName;
     _UserLoginReq.password = password;
+    return handleLogin();
+  }
+
+  handleLogin([String token]) {
+    if (token != null) {
+      _UserLoginReq.clear();
+      _UserLoginReq.token = token;
+    }
+    Completer _completer = Completer();
     login(_UserLoginReq, (data) {
-      if (data.type == 'delay') {
-        return;
-      }
       if (data.hasError) {
         _completer.completeError(data.res);
       } else {
-        $WS.setSSID(data.res?.sessionID);
-        $WS.heartBeat();
         _completer.complete(data.res);
+        $WS.setSSID(data.res?.sessionID);
+        persistAuthInfo(data.res);
       }
     });
     return _completer.future;

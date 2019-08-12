@@ -10,38 +10,43 @@ getChatList(ChatGetChatsReq pto, WebsocketCallback cb) {
 
 /// 获取聊天的未读数
 getChatsLastUnreadState(
-    UserGetChatUserSuperscriptReq proto, WebsocketCallback cb) {
+    UserGetChatUserSuperscriptReq proto, WebsocketCallback cb,
+    [UserGetChatUserSuperscriptResp resp]) {
   return $WS.send(
       method: "UserGetChatUserSuperscriptReq", protobuf: proto, cb: cb);
 }
 
-/// 查看该 Chat 中的最后已读消息状态
+/// 查看该 Chat 中的最后已读消息
 getStateRead(ChatGetStateReadReq proto, WebsocketCallback cb,
-    [ChatGetStateReadResp res]) {
+    [ChatGetStateReadResp resp]) {
   return $WS.send(method: "ChatGetStateReadReq", protobuf: proto, cb: cb);
 }
 
 /// 同步单个 Chat 的聊天状态
-syncChatMessageState(ChatSyncChatStateMessagesReq proto, WebsocketCallback cb, [ChatSyncChatStateMessagesResp res]) {
+syncChatMessageState(ChatSyncChatStateMessagesReq proto, WebsocketCallback cb,
+    [ChatSyncChatStateMessagesResp resp]) {
   return $WS.send(
       method: "ChatSyncChatStateMessagesReq", protobuf: proto, cb: cb);
 }
 
 /// 通过查询条件和分页控制，查询历史聊天信息
 queryChatMsgsByCondition(
-    ChatGetChatStateMessagesReq proto, WebsocketCallback cb) {
+    ChatGetChatStateMessagesReq proto, WebsocketCallback cb,
+    [ChatGetChatStateMessagesResp resp]) {
   return $WS.send(
       method: "ChatGetChatStateMessagesReq", protobuf: proto, cb: cb);
 }
 
 /// 创建聊天
-createChat(ChatCreateReq proto, WebsocketCallback cb) {
+createChat(ChatCreateReq proto, WebsocketCallback cb, [ChatCreateResp resp]) {
   return $WS.send(method: "ChatCreateReq", protobuf: proto, cb: cb);
 }
 
 /// 向对应的聊天添加人员
-addMemberToChat(ChatAddMemberReq proto, WebsocketCallback cb) {
-  return $WS.send(method: "ChatAddMemberReq", protobuf: proto, cb: cb);
+addMemberToChat(ChatAddMemberReq proto, WebsocketCallback cb,
+    [ChatAddMemberResp resp]) {
+  return $WS.send(
+      method: "ChatAddMemberReq", protobuf: proto, hasResponse: false, cb: cb);
 }
 
 /// 向对应的聊天添加人员列表
@@ -58,7 +63,7 @@ createChatAndAddMember(Map formData, WebsocketCallback cb) {
 }
 
 /// 发送聊天消息
-sendChatMsg(ChatSendMessageReq proto, WebsocketCallback cb) {
+sendChatMsg(ChatSendMessageReq proto, WebsocketCallback cb, [ChatSendMessageResp resp]) {
   return $WS.send(method: "ChatSendMessageReq", protobuf: proto, cb: cb);
 }
 

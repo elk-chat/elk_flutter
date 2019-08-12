@@ -35,6 +35,8 @@ class WebsocketCallbackData {
   /// protobuf decode 方法
   String resMethod;
 
+  String code;
+
   /// 类型： delay: 表示需要延迟发送
   String type;
 
@@ -45,12 +47,14 @@ class WebsocketCallbackData {
       String type,
       String resMethod,
       dynamic res,
+      String code,
       String resType}) {
     this.hasError = hasError;
     this.resMethod = resMethod;
     this.res = res;
     this.type = type;
     this.resType = resType;
+    this.code = code;
   }
 
   @override
@@ -105,6 +109,15 @@ const String WS_STATUS = 'WS_STATUS_CHANGE';
 
 /// 心跳包延迟
 const String WS_HEARTBEAT_DELAY = 'HEARTBEAT_DELAY';
+
+/// 会话过期
+const String B00006 = 'B00006';
+
+/// 更新
+const String UPDATING = 'UPDATING';
+
+/// 退出
+const String LOGOUT = 'LOGOUT';
 
 /// 发送有错误
 const String WS_SEND_ERROR = 'SEND_HAS_ERROR';

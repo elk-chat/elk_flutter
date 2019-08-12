@@ -20,11 +20,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     if (event is AppStarted) {
       var account = await authRepository.getAuthInfo();
       if (account.token.isEmpty) {
-        if (account.user.userName.isNotEmpty) {
-          yield AuthUnauthenticated(account: account);
-        } else {
-          yield AuthUnauthenticated();
-        }
+        yield AuthUnauthenticated(account: account);
       } else {
         yield AuthAuthenticated(account: account);
       }
@@ -33,7 +29,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     if (event is LoggedIn) {
       // 为什么需要这个 loading 效果？
       yield AuthLoading();
-      await authRepository.persistAuthInfo(event.res);
       yield AuthAuthenticated(account: event.res);
     }
 

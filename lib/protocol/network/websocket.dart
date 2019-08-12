@@ -1,13 +1,13 @@
 import 'dart:async';
 import 'dart:typed_data';
 import 'dart:math';
-// 这里使用这个，而不是 dart:html Websocket，是因为 dart:html Websocket 是给浏览器用的，flutter 环境用不了。
-import 'package:logging/logging.dart';
+// 这里使用 web_socket_channel/io.dart，而不是 dart:html Websocket，因为 dart:html Websocket 是给浏览器用的，
+// flutter 环境用不了。
 import 'package:web_socket_channel/io.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:logging/logging.dart';
 import 'package:web_socket_channel/status.dart' as status;
 import '../util/util.dart';
-import '../protobuf/koi.pb.dart' as proto;
+import '../protobuf/koi.pb.dart';
 import '../protobuf/decode_protobuf.dart';
 import 'en_decode.dart';
 import 'ws_state.dart';
@@ -16,13 +16,29 @@ export 'ws_state.dart';
 
 // A text message will be of type String and a binary message will be of type List<int>.
 // Websocket 发送和接收只有两种类型：文本字符串或者二进制 List<int>
+/*
+websocket 工作流程：
+连接，主动发送消息，服务器推送消息
+连接状态：未连接，连接中，已连接
+检测连接：发送 ping，服务器累计 3 次没有 pong，客户端则判
+断连接断开（也有可能网络太慢，作断开处理）
+连接断开：客户端尝试连接，连续失败，尝试+1，延时尝试连接时间+ x1
+注意：状态变化，最好在UI层给用户展示，否则用户会感觉界面没有反应
 
+onConnected: fn 已连接调用
+onDisconnected: fn 断开连接调用
+
+调用连接请求时，可能正在连接，发送心跳包如果有回应，说明已连接，没回应前，说明连接中
+
+*/
 class WebSocket extends EventEmitter {
   /// websocket 接口
   String wsUrl;
 
-  /// 心跳包间隔（单位：秒）
+  /// 心跳包间隔（单位：秒），对于 dart 的 websocket，暂时不起作用，
+  /// 目前只用来登录后的心跳包间隔
   Duration pingInterval;
+  int intPingInterval;
 
   /// 发送超时（单位：秒）
   Duration timeout;
@@ -39,11 +55,13 @@ class WebSocket extends EventEmitter {
       heartBeatCount = 0;
 
   /// websocket channel
-  WebSocketChannel channel;
+  IOWebSocketChannel channel;
 
-  /// 用于初始化 rid
+  /// 用于初始化 request id
   int random = Random().nextInt(100000);
   String timestamp = '${DateTime.now().millisecondsSinceEpoch}';
+
+  HeartbeatReq _HeartbeatReq = HeartbeatReq();
 
   /// 心跳包定时句柄
   Timer heartBeatTimer;
@@ -51,10 +69,6 @@ class WebSocket extends EventEmitter {
   /// 延迟
   int heartBeatMilliseconds;
   DateTime lastHeartBeatTime;
-  Timer heartbeatTimeoutTimer;
-
-  /// 错误
-  Timer onErrorTimer;
 
   StreamSubscription<dynamic> streamListener;
 
@@ -66,21 +80,18 @@ class WebSocket extends EventEmitter {
   List<Function> _disconnectedCbs = List();
   List<Function> get disconnectedCbs => _disconnectedCbs;
 
+  Function authCallback;
+  bool isLogined = false;
+
   final StringUtil stringUtil = StringUtil();
 
   final StatusChangeWatcher statusChangeWatcher = StatusChangeWatcher();
 
   final Logger log = Logger('websocket');
-  /** `
-   * 初始化
-   * ```
-   * 'wsUrl': 链接
-   * 'pingInterval': 心跳包间隔（单位：秒）
-   * 'timeout': 请求超时，默认 20 秒 （单位：秒）
-   * ```
-   */
+
   WebSocket(String wsUrl, int pingInterval, [int timeout = 20]) {
     this.wsUrl = wsUrl;
+    this.intPingInterval = pingInterval;
     this.pingInterval = Duration(seconds: pingInterval);
     this.timeout = Duration(seconds: timeout);
     _init();
@@ -90,18 +101,22 @@ class WebSocket extends EventEmitter {
   checkWebsocketConnect() {
     if (lastHeartBeatTime == null) return log.info('init avoid check');
     if (currentStatus != WSStatus.disconnected) {
-      // 取消心跳检查定时
-      heartbeatTimeoutTimer?.cancel();
       var now = DateTime.now();
       var durationSeconds = now.difference(lastHeartBeatTime).inSeconds;
-      if (durationSeconds >= 299) {
-        // 超过300秒，服务器主动断开，已经超时
+      // 登录后，每 [intPingInterval] 秒轮询一次, 如果超过 [intPingInterval+延迟+2秒]，这里当作已经断开
+      // 没登录前，没有轮询，但是服务器会超过 300 秒主动断开连接
+      var seconds = isLogined
+          ? intPingInterval +
+              (heartBeatMilliseconds != null
+                  ? heartBeatMilliseconds / 1000
+                  : 0) +
+              2
+          : 290;
+      if (durationSeconds >= seconds) {
         lastHeartBeatTime = now;
         currentStatus = WSStatus.disconnected;
         log.info('checkWebsocketConnect: 心跳超时，需要提示连接断开，并重连');
         createWebsocket();
-      } else {
-        log.info('checkWebsocketConnect: 连接正常');
       }
     } else {
       currentStatus = WSStatus.disconnected;
@@ -148,7 +163,7 @@ class WebSocket extends EventEmitter {
     }
     channel = IOWebSocketChannel.connect(wsUrl);
     streamListener = channel.stream.listen(_onData,
-        onError: _onError, onDone: _onDone, cancelOnError: true);
+        onError: _onError, onDone: _onDone, cancelOnError: false);
     reconnectCount++;
     log.info('ws:create websocket $reconnectCount');
     if (method != 'HEARTBEAT_REQ') {
@@ -158,30 +173,17 @@ class WebSocket extends EventEmitter {
   }
 
   /// 登录后，定时发送心跳包，也用来检测网络是否连接上
-  void heartBeat() {
+  void heartBeat([Function cb]) {
     heartBeatCount++;
     final stopwatch = Stopwatch()..start();
     lastHeartBeatTime = DateTime.now();
-    heartbeatTimeoutTimer?.cancel();
-    if (currentStatus == WSStatus.connected) {
-      // 如果是连接状态，才需要定时
-      heartbeatTimeoutTimer = Timer(
-          Duration(
-              seconds: 5, // 允许误差在延迟的基础上再多 5 秒
-              milliseconds: heartBeatMilliseconds != null
-                  ? heartBeatMilliseconds
-                  : 0), () {
-        // 断线
-        log.info('timeout maybe disconnected');
-        _onError('timeout maybe disconnected');
-      });
+    if (cb != null) {
+      authCallback = cb;
     }
     send(
         method: 'HeartbeatReq',
-        protobuf: proto.HeartbeatReq(),
+        protobuf: _HeartbeatReq,
         cb: (data) {
-          log.info(data);
-          heartbeatTimeoutTimer?.cancel();
           lastHeartBeatTime = DateTime.now();
           heartBeatMilliseconds = stopwatch.elapsed.inMilliseconds;
           emit(WS_HEARTBEAT_DELAY, {
@@ -193,6 +195,12 @@ class WebSocket extends EventEmitter {
           startHeartBeats();
           // 服务器返回消息
           if (data.resType == 'server') {
+            if (authCallback != null && data.code != B00006) {
+              print('auth callback');
+              authCallback();
+              authCallback = null;
+            }
+
             if (currentStatus != WSStatus.connected) {
               currentStatus = WSStatus.connected;
               _executeQueues();
@@ -216,7 +224,10 @@ class WebSocket extends EventEmitter {
 
   /// 触发同步完成信息
   void emitConnected() {
-    WSStatusData payload = WSStatusData(type: WSStatus.connected);
+    WSStatusData payload = WSStatusData(
+        type: currentStatus == WSStatus.updating
+            ? WSStatus.connected
+            : currentStatus);
     emit(WS_STATUS, payload);
   }
 
@@ -229,13 +240,16 @@ class WebSocket extends EventEmitter {
   }
 
   void stopHeartBeat() {
-    heartbeatTimeoutTimer?.cancel();
     heartBeatTimer?.cancel();
   }
 
   /// 登录后设置  sessionID
   void setSSID(sessionID) {
+    isLogined = true;
     setHeaderSSID(sessionID);
+    heartBeat(() {
+      emitUpdating();
+    });
   }
 
   /// 清空
@@ -244,15 +258,17 @@ class WebSocket extends EventEmitter {
     closeChannel();
     stopHeartBeat();
     stringUtil.clear();
-    _queues.clear();
-    _disconnectedCbs.clear();
+    clearQueues();
     statusChangeWatcher?.clear();
   }
 
   /// 退出登录
   void logout() {
+    isLogined = false;
     stopHeartBeat();
-    setSSID(BigInt.from(10));
+    clearQueues();
+    setHeaderSSID(BigInt.from(10));
+    emit(LOGOUT);
   }
 
   void closeChannel() {
@@ -274,7 +290,9 @@ class WebSocket extends EventEmitter {
       WebsocketCallback cb,
       // requestId: 通过  $WS.getRequestID() 生成，参数可选
       BigInt requestId,
-      // 如果没有网络，是否需要放到队列中
+      // 是否需要没网络时，返回
+      bool delay = false,
+      // 如果没有网络，是否需���放到队列中
       bool queue = false,
       // 是��需要超时，如果是文件上传，这���需要设置为 false
       bool hasTimeout = true,
@@ -282,10 +300,9 @@ class WebSocket extends EventEmitter {
       bool hasResponse = true}) {
     method = stringUtil.getConstantCase(text: method);
     sendCount++;
-    log.info('$sendCount ws:send data $method');
     // 用时间戳和随机数作为 RequestID
     BigInt rid = requestId is BigInt ? requestId : genRequestID();
-    String eventName = 'e-$rid';
+    String eventName = getEventName(rid);
     Uint8List dataBuf;
 
     if (data != null) {
@@ -313,6 +330,7 @@ class WebSocket extends EventEmitter {
 
     // 执行
     void fn() {
+      log.info('ws:send data $method; count $sendCount');
       try {
         dataBuf = encodeData(method, protobuf.writeToBuffer(), rid);
         channel.sink.add(dataBuf);
@@ -378,15 +396,17 @@ class WebSocket extends EventEmitter {
           _queues.putIfAbsent(method, () => List<Function>());
       queueContainer.add(fn);
       // 没网络。等待网络连接自动发送
-      cb(WebsocketCallbackData(
-        type: 'delay', // ���示待发送，@Todo: 如果待发送之前将信息删掉，那么待发送需要从队列中移除
-        hasError: true,
-        resMethod: method,
-        res: 'disconnected',
-      ));
+      if (delay) {
+        cb(WebsocketCallbackData(
+          type: 'delay', // ���示待发送，@Todo: 如果待发送之前将信息删掉，那么待发送需要从队列中移除
+          hasError: true,
+          resMethod: method,
+          res: 'disconnected',
+        ));
+      }
     }
 
-    // 没连接的情况下，主动连接，不需要放到队列中
+    // 没连接的情况下，主动连接
     if (currentStatus == WSStatus.disconnected) {
       queueFn();
       createWebsocket(method: method);
@@ -413,9 +433,8 @@ class WebSocket extends EventEmitter {
 
   /// 清除队列
   void clearQueues() {
-    _queues.forEach((k, v) {
-      _queues.remove(k);
-    });
+    _queues.clear();
+    _disconnectedCbs.clear();
   }
 
   /// Get event name
@@ -452,7 +471,7 @@ class WebSocket extends EventEmitter {
           // 如果没有错误，Data 就没有 code 这个属性，会报错
           hasError = Data.code != '0';
         } catch (e) {
-          // 没有错误
+          //
         }
       } catch (e) {
         hasError = true;
@@ -460,66 +479,42 @@ class WebSocket extends EventEmitter {
         log.info('ws: $Data');
       }
     }
-    // 收到数据不需要触发事件
-    // WSStatusData payload =
-    //     WSStatusData(type: WSStatus.data, data: response, count: dataCount);
-    // emit(WS_STATUS, payload);
 
     if (RequestID != null && RequestID == 0) {
       eventName = WS_RECEIVE_STATE_UPDATE;
-    }
-    if (hasError && Data.code == 'B00006') {
-      // emit(WS_STATUS, 'reLogin');
     }
 
     var result = {
       'resType': resType,
       'hasError': hasError,
       'resMethod': resMethod,
-      'res': hasError && Data.message.isNotEmpty
-          ? '${Data.code}:${Data.message}'
-          : Data,
     };
+    if (hasError) {
+      try {
+        result.addAll({
+          'code': Data?.code,
+        });
+        if (Data?.code == B00006) {
+          emit(B00006);
+        }
+      } catch (e) {
+        //
+      }
+      result.addAll(
+          {'res': 'resMethod ${resMethod}; $Data'});
+    } else {
+      result.addAll({'res': Data});
+    }
     emit(eventName, result);
   }
 
   /// 监听错误
   void _onError([error, StackTrace stackTrace]) {
-    heartbeatTimeoutTimer?.cancel();
-    fn() {
-      int i = 0;
-      while (i <= _disconnectedCbs.length) {
-        _disconnectedCbs.removeLast()();
-        i++;
-      }
-    }
-
-    // 如果已经是断线的情况下，那么
-    if (currentStatus == WSStatus.disconnected) {
-      fn();
-    } else {
-      onErrorTimer?.cancel();
-      // 如果不是断线，6 秒后检查依然不是连接状态
-      onErrorTimer = Timer(Duration(seconds: 6), () {
-        if (currentStatus != WSStatus.connected) {
-          fn();
-        }
-      });
-    }
-
-    errorCount++;
-    currentStatus = WSStatus.disconnected;
-    WSStatusData payload = WSStatusData(
-        type: currentStatus,
-        error: error,
-        stackTrace: stackTrace,
-        count: errorCount);
-    emit(WS_STATUS, payload);
+    log.warning('_onError error: $error; StackTrace $stackTrace');
   }
 
   /// 监听连接断开
   void _onDone() {
-    heartbeatTimeoutTimer?.cancel();
     if (currentStatus != WSStatus.disconnected) {
       currentStatus = WSStatus.disconnected;
       doneCount++;

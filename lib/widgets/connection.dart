@@ -4,8 +4,8 @@ import 'package:elk_chat/init_websocket.dart';
 
 Map<dynamic, String> WSStausTextMap = {
   WSStatus.connected: '已连接',
-  WSStatus.connecting: ' 连接中···',
-  WSStatus.updating: ' 更新中···',
+  WSStatus.connecting: ' 连接···',
+  WSStatus.updating: ' 更新···',
   WSStatus.disconnected: '未连接',
 };
 
@@ -37,9 +37,11 @@ class _ConnectionState extends State<Connection> {
 
   onStatusChange(payload) {
     if (payload != null && currentStatus != payload.type) {
-      setState(() {
-        currentStatus = payload.type;
-      });
+      if (mounted) {
+        setState(() {
+          currentStatus = payload.type;
+        });
+      }
     } else {
       //
     }
@@ -55,7 +57,8 @@ class _ConnectionState extends State<Connection> {
     if (currentStatus != WSStatus.connected) {
       title = WSStausTextMap[currentStatus];
     }
-    if (currentStatus == WSStatus.connecting || currentStatus == WSStatus.updating) {
+    if (currentStatus == WSStatus.connecting ||
+        currentStatus == WSStatus.updating) {
       widgets.add(CupertinoActivityIndicator(
         radius: 9,
       ));

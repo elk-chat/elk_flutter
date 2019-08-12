@@ -1,14 +1,17 @@
-import 'dart:async';
-
+import 'package:elk_chat/blocs/blocs.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:elk_chat/repositorys/auth_repository.dart';
 import 'package:elk_chat/init_websocket.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// websocket 重连/消息同步
 class ConnectionWatcher extends StatefulWidget {
+  final dynamic authState;
   final AuthRepository authRepository;
-  ConnectionWatcher({Key key, @required this.authRepository}) : super(key: key);
+  ConnectionWatcher(
+      {Key key, @required this.authState, @required this.authRepository})
+      : super(key: key);
 
   _ConnectionWatcherState createState() => _ConnectionWatcherState();
 }
@@ -16,35 +19,46 @@ class ConnectionWatcher extends StatefulWidget {
 class _ConnectionWatcherState extends State<ConnectionWatcher> {
   Function heartBeatSubscription;
   Function wsStatusSubscription;
+  Function authSubscription;
+  Function updateFinishSubscription;
+  Function logoutSupscription;
+  final int MAX_UPDATING = 2; // 聊天列表/联系人列表
+  int updateCount = 0;
+  ChatBloc _chatBloc;
+  ContactBloc _contactBloc;
   WSStatus currentStatus;
-  Timer syncTimer;
-  bool firstSync = false;
+  DateTime lastUpdatingTime;
+
+  bool isAuthing = false;
 
   @override
   void initState() {
-    // 状态更新
-    wsStatusSubscription = $WS.on(WS_STATUS, onStatusChange);
+    super.initState();
 
     // 收到心跳包
     heartBeatSubscription = $WS.on(WS_HEARTBEAT_DELAY, onHeartBeat);
 
-    // 第一次登录，同步
-    syncTimer = Timer.periodic(Duration(seconds: 1), (timer) {
-      if ($WS.currentStatus == WSStatus.connected) {
-        syncTimer.cancel();
-        syncState();
-        firstSync = true;
-      }
-    });
+    // 会话过期，重新登录
+    authSubscription = $WS.on(B00006, onAuth);
 
-    super.initState();
+    _chatBloc = BlocProvider.of<ChatBloc>(context);
+    _contactBloc = BlocProvider.of<ContactBloc>(context);
+
+    // 状态更新
+    wsStatusSubscription = $WS.on(WS_STATUS, onStatusChange);
+
+    updateFinishSubscription = $WS.on(UPDATING, onUpdating);
+
+    logoutSupscription = $WS.on(LOGOUT, onLogout);
   }
 
   @override
   void dispose() {
-    syncTimer?.cancel();
+    authSubscription();
     wsStatusSubscription();
     heartBeatSubscription();
+    updateFinishSubscription();
+    logoutSupscription();
     super.dispose();
   }
 
@@ -52,39 +66,62 @@ class _ConnectionWatcherState extends State<ConnectionWatcher> {
     print('心跳包：$payload');
   }
 
-  onStatusChange(payload) async {
-    if (payload == null || currentStatus == payload.type) return;
+  onAuth(data) async {
+    if (widget.authState is AuthAuthenticated) {
+      if (isAuthing) {
+        print('已经正在登录');
+        return;
+      }
+      isAuthing = true;
+      try {
+        await widget.authRepository.handleLogin(widget.authState.account.token);
+      } catch (e) {
+        print('重新登录失败: $e');
+      }
+      isAuthing = false;
+    }
+  }
 
-    if (payload.type == WSStatus.disconnected) {
-      // $WS.checkWebsocketConnect();
-    } else if (payload.type == WSStatus.connected &&
-        currentStatus != WSStatus.updating) {
-      if ($WS.currentStatus == WSStatus.connected) {
-        // 连接成功，自动登录，同步信息
-        try {
-          await widget.authRepository.getAuthInfo();
-          if (firstSync) {
-            syncState();
-          }
-        } catch (e) {
-          //
+  onUpdating(payload) {
+    if ($WS.isLogined) {
+      updateCount++;
+      if (MAX_UPDATING <= updateCount) {
+        updateCount = 0;
+        $WS.emitConnected();
+      }
+    }
+  }
+
+  onLogout(payload) {
+    lastUpdatingTime = null;
+    updateCount = 0;
+  }
+
+  onStatusChange(payload) async {
+    print('onStatusChange payload $payload');
+    if (widget.authState is AuthAuthenticated) {
+      if (payload.type == WSStatus.disconnected) {
+        print('连接断开，尝试重新连接');
+        // $WS.checkWebsocketConnect();
+      } else if (payload.type == WSStatus.connected ||
+          payload.type == WSStatus.updating) {
+        var now = DateTime.now();
+        if (lastUpdatingTime != null) {
+          var durationSeconds = now.difference(lastUpdatingTime).inSeconds;
+          // 5 秒内避免再次同步
+          if (durationSeconds <= 5) return;
         }
+        lastUpdatingTime = now;
+        print('已连接, 触发更新 updating $payload');
+        _chatBloc.dispatch(FetchChatList());
+        _contactBloc.dispatch(FetchContactList());
       }
     }
     currentStatus = payload.type;
   }
 
-  ///  同步数据
-  syncState() {
-    $WS.emitUpdating();
-    // print('开始同步数据，联系人/聊天列表/未读');
-    Timer(Duration(seconds: 2), () {
-      $WS.emitConnected();
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return SizedBox();
   }
 }

@@ -19,18 +19,20 @@ class ContactWidget extends StatelessWidget {
           children: <Widget>[
             Container(
                 padding: EdgeInsets.only(left: 12, right: avatarSize / 4),
-                child: Avatar(
+                child: Img(
                   key: Key('${contact.avatarFileID}'),
                   width: avatarSize,
                   height: avatarSize,
-                  avatarFileID: contact.avatarFileID,
+                  fileID: contact.avatarFileID,
                   title: contact.userName,
                 )),
             Container(
                 padding: EdgeInsets.symmetric(vertical: avatarSize / (2)),
                 child: Text(
                   contact.userName,
-                  style: TextStyle(fontSize: avatarSize / (2.5), fontWeight: FontWeight.w400),
+                  style: TextStyle(
+                      fontSize: avatarSize / (2.5),
+                      fontWeight: FontWeight.w400),
                 ))
           ],
         ));

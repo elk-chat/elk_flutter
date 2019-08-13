@@ -101,7 +101,14 @@ class _ContactScreenState extends State<ContactScreen>
               itemCount: state.contacts.length,
               controller: _scrollController,
               separatorBuilder: (context, index) {
-                return Divider(height: 0, indent: 66);
+                return Container(
+                  margin: const EdgeInsets.only(left: 66),
+                  decoration: BoxDecoration(
+                    border: Border(
+                        top: const BorderSide(
+                            color: Colors.black12, width: 0.5)),
+                  ),
+                );
               },
             ));
           }

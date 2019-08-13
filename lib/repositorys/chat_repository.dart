@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:elk_chat/protocol/api/api.dart';
 import 'package:elk_chat/protocol/api/chat.dart';
+import 'package:elk_chat/protocol/api/proto_helper.dart';
 import 'package:elk_chat/protocol/protobuf/koi.pb.dart';
 import 'package:fixnum/fixnum.dart';
 
@@ -16,6 +17,11 @@ class ChatRepository {
   UserGetFullUsersReq _UserGetFullUsersReq = UserGetFullUsersReq();
   ChatSyncChatStateMessagesReq _ChatSyncChatStateMessagesReq =
       ChatSyncChatStateMessagesReq();
+
+  ChatGetChatStateMessagesReq _ChatGetChatStateMessagesReq =
+      getChatStateMessagesReq(0, 20);
+  ChatGetChatStateMessagesCondition _ChatGetChatStateMessagesCondition =
+      ChatGetChatStateMessagesCondition();
 
   // 获取聊天列表
   Future<List<Chat>> getChats() async {
@@ -74,7 +80,7 @@ class ChatRepository {
     return _completer.future;
   }
 
-  // 获取
+  // 获取状态
   Future getMessages(Int64 chatID, int limit, [Int64 state]) {
     Completer _completer = Completer();
     _ChatSyncChatStateMessagesReq.clear();
@@ -84,6 +90,31 @@ class ChatRepository {
       _ChatSyncChatStateMessagesReq.state = state;
     }
     syncChatMessageState(_ChatSyncChatStateMessagesReq, (data) {
+      if (data.hasError) {
+        _completer.completeError(data.res);
+      } else {
+        _completer.complete(data.res);
+      }
+    });
+    return _completer.future;
+  }
+
+  Future getMsgHistory(int pageIndex, int pageSize, Int64 chatID,
+      [List<int> messageTypes]) {
+    Completer _completer = Completer();
+    _ChatGetChatStateMessagesCondition.clear();
+    _ChatGetChatStateMessagesReq.paging.pageIndex = Int64(pageIndex);
+    _ChatGetChatStateMessagesReq.paging.pageSize = Int64(pageSize);
+
+    _ChatGetChatStateMessagesCondition.chatID = chatID;
+    if (messageTypes != null) {
+      for (var i in messageTypes) {
+        _ChatGetChatStateMessagesCondition.messageTypes.add(i);
+      }
+    }
+    _ChatGetChatStateMessagesReq.condition = _ChatGetChatStateMessagesCondition;
+
+    queryChatMsgsByCondition(_ChatGetChatStateMessagesReq, (data) {
       if (data.hasError) {
         _completer.completeError(data.res);
       } else {

@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:elk_chat/repositorys/repositorys.dart';
 import 'package:elk_chat/blocs/blocs.dart';
 import 'package:elk_chat/widgets/widgets.dart';
-import 'index.dart';
+import 'screens.dart';
 import 'tabs.dart';
 
 class RootScreen extends StatelessWidget {

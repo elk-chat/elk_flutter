@@ -122,46 +122,50 @@ class _MyAppState extends State<MyApp> {
         ),
       ],
       child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: Constants.appName,
-          // 主题
-          theme: isDark ? Constants.darkTheme : Constants.lightTheme,
-          navigatorKey: Catcher.navigatorKey,
-          // 国际化
-          onGenerateTitle: (BuildContext context) => L10n.of(context).appTitle,
-          localizationsDelegates: [
-            const L10nLocalizationsDelegate(),
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: [
-            const Locale('en', 'US'), // English
-            const Locale.fromSubtags(
-                languageCode: 'zh'), // generic Chinese 'zh'
-            // const Locale.fromSubtags(
-            //     languageCode: 'zh',
-            //     scriptCode: 'Hans'), // generic simplified Chinese 'zh_Hans'
-            // const Locale.fromSubtags(
-            //     languageCode: 'zh',
-            //     scriptCode: 'Hant'), // generic traditional Chinese 'zh_Hant'
-            // const Locale.fromSubtags(
-            //     languageCode: 'zh',
-            //     scriptCode: 'Hans',
-            //     countryCode: 'CN'), // 'zh_Hans_CN'
-            // const Locale.fromSubtags(
-            //     languageCode: 'zh',
-            //     scriptCode: 'Hant',
-            //     countryCode: 'TW'), // 'zh_Hant_TW'
-            // const Locale.fromSubtags(
-            //     languageCode: 'zh',
-            //     scriptCode: 'Hant',
-            //     countryCode: 'HK'), // 'zh_Hant_HK'
-          ],
-          home: RootScreen(
+        debugShowCheckedModeBanner: false,
+        title: Constants.appName,
+        // 主题
+        theme: isDark ? Constants.darkTheme : Constants.lightTheme,
+        navigatorKey: Catcher.navigatorKey,
+        // 国际化
+        onGenerateTitle: (BuildContext context) => L10n.of(context).appTitle,
+        localizationsDelegates: [
+          const L10nLocalizationsDelegate(),
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: [
+          const Locale('en', 'US'), // English
+          const Locale.fromSubtags(languageCode: 'zh'), // generic Chinese 'zh'
+          // const Locale.fromSubtags(
+          //     languageCode: 'zh',
+          //     scriptCode: 'Hans'), // generic simplified Chinese 'zh_Hans'
+          // const Locale.fromSubtags(
+          //     languageCode: 'zh',
+          //     scriptCode: 'Hant'), // generic traditional Chinese 'zh_Hant'
+          // const Locale.fromSubtags(
+          //     languageCode: 'zh',
+          //     scriptCode: 'Hans',
+          //     countryCode: 'CN'), // 'zh_Hans_CN'
+          // const Locale.fromSubtags(
+          //     languageCode: 'zh',
+          //     scriptCode: 'Hant',
+          //     countryCode: 'TW'), // 'zh_Hant_TW'
+          // const Locale.fromSubtags(
+          //     languageCode: 'zh',
+          //     scriptCode: 'Hant',
+          //     countryCode: 'HK'), // 'zh_Hant_HK'
+        ],
+        initialRoute: '/',
+        routes: {
+          // When navigating to the "/" route, build the FirstScreen widget.
+          '/': (context) => RootScreen(
               authRepository: widget.authRepository,
               chatRepository: widget.chatRepository,
-              contactRepository: widget.contactRepository)),
+              contactRepository: widget.contactRepository),
+        },
+      ),
     );
   }
 }

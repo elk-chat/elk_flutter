@@ -1,12 +1,13 @@
 import 'package:elk_chat/protocol/api/proto_helper.dart';
+import 'package:elk_chat/screens/screens.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:elk_chat/protocol/protobuf/koi.pb.dart';
 import 'package:elk_chat/widgets/widgets.dart';
 import 'package:intl/intl.dart';
 
-import '../../blocs/blocs.dart';
-import '../../repositorys/repositorys.dart';
+import 'package:elk_chat/blocs/blocs.dart';
+import 'package:elk_chat/repositorys/repositorys.dart';
 
 // 缓存聊天成员
 // todo 放到全局，并缓存到本地数据库
@@ -35,7 +36,7 @@ class ChatItem extends StatefulWidget {
 }
 
 class _ChatItemState extends State<ChatItem> {
-  final DateFormat dateFormat = DateFormat('MM/dd hh:mm');
+  final DateFormat dateFormat = DateFormat('MM/dd HH:mm');
   List<User> members = [];
   Map chatInfo = {'title': '', 'avatarFileID': Int64(0)};
   List<StateUpdate> lastMessages = [];
@@ -117,7 +118,8 @@ class _ChatItemState extends State<ChatItem> {
   // 获取消息
   getMessages() async {
     try {
-      var res = await widget.chatRepository.getMessages(widget.chat.chatID, 1);
+      var res = await widget.chatRepository
+          .getMsgHistory(0, 1, widget.chat.chatID, [1, 2]);
       StateUpdatesCache[widget.chat.chatID] = res.stateUpdates;
       setState(() {
         lastMessages = res.stateUpdates;
@@ -151,10 +153,21 @@ class _ChatItemState extends State<ChatItem> {
   Widget build(BuildContext context) {
     var chat = widget.chat;
     return ListTile(
-      leading: Avatar(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => ChatWindowScreen(
+                      title: Text(chatInfo['title']),
+                      chat: widget.chat,
+                      chatRepository: widget.chatRepository,
+                      authState: widget.authState,
+                    )));
+      },
+      leading: Img(
           key: ValueKey(chatInfo['avatarFileID']),
           type: chat.chatType,
-          avatarFileID: chatInfo['avatarFileID'],
+          fileID: chatInfo['avatarFileID'],
           title: chatInfo['title'],
           width: 48.0,
           height: 48.0),

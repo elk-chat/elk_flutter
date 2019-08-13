@@ -55,11 +55,10 @@ updateContact(Map formData, WebsocketCallback cb) {
 /**
  * 获取单个用户信息
  */
-getFullUser(Map formData, WebsocketCallback cb) {
+getFullUser(UserGetFullUserReq proto, WebsocketCallback cb) {
   return $WS.send(
       method: "UserGetFullUserReq",
-      protobuf: UserGetFullUserReq(),
-      data: formData,
+      protobuf: proto,
       cb: cb);
 }
 

@@ -8,25 +8,28 @@ import 'package:elk_chat/protocol/api/api.dart';
 // todo 缓存到本地
 Map<Int64, String> avatarCacher = {};
 
+Map<Int64, String> userIDsCacher = {};
+
 // 头像类型
 Map<int, IconData> avatarTypeMap = {
   1: Icons.group,
   2: Icons.person,
+  3: Icons.image
 };
 
-// 头像
-class Avatar extends StatefulWidget {
+// 图片
+class Img extends StatefulWidget {
   final int type;
   final double width;
   final double height;
-  final Int64 avatarFileID;
+  final Int64 fileID;
   final String title;
 
-  Avatar(
+  Img(
       {Key key,
       this.type = 2,
-      @required this.avatarFileID,
-      @required this.title,
+      this.fileID,
+      this.title,
       @required this.width,
       @required this.height})
       : super(key: key);
@@ -34,27 +37,27 @@ class Avatar extends StatefulWidget {
   _AvatarState createState() => _AvatarState();
 }
 
-class _AvatarState extends State<Avatar> {
+class _AvatarState extends State<Img> {
   String imgSrc = '';
   UtilityFileStatReq _UtilityFileStatReq = UtilityFileStatReq();
 
   @override
   void initState() {
     super.initState();
-    if (widget.avatarFileID == 0) {
+    if (widget.fileID == 0) {
       return;
-    } else if (avatarCacher[widget.avatarFileID] != null) {
+    } else if (avatarCacher[widget.fileID] != null) {
       setState(() {
-        imgSrc = avatarCacher[widget.avatarFileID];
+        imgSrc = avatarCacher[widget.fileID];
       });
       return;
     }
-    _UtilityFileStatReq.fileID = widget.avatarFileID;
+    _UtilityFileStatReq.fileID = widget.fileID;
     getFileState(_UtilityFileStatReq, (data) {
       if (!data.hasError && mounted) {
         setState(() {
           imgSrc = '${data.res.file.uRL}';
-          avatarCacher[widget.avatarFileID] = imgSrc;
+          avatarCacher[widget.fileID] = imgSrc;
         });
       }
     });
@@ -70,7 +73,7 @@ class _AvatarState extends State<Avatar> {
             child: Icon(
           avatarTypeMap[widget.type],
           color: Color(0xffa4a5a7),
-          size: widget.width / 1.5,
+          size: widget.width / 1.6,
         )));
     Widget child;
     if (imgSrc.isNotEmpty) {

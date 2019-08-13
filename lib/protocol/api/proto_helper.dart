@@ -24,8 +24,16 @@ UserGetUsersReq getUserGetUsersReq(
   // proto.condition.userName = '';
   UserGetUsersCondition condition = UserGetUsersCondition();
   condition.userName = userName;
-  
+
   proto.condition = condition;
+  proto.paging = getPaging(pageIndex, pageSize);
+  return proto;
+}
+
+ChatGetChatStateMessagesReq getChatStateMessagesReq(
+    int pageIndex, int pageSize) {
+  ChatGetChatStateMessagesReq proto = ChatGetChatStateMessagesReq();
+
   proto.paging = getPaging(pageIndex, pageSize);
   return proto;
 }

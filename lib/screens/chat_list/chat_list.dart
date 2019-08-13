@@ -80,7 +80,13 @@ class _ChatScreenState extends State<ChatListScreen>
               itemCount: state.chats.length,
               controller: _scrollController,
               separatorBuilder: (context, index) {
-                return Divider(height: 0);
+                return Container(
+                  decoration: BoxDecoration(
+                    border: Border(
+                        top: const BorderSide(
+                            color: Colors.black12, width: 0.5)),
+                  ),
+                );
               },
             );
           }

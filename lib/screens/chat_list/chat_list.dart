@@ -7,12 +7,12 @@ import '../../repositorys/repositorys.dart';
 import 'chat_item.dart';
 import '../new_chat.dart';
 
-class ChatScreen extends StatefulWidget {
+class ChatListScreen extends StatefulWidget {
   final title;
   final ChatRepository chatRepository;
   final AuthAuthenticated authState;
 
-  ChatScreen(
+  ChatListScreen(
       {Key key,
       @required this.title,
       @required this.chatRepository,
@@ -23,8 +23,8 @@ class ChatScreen extends StatefulWidget {
   _ChatScreenState createState() => _ChatScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen>
-    with AutomaticKeepAliveClientMixin<ChatScreen> {
+class _ChatScreenState extends State<ChatListScreen>
+    with AutomaticKeepAliveClientMixin<ChatListScreen> {
   final _scrollController = ScrollController();
   ChatBloc _chatBloc;
 

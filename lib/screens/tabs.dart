@@ -6,7 +6,7 @@ import 'package:elk_chat/repositorys/repositorys.dart';
 import 'package:elk_chat/widgets/icon_badge.dart';
 import 'package:elk_chat/blocs/blocs.dart';
 import '../widgets/widgets.dart';
-import 'chat/chat.dart';
+import 'chat_list/chat_list.dart';
 import 'contact.dart';
 import 'more.dart';
 
@@ -69,7 +69,7 @@ class _TabsScreenState extends State<TabsScreen> {
       ),
     ];
     final List<Widget> tabBodies = [
-      ChatScreen(
+      ChatListScreen(
           title: Connection(title: '消息'),
           chatRepository: widget.chatRepository,
           authState: widget.authState),

@@ -78,7 +78,7 @@ class _ContactScreenState extends State<ContactScreen>
                 child: Text('no contacts'),
               );
             }
-            return Scrollbar(
+            return CupertinoScrollbar(
                 child: ListView.separated(
               physics: const BouncingScrollPhysics(),
               itemBuilder: (BuildContext context, int index) {

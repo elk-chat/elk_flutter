@@ -68,11 +68,11 @@ class _AvatarState extends State<Img> {
     Widget placeholder = Container(
         width: widget.width,
         height: widget.height,
-        color: Color(0xffeeeeee),
+        color: const Color(0xffeeeeee),
         child: Center(
             child: Icon(
           avatarTypeMap[widget.type],
-          color: Color(0xffa4a5a7),
+          color: const Color(0xffa4a5a7),
           size: widget.width / 1.6,
         )));
     Widget child;

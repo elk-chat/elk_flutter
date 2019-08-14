@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import '../../repositorys/repositorys.dart';
 import 'chat_item.dart';
-import '../new_chat.dart';
+import '../new_chat/new_chat.dart';
 
 class ChatListScreen extends StatefulWidget {
   final title;
@@ -52,8 +52,11 @@ class _ChatScreenState extends State<ChatListScreen>
                   context,
                   MaterialPageRoute(
                       fullscreenDialog: true,
-                      builder: (BuildContext context) =>
-                          NewChatScreen(title: '新聊天')));
+                      builder: (BuildContext context) => NewChatScreen(
+                            title: '新聊天',
+                            chatRepository: widget.chatRepository,
+                            authState: widget.authState,
+                          )));
             },
           ),
         ],
@@ -91,7 +94,9 @@ class _ChatScreenState extends State<ChatListScreen>
             );
           }
           return Center(
-            child: CupertinoActivityIndicator(),
+            child: CupertinoActivityIndicator(
+              radius: 10,
+            ),
           );
         },
       ),

@@ -146,13 +146,20 @@ class ChatRepository {
   }
 
   Future create(String title) async {
+    Completer _completer = Completer();
     _ChatCreateReq.title = title;
     createChat(_ChatCreateReq, (data) {
       print('创建聊天返回聊天对象 $data');
+      if (data.hasError) {
+        _completer.completeError(data.res);
+      } else {
+        _completer.complete(data.res);
+      }
     });
+    return _completer.future;
   }
 
-  Future addMember(List<User> members, Int64 chatID) async {
+  Future addMembers(List<dynamic> members, Int64 chatID) async {
     _ChatAddMemberReq.chatID = chatID;
     members.forEach((i) {
       _ChatAddMemberReq.userID = i.userID;

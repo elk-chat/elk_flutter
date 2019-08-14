@@ -7,7 +7,7 @@ import 'package:elk_chat/widgets/icon_badge.dart';
 import 'package:elk_chat/blocs/blocs.dart';
 import '../widgets/widgets.dart';
 import 'chat_list/chat_list.dart';
-import 'contact.dart';
+import 'contact_list/contact_list.dart';
 import 'more.dart';
 
 class TabsScreen extends StatefulWidget {

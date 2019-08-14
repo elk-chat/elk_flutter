@@ -105,7 +105,10 @@ class _NewContactScreenState extends State<NewContactScreen> {
     } else if (_status == 'loading') {
       // 加载中
       container = Container(
-        child: Center(child: CupertinoActivityIndicator()),
+        child: Center(
+            child: CupertinoActivityIndicator(
+          radius: 10,
+        )),
       );
     } else {
       // 加载失败
@@ -128,7 +131,6 @@ class _NewContactScreenState extends State<NewContactScreen> {
                 onSubmitted: (text) {
                   handleSearch(text.trim());
                 },
-                enableInteractiveSelection: false,
                 textInputAction: TextInputAction.search,
                 // style: TextStyle(color: Colors.blue),
                 decoration: InputDecoration(
@@ -150,7 +152,8 @@ class _NewContactScreenState extends State<NewContactScreen> {
                           setState(() {
                             _users = [];
                           });
-                          _controller.clear();
+                          WidgetsBinding.instance
+                              .addPostFrameCallback((_) => _controller.clear());
                         })),
               )),
           Container(

@@ -46,7 +46,11 @@ createChat(ChatCreateReq proto, WebsocketCallback cb, [ChatCreateResp resp]) {
 addMemberToChat(ChatAddMemberReq proto, WebsocketCallback cb,
     [ChatAddMemberResp resp]) {
   return $WS.send(
-      method: "ChatAddMemberReq", protobuf: proto, hasResponse: false, cb: cb);
+      method: "ChatAddMemberReq",
+      queueID: '${proto.userID}-${proto.chatID}',
+      protobuf: proto,
+      hasResponse: false,
+      cb: cb);
 }
 
 /// 向对应的聊天添加人员列表

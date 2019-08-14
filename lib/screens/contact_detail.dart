@@ -94,7 +94,7 @@ class _EditProfileScreenState extends State<ProfileScreen> {
             }
 
             return Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 ContactWidget(
                   contact: widget.contact,

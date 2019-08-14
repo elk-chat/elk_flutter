@@ -66,7 +66,7 @@ void main() {
 
     if (Platform.isAndroid) {
       SystemUiOverlayStyle systemUiOverlayStyle =
-          SystemUiOverlayStyle(statusBarColor: Colors.white);
+          SystemUiOverlayStyle(statusBarColor: Colors.transparent);
       SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
     }
   }
@@ -108,8 +108,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    var user = ch.test();
-    // ch.rtest(ch.test());
     return MultiBlocProvider(
       providers: [
         // 验证 bloc

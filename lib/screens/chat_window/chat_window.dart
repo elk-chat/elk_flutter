@@ -15,13 +15,15 @@ import 'msg_bubble.dart';
 class ChatWindowScreen extends StatefulWidget {
   final title;
   final Chat chat;
+  final User contact;
   final ChatRepository chatRepository;
   final AuthAuthenticated authState;
 
   ChatWindowScreen(
       {Key key,
       @required this.title,
-      @required this.chat,
+      this.chat,
+      this.contact,
       @required this.chatRepository,
       @required this.authState})
       : super(key: key);
@@ -37,6 +39,8 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
 
   File imageFile;
   int pageIndex = 0;
+  bool loading = false;
+  bool hasReachedMax = false;
   Int64 pageSize;
   Int64 allCount;
   List<StateUpdate> msgs = [];
@@ -62,28 +66,42 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
     }
   }
 
+  // 列表是倒过来的，所以滚动到顶部，这里是滚动到底部
   void _scrollListener() {
-    if (_scrollController.offset >=
-            _scrollController.position.maxScrollExtent &&
-        !_scrollController.position.outOfRange) {
-      print("reach the bottom");
+    if ((_scrollController.offset + 50) >=
+        _scrollController.position.maxScrollExtent) {
+      // print("reach the top");
+      getMsgHistory();
     }
     if (_scrollController.offset <=
             _scrollController.position.minScrollExtent &&
         !_scrollController.position.outOfRange) {
-      print("reach the top");
+      // print("reach the bottom");
     }
   }
 
   Future getMsgHistory() async {
+    if (hasReachedMax || loading) return;
+    setState(() {
+      loading = true;
+    });
     try {
+      print('获取聊天记录 $pageIndex');
       var res = await widget.chatRepository
           .getMsgHistory(pageIndex, 20, widget.chat.chatID, [1, 2]);
+      if (res.stateUpdates.length < 20) {
+        hasReachedMax = true;
+      }
       setState(() {
+        loading = false;
+        pageIndex = pageIndex + 1;
         pageSize = res.paging.pageSize;
-        msgs = res.stateUpdates;
+        msgs = List.from(msgs)..addAll(res.stateUpdates);
       });
     } catch (e) {
+      setState(() {
+        loading = false;
+      });
       print('getMsgHistory error $e');
     }
   }
@@ -133,9 +151,9 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
           Column(
             children: <Widget>[
               buildMessageList(),
+              buildInput(),
               // (showSticker ? buildSticker() : Container()),
               (showAttachment ? buildAttachment() : Container()),
-              buildInput(),
             ],
           )
         ],
@@ -149,8 +167,12 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
         physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.all(10.0),
         itemBuilder: (context, index) {
+          if (loading && index == msgs.length) {
+            return CupertinoActivityIndicator(
+              radius: 10,
+            );
+          }
           var stateUpdate = msgs[index];
-          print(stateUpdate);
           return MsgBubble(
             key: ValueKey(stateUpdate.messageID),
             isSelf:
@@ -158,7 +180,7 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
             stateUpdate: stateUpdate,
           );
         },
-        itemCount: msgs.length,
+        itemCount: msgs.length + (loading ? 1 : 0),
         reverse: true,
         controller: _scrollController,
       ),
@@ -174,7 +196,8 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
             child: Container(
               margin: EdgeInsets.symmetric(horizontal: 1.0),
               child: IconButton(
-                icon: Icon(MaterialCommunityIcons.getIconData('attachment')),
+                icon: Icon(MaterialCommunityIcons.getIconData(
+                    showAttachment ? 'chevron-down-circle' : 'attachment')),
                 onPressed: () {
                   _focusNode.unfocus();
                   setState(() {
@@ -289,17 +312,6 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
             //   onPressed: getImageFromGallery,
             //   icon: Icon(MaterialCommunityIcons.getIconData('file')),
             // ),
-            IconButton(
-              iconSize: 36.0,
-              color: Colors.black38,
-              onPressed: () {
-                setState(() {
-                  showAttachment = false;
-                });
-              },
-              icon: Icon(
-                  MaterialCommunityIcons.getIconData('chevron-down-circle')),
-            ),
           ],
         )
       ],

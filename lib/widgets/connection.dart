@@ -60,7 +60,7 @@ class _ConnectionState extends State<Connection> {
     if (currentStatus == WSStatus.connecting ||
         currentStatus == WSStatus.updating) {
       widgets.add(CupertinoActivityIndicator(
-        radius: 9,
+        radius: 10,
       ));
     }
     widgets.add(Text(title));

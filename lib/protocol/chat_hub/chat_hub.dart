@@ -4,8 +4,8 @@
 // protobuf 缓存流程：protobuf 数据 writeToJson 序列化为 json -》存进 sqlite
 
 import 'package:fixnum/fixnum.dart';
-import 'package:meta/meta.dart';
-import 'package:sqflite/sqflite.dart';
+// import 'package:meta/meta.dart';
+// import 'package:sqflite/sqflite.dart';
 import 'package:elk_chat/protocol/protobuf/koi.pb.dart';
 
 import 'package:elk_chat/protocol/util/event_emitter.dart';

@@ -69,6 +69,8 @@ class WebSocket extends EventEmitter {
   /// 延迟
   int heartBeatMilliseconds;
   DateTime lastHeartBeatTime;
+  Timer lastHeartBeatTimer;
+  Function heartBeatUnsubscription;
 
   StreamSubscription<dynamic> streamListener;
 
@@ -120,7 +122,7 @@ class WebSocket extends EventEmitter {
       }
     } else {
       currentStatus = WSStatus.disconnected;
-      log.info('checkWebsocketConnect: 连接断开，重连：');
+      log.info('checkWebsocketConnect: 断开，重连：');
       createWebsocket();
     }
   }
@@ -180,7 +182,21 @@ class WebSocket extends EventEmitter {
     if (cb != null) {
       authCallback = cb;
     }
-    send(
+    // 发送之前，弄个定时，如果超时没返回，说明断开
+    lastHeartBeatTimer?.cancel();
+    lastHeartBeatTimer = Timer(
+        Duration(
+            milliseconds: 4000 +
+                (heartBeatMilliseconds == null ? 4000 : heartBeatMilliseconds)),
+        () {
+      print('超时');
+      checkWebsocketConnect();
+    });
+    if (heartBeatUnsubscription != null) {
+      heartBeatUnsubscription();
+      heartBeatUnsubscription = null;
+    }
+    heartBeatUnsubscription = send(
         method: 'HeartbeatReq',
         protobuf: _HeartbeatReq,
         cb: (data) {
@@ -195,8 +211,9 @@ class WebSocket extends EventEmitter {
           startHeartBeats();
           // 服务器返回消息
           if (data.resType == 'server') {
+            lastHeartBeatTimer?.cancel();
             if (authCallback != null && data.code != B00006) {
-              print('auth callback');
+              print('execute auth callback');
               authCallback();
               authCallback = null;
             }
@@ -282,8 +299,8 @@ class WebSocket extends EventEmitter {
   }
 
   /// 发送请求
-  /// [TODO] 有些复杂，待重构
-  void send(
+  /// 返回清除方法，通过执行可以清除
+  Function send(
       {String method,
       dynamic protobuf,
       Map data,
@@ -294,6 +311,8 @@ class WebSocket extends EventEmitter {
       bool delay = false,
       // 如果没有网络，是否需���放到队列中
       bool queue = false,
+      // 用于同一个方法但是多个请求
+      dynamic queueID = 0,
       // 是��需要超时，如果是文件上传，这���需要设置为 false
       bool hasTimeout = true,
       // 是否响应回调
@@ -303,25 +322,33 @@ class WebSocket extends EventEmitter {
     // 用时间戳和随机数作为 RequestID
     BigInt rid = requestId is BigInt ? requestId : genRequestID();
     String eventName = getEventName(rid);
+    String _queueID = '${method}_${queueID}';
     Uint8List dataBuf;
 
     if (data != null) {
       mergeProtobufField(data, protobuf);
     }
     Timer timeoutTimer;
+    Function disconnectedFn;
+
+    void unsubscripe() {
+      _queues.remove(_queueID);
+      timeoutTimer?.cancel();
+      _disconnectedCbs.remove(disconnectedFn);
+      off(eventName);
+    }
 
     // 发送途中，掉线处理
-    disconnectedFn() {
+    disconnectedFn = () {
       log.info('Execute disconnectedFn $method');
-      _queues.remove(method);
-      timeoutTimer?.cancel();
+      unsubscripe();
       cb(WebsocketCallbackData(
         type: 'disconnected',
         hasError: true,
         resMethod: '$method:disconnected',
         res: 'disconnected',
       ));
-    }
+    };
 
     // 需要放入队列的不需要 disconnected 回调，比如���天信息
     if (!queue) {
@@ -348,19 +375,7 @@ class WebSocket extends EventEmitter {
         if (hasTimeout) {
           // 使用超时，移除 event
           timeoutTimer = Timer(timeout, () {
-            _queues.remove(method);
-            _disconnectedCbs.remove(disconnectedFn);
-            // 超时处理
-            // ���果在���有返回的时候，��接断开，那么直接���发失败
-            /*
-              emit(eventName, {
-                'type': 'timeout',
-                'hasError': true,
-                'resMethod': '$method:HAS_TIMEOUT',
-                'res': 'timeout ${timeout}s'
-              });
-            */
-            off(eventName);
+            unsubscripe();
             cb(WebsocketCallbackData(
               type: 'timeout',
               hasError: true,
@@ -372,9 +387,7 @@ class WebSocket extends EventEmitter {
 
         off(eventName);
         once(eventName, (payload) {
-          _queues.remove(method);
-          _disconnectedCbs.remove(disconnectedFn);
-          timeoutTimer?.cancel();
+          unsubscripe();
           // 收到消息
           cb(WebsocketCallbackData(
               resType: payload['resType'],
@@ -387,14 +400,14 @@ class WebSocket extends EventEmitter {
 
     // 加入队列函数
     void queueFn() {
-      // todo queue需要移除，因为同一个请求方法，会发多次不同ID的请求查询数据
+      // 同一个请求方法，会发多次不同 ID 的请求查询数据
       if (!queue) {
-        if (_queues[method] != null && _queues[method].isNotEmpty) {
-          _queues.remove(method);
+        if (_queues[_queueID] != null && _queues[_queueID].isNotEmpty) {
+          _queues.remove(_queueID);
         }
       }
       final List queueContainer =
-          _queues.putIfAbsent(method, () => List<Function>());
+          _queues.putIfAbsent(_queueID, () => List<Function>());
       queueContainer.add(fn);
       // 没网络。等待网络连接自动发送
       if (delay) {
@@ -415,6 +428,8 @@ class WebSocket extends EventEmitter {
       fn();
       checkWebsocketConnect();
     }
+
+    return unsubscripe;
   }
 
   /// 执行队列
@@ -501,8 +516,7 @@ class WebSocket extends EventEmitter {
       } catch (e) {
         //
       }
-      result.addAll(
-          {'res': 'resMethod ${resMethod}; $Data'});
+      result.addAll({'res': 'resMethod ${resMethod}; $Data'});
     } else {
       result.addAll({'res': Data});
     }

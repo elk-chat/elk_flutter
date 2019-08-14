@@ -20,6 +20,7 @@ import 'blocs/app_bloc_delegate.dart';
 import 'package:elk_chat/repositorys/repositorys.dart';
 import 'package:elk_chat/blocs/blocs.dart';
 import 'package:logging/logging.dart';
+import 'package:elk_chat/protocol/chat_hub/chat_hub.dart';
 
 bool isDark = false;
 Logger log = Logger('main');
@@ -89,6 +90,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  ChatHub ch = ChatHub();
+
   @override
   void initState() {
     super.initState();
@@ -105,6 +108,8 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    var user = ch.test();
+    // ch.rtest(ch.test());
     return MultiBlocProvider(
       providers: [
         // 验证 bloc

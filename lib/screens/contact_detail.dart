@@ -131,6 +131,7 @@ class _EditProfileScreenState extends State<ProfileScreen> {
   @override
   void dispose() {
     timer?.cancel();
+    _contactBloc.dispose();
     super.dispose();
   }
 }

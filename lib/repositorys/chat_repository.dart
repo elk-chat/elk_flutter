@@ -148,7 +148,7 @@ class ChatRepository {
   Future create(String title) async {
     Completer _completer = Completer();
     _ChatCreateReq.title = title;
-    createChat(_ChatCreateReq, (data) {
+    createGroupChat(_ChatCreateReq, (data) {
       print('创建聊天返回聊天对象 $data');
       if (data.hasError) {
         _completer.completeError(data.res);

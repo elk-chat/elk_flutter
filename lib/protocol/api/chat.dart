@@ -37,10 +37,25 @@ queryChatMsgsByCondition(
       method: "ChatGetChatStateMessagesReq", protobuf: proto, cb: cb);
 }
 
-/// 创建聊天
-createChat(ChatCreateReq proto, WebsocketCallback cb, [ChatCreateResp resp]) {
+/// 创建群聊
+createGroupChat(ChatCreateReq proto, WebsocketCallback cb, [ChatCreateResp resp]) {
   return $WS.send(method: "ChatCreateReq", protobuf: proto, cb: cb);
 }
+
+
+/** 
+ * 点击联系人详情，发送消息，初始化聊天信息
+ * PeerID: 启动这个聊天的用户 userID
+ */
+/// 创建单人聊天
+initPeerChat(Map formData, WebsocketCallback cb) {
+  return $WS.send(
+      method: "ChatInitiateReq",
+      protobuf: ChatInitiateReq(),
+      data: formData,
+      cb: cb);
+}
+
 
 /// 向对应的聊天添加人员
 addMemberToChat(ChatAddMemberReq proto, WebsocketCallback cb,

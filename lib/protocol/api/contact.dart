@@ -72,16 +72,3 @@ getFullUsers(userIDs, UserGetFullUsersReq pto, WebsocketCallback cb) {
   }
   return $WS.send(method: "UserGetFullUsersReq", protobuf: pto, cb: cb);
 }
-
-/** 
- * 点击联系人详情，发送消息，初始化聊天信息
- * PeerID: 启动这个聊天的用户 userID
- */
-initPeerChat(Map formData, WebsocketCallback cb) {
-  return $WS.send(
-      method: "ChatInitiateReq",
-      protobuf: ChatInitiateReq(),
-      data: formData,
-      cb: cb);
-}
-//

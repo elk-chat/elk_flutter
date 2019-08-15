@@ -8,11 +8,13 @@ class ContactWidget extends StatefulWidget {
   final double avatarSize;
 
   final bool hasCheckbox;
+  final bool checked;
   final Function onChange;
 
   ContactWidget(
       {Key key,
       this.hasCheckbox = false,
+      this.checked,
       this.onChange,
       this.contact,
       this.onTap,
@@ -24,6 +26,22 @@ class ContactWidget extends StatefulWidget {
 
 class _ContactWidgetState extends State<ContactWidget> {
   bool checked = false;
+
+  @override
+  void initState() {
+    checked = widget.checked;
+    super.initState();
+  }
+
+  @override
+  void didUpdateWidget(ContactWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.hasCheckbox && checked != widget.checked) {
+      setState(() {
+        checked = widget.checked;
+      });
+    }
+  }
 
   void onChange(value) {
     setState(() {

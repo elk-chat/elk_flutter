@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:typed_data';
 
 import 'package:elk_chat/protocol/protobuf/koi.pb.dart';
 import 'package:meta/meta.dart';
@@ -8,19 +7,18 @@ import 'package:elk_chat/init_websocket.dart';
 import 'package:elk_chat/protocol/api/api.dart';
 
 class AuthRepository {
-  final String AUTH_INFO = 'AUTH_INFO';
+  final String AUTH_INFO = 'AUTH_INFO2';
   SharedPreferences prefs;
   AuthRepository({@required this.prefs});
   final UserLoginReq _UserLoginReq = UserLoginReq();
 
   // 获取当前登录账户信息，已保存账户列表
   Future<dynamic> getAuthInfo() async {
-    List<String> auth_info = await prefs.getStringList(AUTH_INFO);
+    String auth_info = await prefs.getString(AUTH_INFO);
     Completer _completer = Completer();
 
     if (auth_info != null) {
-      List<int> info = auth_info.map((i) => int.parse(i)).toList();
-      var account = UserLoginResp.fromBuffer(Uint8List.fromList(info));
+      var account = UserLoginResp.fromJson(auth_info);
       if (account.token.isNotEmpty) {
         $WS.setSSID(account.sessionID);
       }
@@ -66,9 +64,8 @@ class AuthRepository {
   // 删除登录信息
   Future<dynamic> deleteAuthInfo() async {
     $WS.logout();
-    List<String> auth_info = await prefs.getStringList(AUTH_INFO);
-    List<int> a = auth_info.map((i) => int.parse(i)).toList();
-    var res = UserLoginResp.fromBuffer(Uint8List.fromList(a));
+    String auth_info = await prefs.getString(AUTH_INFO);
+    var res = UserLoginResp.fromJson(auth_info);
     res.token = '';
     await persistAuthInfo(res);
     return res;
@@ -77,9 +74,8 @@ class AuthRepository {
   // 保存登录信息
   Future<UserLoginResp> persistAuthInfo(UserLoginResp authInfo) async {
     /// write to keystore/keychain
-    var buffer = authInfo.writeToBuffer();
-    var list = buffer.map((i) => i.toString()).toList();
-    await prefs.setStringList(AUTH_INFO, list);
+    var buffer = authInfo.writeToJson();
+    await prefs.setString(AUTH_INFO, buffer);
     return authInfo;
   }
 }

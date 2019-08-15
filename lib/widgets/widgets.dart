@@ -3,3 +3,4 @@ export 'connection.dart';
 export 'icon_badge.dart';
 export 'img.dart';
 export 'contact_item.dart';
+export 'divider.dart';

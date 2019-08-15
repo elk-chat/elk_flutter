@@ -227,6 +227,27 @@ message UserGetChatUserStateResp {
   ChatUserState State = 1;
 }
 
+message ChatUserSettings {
+  int64 ChatID = 1;
+	int64 UserID = 2;
+	int32 Invisible = 3;
+}
+
+message UserSetChatUserSettingsReq {
+  ChatUserSettings ChatUserSettings = 1;
+}
+
+message UserSetChatUserSettingsResp {
+}
+
+message UserGetChatUserSettingsReq {
+  int64 ChatID = 1;
+}
+
+message UserGetChatUserSettingsResp {
+  ChatUserSettings ChatUserSettings = 1;
+}
+
 message UserGetChatUserSuperscriptReq {
   int64 ChatID = 1;
 }

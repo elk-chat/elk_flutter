@@ -1429,6 +1429,142 @@ class UserGetChatUserStateResp extends $pb.GeneratedMessage {
   void clearState() => clearField(1);
 }
 
+class ChatUserSettings extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('ChatUserSettings', package: const $pb.PackageName('kproto'))
+    ..aInt64(1, 'chatID')
+    ..aInt64(2, 'userID')
+    ..a<$core.int>(3, 'invisible', $pb.PbFieldType.O3)
+    ..hasRequiredFields = false
+  ;
+
+  ChatUserSettings._() : super();
+  factory ChatUserSettings() => create();
+  factory ChatUserSettings.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory ChatUserSettings.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  ChatUserSettings clone() => ChatUserSettings()..mergeFromMessage(this);
+  ChatUserSettings copyWith(void Function(ChatUserSettings) updates) => super.copyWith((message) => updates(message as ChatUserSettings));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static ChatUserSettings create() => ChatUserSettings._();
+  ChatUserSettings createEmptyInstance() => create();
+  static $pb.PbList<ChatUserSettings> createRepeated() => $pb.PbList<ChatUserSettings>();
+  static ChatUserSettings getDefault() => _defaultInstance ??= create()..freeze();
+  static ChatUserSettings _defaultInstance;
+
+  Int64 get chatID => $_getI64(0);
+  set chatID(Int64 v) { $_setInt64(0, v); }
+  $core.bool hasChatID() => $_has(0);
+  void clearChatID() => clearField(1);
+
+  Int64 get userID => $_getI64(1);
+  set userID(Int64 v) { $_setInt64(1, v); }
+  $core.bool hasUserID() => $_has(1);
+  void clearUserID() => clearField(2);
+
+  $core.int get invisible => $_get(2, 0);
+  set invisible($core.int v) { $_setSignedInt32(2, v); }
+  $core.bool hasInvisible() => $_has(2);
+  void clearInvisible() => clearField(3);
+}
+
+class UserSetChatUserSettingsReq extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('UserSetChatUserSettingsReq', package: const $pb.PackageName('kproto'))
+    ..a<ChatUserSettings>(1, 'chatUserSettings', $pb.PbFieldType.OM, ChatUserSettings.getDefault, ChatUserSettings.create)
+    ..hasRequiredFields = false
+  ;
+
+  UserSetChatUserSettingsReq._() : super();
+  factory UserSetChatUserSettingsReq() => create();
+  factory UserSetChatUserSettingsReq.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory UserSetChatUserSettingsReq.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  UserSetChatUserSettingsReq clone() => UserSetChatUserSettingsReq()..mergeFromMessage(this);
+  UserSetChatUserSettingsReq copyWith(void Function(UserSetChatUserSettingsReq) updates) => super.copyWith((message) => updates(message as UserSetChatUserSettingsReq));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static UserSetChatUserSettingsReq create() => UserSetChatUserSettingsReq._();
+  UserSetChatUserSettingsReq createEmptyInstance() => create();
+  static $pb.PbList<UserSetChatUserSettingsReq> createRepeated() => $pb.PbList<UserSetChatUserSettingsReq>();
+  static UserSetChatUserSettingsReq getDefault() => _defaultInstance ??= create()..freeze();
+  static UserSetChatUserSettingsReq _defaultInstance;
+
+  ChatUserSettings get chatUserSettings => $_getN(0);
+  set chatUserSettings(ChatUserSettings v) { setField(1, v); }
+  $core.bool hasChatUserSettings() => $_has(0);
+  void clearChatUserSettings() => clearField(1);
+}
+
+class UserSetChatUserSettingsResp extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('UserSetChatUserSettingsResp', package: const $pb.PackageName('kproto'))
+    ..hasRequiredFields = false
+  ;
+
+  UserSetChatUserSettingsResp._() : super();
+  factory UserSetChatUserSettingsResp() => create();
+  factory UserSetChatUserSettingsResp.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory UserSetChatUserSettingsResp.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  UserSetChatUserSettingsResp clone() => UserSetChatUserSettingsResp()..mergeFromMessage(this);
+  UserSetChatUserSettingsResp copyWith(void Function(UserSetChatUserSettingsResp) updates) => super.copyWith((message) => updates(message as UserSetChatUserSettingsResp));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static UserSetChatUserSettingsResp create() => UserSetChatUserSettingsResp._();
+  UserSetChatUserSettingsResp createEmptyInstance() => create();
+  static $pb.PbList<UserSetChatUserSettingsResp> createRepeated() => $pb.PbList<UserSetChatUserSettingsResp>();
+  static UserSetChatUserSettingsResp getDefault() => _defaultInstance ??= create()..freeze();
+  static UserSetChatUserSettingsResp _defaultInstance;
+}
+
+class UserGetChatUserSettingsReq extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('UserGetChatUserSettingsReq', package: const $pb.PackageName('kproto'))
+    ..aInt64(1, 'chatID')
+    ..hasRequiredFields = false
+  ;
+
+  UserGetChatUserSettingsReq._() : super();
+  factory UserGetChatUserSettingsReq() => create();
+  factory UserGetChatUserSettingsReq.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory UserGetChatUserSettingsReq.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  UserGetChatUserSettingsReq clone() => UserGetChatUserSettingsReq()..mergeFromMessage(this);
+  UserGetChatUserSettingsReq copyWith(void Function(UserGetChatUserSettingsReq) updates) => super.copyWith((message) => updates(message as UserGetChatUserSettingsReq));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static UserGetChatUserSettingsReq create() => UserGetChatUserSettingsReq._();
+  UserGetChatUserSettingsReq createEmptyInstance() => create();
+  static $pb.PbList<UserGetChatUserSettingsReq> createRepeated() => $pb.PbList<UserGetChatUserSettingsReq>();
+  static UserGetChatUserSettingsReq getDefault() => _defaultInstance ??= create()..freeze();
+  static UserGetChatUserSettingsReq _defaultInstance;
+
+  Int64 get chatID => $_getI64(0);
+  set chatID(Int64 v) { $_setInt64(0, v); }
+  $core.bool hasChatID() => $_has(0);
+  void clearChatID() => clearField(1);
+}
+
+class UserGetChatUserSettingsResp extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('UserGetChatUserSettingsResp', package: const $pb.PackageName('kproto'))
+    ..a<ChatUserSettings>(1, 'chatUserSettings', $pb.PbFieldType.OM, ChatUserSettings.getDefault, ChatUserSettings.create)
+    ..hasRequiredFields = false
+  ;
+
+  UserGetChatUserSettingsResp._() : super();
+  factory UserGetChatUserSettingsResp() => create();
+  factory UserGetChatUserSettingsResp.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory UserGetChatUserSettingsResp.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  UserGetChatUserSettingsResp clone() => UserGetChatUserSettingsResp()..mergeFromMessage(this);
+  UserGetChatUserSettingsResp copyWith(void Function(UserGetChatUserSettingsResp) updates) => super.copyWith((message) => updates(message as UserGetChatUserSettingsResp));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static UserGetChatUserSettingsResp create() => UserGetChatUserSettingsResp._();
+  UserGetChatUserSettingsResp createEmptyInstance() => create();
+  static $pb.PbList<UserGetChatUserSettingsResp> createRepeated() => $pb.PbList<UserGetChatUserSettingsResp>();
+  static UserGetChatUserSettingsResp getDefault() => _defaultInstance ??= create()..freeze();
+  static UserGetChatUserSettingsResp _defaultInstance;
+
+  ChatUserSettings get chatUserSettings => $_getN(0);
+  set chatUserSettings(ChatUserSettings v) { setField(1, v); }
+  $core.bool hasChatUserSettings() => $_has(0);
+  void clearChatUserSettings() => clearField(1);
+}
+
 class UserGetChatUserSuperscriptReq extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('UserGetChatUserSuperscriptReq', package: const $pb.PackageName('kproto'))
     ..aInt64(1, 'chatID')

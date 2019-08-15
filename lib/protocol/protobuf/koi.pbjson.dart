@@ -337,6 +337,40 @@ const UserGetChatUserStateResp$json = const {
   ],
 };
 
+const ChatUserSettings$json = const {
+  '1': 'ChatUserSettings',
+  '2': const [
+    const {'1': 'ChatID', '3': 1, '4': 1, '5': 3, '10': 'ChatID'},
+    const {'1': 'UserID', '3': 2, '4': 1, '5': 3, '10': 'UserID'},
+    const {'1': 'Invisible', '3': 3, '4': 1, '5': 5, '10': 'Invisible'},
+  ],
+};
+
+const UserSetChatUserSettingsReq$json = const {
+  '1': 'UserSetChatUserSettingsReq',
+  '2': const [
+    const {'1': 'ChatUserSettings', '3': 1, '4': 1, '5': 11, '6': '.kproto.ChatUserSettings', '10': 'ChatUserSettings'},
+  ],
+};
+
+const UserSetChatUserSettingsResp$json = const {
+  '1': 'UserSetChatUserSettingsResp',
+};
+
+const UserGetChatUserSettingsReq$json = const {
+  '1': 'UserGetChatUserSettingsReq',
+  '2': const [
+    const {'1': 'ChatID', '3': 1, '4': 1, '5': 3, '10': 'ChatID'},
+  ],
+};
+
+const UserGetChatUserSettingsResp$json = const {
+  '1': 'UserGetChatUserSettingsResp',
+  '2': const [
+    const {'1': 'ChatUserSettings', '3': 1, '4': 1, '5': 11, '6': '.kproto.ChatUserSettings', '10': 'ChatUserSettings'},
+  ],
+};
+
 const UserGetChatUserSuperscriptReq$json = const {
   '1': 'UserGetChatUserSuperscriptReq',
   '2': const [

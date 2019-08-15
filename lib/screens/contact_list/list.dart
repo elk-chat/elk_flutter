@@ -34,7 +34,6 @@ class _ContactListState extends State<ContactList> {
 
   @override
   void dispose() {
-    _contactBloc.dispose();
     super.dispose();
   }
 

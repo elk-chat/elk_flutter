@@ -342,12 +342,14 @@ class WebSocket extends EventEmitter {
     disconnectedFn = () {
       log.info('Execute disconnectedFn $method');
       unsubscripe();
-      cb(WebsocketCallbackData(
-        type: 'disconnected',
-        hasError: true,
-        resMethod: '$method:disconnected',
-        res: 'disconnected',
-      ));
+      if (cb is Function) {
+        cb(WebsocketCallbackData(
+          type: 'disconnected',
+          hasError: true,
+          resMethod: '$method:disconnected',
+          res: 'disconnected',
+        ));
+      }
     };
 
     // 需要放入队列的不需要 disconnected 回调，比如���天信息
@@ -363,11 +365,14 @@ class WebSocket extends EventEmitter {
         channel.sink.add(dataBuf);
       } catch (e) {
         _disconnectedCbs.add(disconnectedFn);
-        return cb(WebsocketCallbackData(
-          hasError: true,
-          resMethod: method,
-          res: 'encode data fail: $e',
-        ));
+        if (cb is Function) {
+          return cb(WebsocketCallbackData(
+            hasError: true,
+            resMethod: method,
+            res: 'encode data fail: $e',
+          ));
+        }
+        return;
       }
 
       if (hasResponse) {
@@ -411,12 +416,14 @@ class WebSocket extends EventEmitter {
       queueContainer.add(fn);
       // 没网络。等待网络连接自动发送
       if (delay) {
-        cb(WebsocketCallbackData(
-          type: 'delay', // ���示待发送，@Todo: 如果待发送之前将信息删掉，那么待发送需要从队列中移除
-          hasError: true,
-          resMethod: method,
-          res: 'disconnected',
-        ));
+        if (cb is Function) {
+          cb(WebsocketCallbackData(
+            type: 'delay', // ���示待发送，@Todo: 如果待发送之前将信息删掉，那么待发送需要从队列中移除
+            hasError: true,
+            resMethod: method,
+            res: 'disconnected',
+          ));
+        }
       }
     }
 

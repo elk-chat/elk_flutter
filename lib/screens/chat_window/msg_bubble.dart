@@ -8,8 +8,13 @@ import 'package:intl/intl.dart';
 class MsgBubble extends StatefulWidget {
   final StateUpdate stateUpdate;
   final bool isSelf;
+  final String userName;
 
-  MsgBubble({Key key, @required this.stateUpdate, @required this.isSelf})
+  MsgBubble(
+      {Key key,
+      @required this.stateUpdate,
+      @required this.isSelf,
+      this.userName})
       : super(key: key);
 
   _MsgBubbleState createState() => _MsgBubbleState();
@@ -43,9 +48,13 @@ class _MsgBubbleState extends State<MsgBubble> {
       return Container(
           child: Row(
         children: <Widget>[
-          Text(updMsg.updateMessageChatAddMember.addedMemeberName,
-              style: TextStyle(color: Colors.blue)),
-          Text('加入群聊', style: TextStyle(color: Colors.black38)),
+          widget.userName != null &&
+                  updMsg.updateMessageChatAddMember.addedMemeberName ==
+                      widget.userName
+              ? Text('你', style: TextStyle(color: Colors.black87))
+              : Text(updMsg.updateMessageChatAddMember.addedMemeberName,
+                  style: TextStyle(color: Colors.blue)),
+          Text(' 加入群聊', style: TextStyle(color: Colors.black38)),
         ],
       ));
     } else if (state.messageType == ChatMessageType.SendMessage) {
@@ -54,7 +63,7 @@ class _MsgBubbleState extends State<MsgBubble> {
       var dtime = dateFormat.format(
           DateTime.fromMillisecondsSinceEpoch(msg.actionTime.toInt() * 1000));
       return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Bubble(
             alignment: Alignment.center,
@@ -71,7 +80,7 @@ class _MsgBubbleState extends State<MsgBubble> {
                   child: getMsgContentByType(msg),
                 )
               : Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Container(child: Text(msg.senderName)),
                     Bubble(

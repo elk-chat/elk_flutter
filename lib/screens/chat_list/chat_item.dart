@@ -1,3 +1,5 @@
+import 'package:elk_chat/init_websocket.dart';
+import 'package:elk_chat/chat_hub/const.dart';
 import 'package:elk_chat/protocol/api/proto_helper.dart';
 import 'package:elk_chat/screens/screens.dart';
 import 'package:fixnum/fixnum.dart';
@@ -41,6 +43,8 @@ class _ChatItemState extends State<ChatItem> {
   Map chatInfo = {'title': '', 'avatarFileID': Int64(0)};
   List<StateUpdate> lastMessages = [];
 
+  Function unSupscription;
+
   @override
   void initState() {
     super.initState();
@@ -60,11 +64,18 @@ class _ChatItemState extends State<ChatItem> {
 
     // 获取最好一条消息
     getMessages();
-    // 新消息/发送消息，排最上（置顶以下）
+
+    // 监听新消息/发送消息
+    unSupscription = $WS.on(CHEvent.ALL_MSG(widget.chat.chatID), (res) {
+      setState(() {
+        lastMessages = [res];
+      });
+    });
   }
 
   @override
   void dispose() {
+    unSupscription();
     super.dispose();
   }
 
@@ -121,9 +132,11 @@ class _ChatItemState extends State<ChatItem> {
       var res = await widget.chatRepository
           .getMsgHistory(0, 1, widget.chat.chatID, [1, 2]);
       StateUpdatesCache[widget.chat.chatID] = res.stateUpdates;
-      setState(() {
-        lastMessages = res.stateUpdates;
-      });
+      if (mounted) {
+        setState(() {
+          lastMessages = res.stateUpdates;
+        });
+      }
     } catch (e) {
       print('getMessages error $e');
     }
@@ -191,7 +204,8 @@ class _ChatItemState extends State<ChatItem> {
         child: lastMessages.length == 0
             ? null
             : Text(
-                getMessageText(lastMessages[0].updateMessage),
+                getMessageText(
+                    lastMessages[lastMessages.length - 1].updateMessage),
                 style: const TextStyle(color: Colors.black45, fontSize: 14.0),
               ),
       ),

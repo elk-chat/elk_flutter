@@ -126,10 +126,11 @@ class _ConnectionWatcherState extends State<ConnectionWatcher> {
           if (durationSeconds <= 5) return;
         }
         lastUpdatingTime = now;
-        print('已连接, 触发更新 updating $payload');
-
-        $WS.emit(UPDATE_CONTACT_LIST);
-        $WS.emit(UPDATE_CHAT_LIST);
+        if ($WS.isLogined) {
+          print('已连接, 触发更新 updating $payload');
+          $WS.emit(UPDATE_CONTACT_LIST);
+          $WS.emit(UPDATE_CHAT_LIST);
+        }
       }
     }
     currentStatus = payload.type;

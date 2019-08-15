@@ -1,6 +1,9 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:elk_chat/blocs/blocs.dart';
+import 'package:elk_chat/chat_hub/const.dart';
+import 'package:elk_chat/init_websocket.dart';
 import 'package:elk_chat/protocol/api/api.dart';
 import 'package:elk_chat/protocol/protobuf/koi.pb.dart';
 import 'package:fixnum/fixnum.dart';
@@ -48,12 +51,34 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
   bool showSticker = false;
   bool showAttachment = false;
 
+  Timer typingTimer;
+
+  Function unSupscription;
+
   @override
   void initState() {
     super.initState();
     _focusNode.addListener(onFocusChange);
     _scrollController.addListener(_scrollListener);
     getMsgHistory();
+
+    unSupscription = $WS.on(CHEvent.ALL_MSG(widget.chat.chatID), (res) {
+      setState(() {
+        msgs = [res]..addAll(List.from(msgs));
+      });
+
+      _scrollController.animateTo(0.0,
+          duration: Duration(milliseconds: 300), curve: Curves.easeOut);
+    });
+  }
+
+  @override
+  void dispose() {
+    unSupscription();
+    _scrollController.dispose();
+    _textEditingController.dispose();
+    _focusNode.dispose();
+    super.dispose();
   }
 
   void onFocusChange() {
@@ -124,6 +149,15 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
     }
   }
 
+  onTyping() {
+    if (typingTimer == null) {
+      widget.chatRepository.sendTyping(widget.chat.chatID);
+    } else {
+      typingTimer?.cancel();
+      typingTimer = Timer(Duration(milliseconds: 200), () {});
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -175,6 +209,7 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
           var stateUpdate = msgs[index];
           return MsgBubble(
             key: ValueKey(stateUpdate.messageID),
+            userName: widget.authState.account.user.userName,
             isSelf:
                 stateUpdate.senderID == widget.authState.account.user.userID,
             stateUpdate: stateUpdate,
@@ -221,6 +256,10 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
                 maxLines: null,
                 controller: _textEditingController,
                 autofocus: false,
+                onChanged: (value) {
+                  // 正在输入
+                  onTyping();
+                },
                 decoration: InputDecoration.collapsed(
                   hintText: '',
                   hintStyle: TextStyle(color: Colors.grey),
@@ -316,14 +355,6 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
         )
       ],
     ));
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    _textEditingController.dispose();
-    _focusNode.dispose();
-    super.dispose();
   }
 
   Widget buildSticker() {

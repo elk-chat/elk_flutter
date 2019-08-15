@@ -14,9 +14,10 @@ class ChatRepository {
   ChatCreateReq _ChatCreateReq = ChatCreateReq(); // 创建聊天
   ChatAddMemberReq _ChatAddMemberReq = ChatAddMemberReq(); // 添加聊天成员
   ChatSendMessageReq _ChatSendMessageReq = ChatSendMessageReq(); // 发送消息
-  UserGetFullUsersReq _UserGetFullUsersReq = UserGetFullUsersReq();
   ChatSyncChatStateMessagesReq _ChatSyncChatStateMessagesReq =
       ChatSyncChatStateMessagesReq();
+
+  ChatSetTypingReq _ChatSetTypingReq = ChatSetTypingReq();
 
   ChatGetChatStateMessagesReq _ChatGetChatStateMessagesReq =
       getChatStateMessagesReq(0, 20);
@@ -67,6 +68,7 @@ class ChatRepository {
       if (data.hasError) {
         _completer.completeError(data.res);
       } else {
+        UserGetFullUsersReq _UserGetFullUsersReq = UserGetFullUsersReq();
         getFullUsers(data.res.members, _UserGetFullUsersReq, (data) {
           if (data.hasError) {
             _completer.completeError(data.res);
@@ -182,5 +184,10 @@ class ChatRepository {
     sendChatMsg(_ChatSendMessageReq, (data) {
       print('发送消息返回：$data');
     });
+  }
+
+  sendTyping(Int64 chatID) {
+    _ChatSetTypingReq.chatID = chatID;
+    setChatTyping(_ChatSetTypingReq);
   }
 }

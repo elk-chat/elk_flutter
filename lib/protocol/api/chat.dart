@@ -34,14 +34,18 @@ queryChatMsgsByCondition(
     ChatGetChatStateMessagesReq proto, WebsocketCallback cb,
     [ChatGetChatStateMessagesResp resp]) {
   return $WS.send(
-      method: "ChatGetChatStateMessagesReq", protobuf: proto, cb: cb);
+      method: "ChatGetChatStateMessagesReq",
+      protobuf: proto,
+      queueID:
+          '${proto.condition.chatID}_${proto.paging.pageIndex}_${proto.paging.pageSize}',
+      cb: cb);
 }
 
 /// 创建群聊
-createGroupChat(ChatCreateReq proto, WebsocketCallback cb, [ChatCreateResp resp]) {
+createGroupChat(ChatCreateReq proto, WebsocketCallback cb,
+    [ChatCreateResp resp]) {
   return $WS.send(method: "ChatCreateReq", protobuf: proto, cb: cb);
 }
-
 
 /** 
  * 点击联系人详情，发送消息，初始化聊天信息
@@ -55,7 +59,6 @@ initPeerChat(Map formData, WebsocketCallback cb) {
       data: formData,
       cb: cb);
 }
-
 
 /// 向对应的聊天添加人员
 addMemberToChat(ChatAddMemberReq proto, WebsocketCallback cb,
@@ -87,9 +90,18 @@ sendChatMsg(ChatSendMessageReq proto, WebsocketCallback cb,
   return $WS.send(method: "ChatSendMessageReq", protobuf: proto, cb: cb);
 }
 
+/// 正在输入
+setChatTyping(ChatSetTypingReq proto, [ChatSetTypingResp resp]) {
+  return $WS.send(method: "ChatSetTypingReq", protobuf: proto, hasResponse: false);
+}
+
 /// 告诉服务端，已收到消息
-msgStateAck(StateAck proto, WebsocketCallback cb) {
-  return $WS.send(method: "StateAck", protobuf: proto, cb: cb);
+msgStateAck(StateAck proto) {
+  return $WS.send(
+      method: "StateAck",
+      queueID: proto.messageID,
+      protobuf: proto,
+      hasResponse: false);
 }
 
 /// 告诉服务端，该消息已读

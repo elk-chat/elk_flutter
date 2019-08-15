@@ -109,7 +109,6 @@ class _LoginFormState extends State<LoginForm> {
                                   const EdgeInsets.symmetric(horizontal: 20.0),
                               child: TextField(
                                   onChanged: (val) {
-                                    print(val);
                                     setState(() {
                                       _text = val;
                                     });

@@ -1,4 +1,5 @@
 import 'package:elk_chat/blocs/blocs.dart';
+import 'package:elk_chat/widgets/widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -83,13 +84,7 @@ class _ChatScreenState extends State<ChatListScreen>
               itemCount: state.chats.length,
               controller: _scrollController,
               separatorBuilder: (context, index) {
-                return Container(
-                  decoration: BoxDecoration(
-                    border: Border(
-                        top: const BorderSide(
-                            color: Colors.black12, width: 0.5)),
-                  ),
-                );
+                return EDivider();
               },
             );
           }

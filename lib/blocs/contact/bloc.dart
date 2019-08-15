@@ -39,7 +39,10 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
         final contacts = await contactRepository.getContacts();
         // 提示更新完成+1
         $WS.emit(UPDATING);
-        yield ContactLoaded(contacts: contacts, hasReachedMax: false);
+        yield ContactLoaded(
+            contacts:
+                contacts.where((i) => i.userID != event.selfUserID).toList(),
+            hasReachedMax: false);
         return;
       } catch (_) {
         $WS.emit(UPDATING);

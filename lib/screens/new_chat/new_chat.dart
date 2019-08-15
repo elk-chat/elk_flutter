@@ -69,13 +69,6 @@ class _NewChatScreenState extends State<NewChatScreen> {
                 },
                 leading: Icon(Icons.group),
                 title: Text('发起群聊')),
-            // Container(
-            //   margin: const EdgeInsets.only(left: 66),
-            //   decoration: BoxDecoration(
-            //     border: Border(
-            //         top: const BorderSide(color: Colors.black12, width: 0.5)),
-            //   ),
-            // ),
             SizedBox(
               height: 10.0,
             ),

@@ -157,14 +157,7 @@ class _NewGroupChatState extends State<NewGroupChatCreateScreen> {
                   },
                   itemCount: widget.members.length,
                   separatorBuilder: (BuildContext context, int index) {
-                    return Container(
-                      margin: const EdgeInsets.only(left: 60),
-                      decoration: BoxDecoration(
-                        border: Border(
-                            top: const BorderSide(
-                                color: Colors.black12, width: 0.5)),
-                      ),
-                    );
+                    return EDivider(indent: 60);
                   },
                 )),
               ],

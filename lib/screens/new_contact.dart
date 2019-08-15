@@ -98,7 +98,9 @@ class _NewContactScreenState extends State<NewContactScreen> {
           },
           itemCount: _users.length,
           separatorBuilder: (context, index) {
-            return Divider(height: 0, indent: 66);
+            return EDivider(
+              indent: 66,
+            );
           },
         ));
       }

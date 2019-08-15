@@ -22,6 +22,9 @@ class _ConnectionWatcherState extends State<ConnectionWatcher> {
   Function authSubscription;
   Function updateFinishSubscription;
   Function logoutSupscription;
+  Function chatListSubscription;
+  Function contactListSubscription;
+
   final int MAX_UPDATING = 2; // 聊天列表/联系人列表
   int updateCount = 0;
   ChatBloc _chatBloc;
@@ -50,6 +53,15 @@ class _ConnectionWatcherState extends State<ConnectionWatcher> {
     updateFinishSubscription = $WS.on(UPDATING, onUpdating);
 
     logoutSupscription = $WS.on(LOGOUT, onLogout);
+
+    contactListSubscription = $WS.on(UPDATE_CONTACT_LIST, (data) {
+      _contactBloc
+          .dispatch(FetchContactList(widget.authState.account.user.userID));
+    });
+
+    chatListSubscription = $WS.on(UPDATE_CHAT_LIST, (data) {
+      _chatBloc.dispatch(FetchChatList());
+    });
   }
 
   @override
@@ -59,6 +71,8 @@ class _ConnectionWatcherState extends State<ConnectionWatcher> {
     heartBeatSubscription();
     updateFinishSubscription();
     logoutSupscription();
+    chatListSubscription();
+    contactListSubscription();
     super.dispose();
   }
 
@@ -113,8 +127,9 @@ class _ConnectionWatcherState extends State<ConnectionWatcher> {
         }
         lastUpdatingTime = now;
         print('已连接, 触发更新 updating $payload');
-        _chatBloc.dispatch(FetchChatList());
-        _contactBloc.dispatch(FetchContactList());
+
+        $WS.emit(UPDATE_CONTACT_LIST);
+        $WS.emit(UPDATE_CHAT_LIST);
       }
     }
     currentStatus = payload.type;

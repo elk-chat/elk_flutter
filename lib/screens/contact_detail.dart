@@ -52,7 +52,7 @@ class _EditProfileScreenState extends State<ProfileScreen> {
           });
         }
       } else {
-        _contactBloc.dispatch(FetchContactList());
+        $WS.emit(UPDATE_CONTACT_LIST);
         if (mounted) {
           timer = Timer(
               Duration(milliseconds: $WS.heartBeatMilliseconds + 1000), () {
@@ -66,11 +66,11 @@ class _EditProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
+    _contactBloc = BlocProvider.of<ContactBloc>(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    _contactBloc = BlocProvider.of<ContactBloc>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(''),

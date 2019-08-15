@@ -119,6 +119,9 @@ const String UPDATING = 'UPDATING';
 /// 退出
 const String LOGOUT = 'LOGOUT';
 
+const String UPDATE_CONTACT_LIST = 'UPDATE_CONTACT_LIST';
+const String UPDATE_CHAT_LIST = 'UPDATE_CHAT_LIST';
+
 /// 发送有错误
 const String WS_SEND_ERROR = 'SEND_HAS_ERROR';
 

@@ -76,12 +76,8 @@ class _ContactListState extends State<ContactList> {
               if (beforeLength == 1 && index == 0) {
                 return Container();
               }
-              return Container(
-                margin: const EdgeInsets.only(left: 66),
-                decoration: BoxDecoration(
-                  border: Border(
-                      top: const BorderSide(color: Colors.black12, width: 0.5)),
-                ),
+              return EDivider(
+                indent: 66,
               );
             },
           ));

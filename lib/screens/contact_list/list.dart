@@ -1,5 +1,6 @@
 import 'package:elk_chat/blocs/blocs.dart';
 import 'package:elk_chat/widgets/widgets.dart';
+import 'package:fixnum/fixnum.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,11 +24,18 @@ class ContactList extends StatefulWidget {
 
 class _ContactListState extends State<ContactList> {
   ContactBloc _contactBloc;
+  Map<Int64, bool> checkedCache = {};
 
   @override
   void initState() {
     super.initState();
     _contactBloc = BlocProvider.of<ContactBloc>(context);
+  }
+
+  @override
+  void dispose() {
+    _contactBloc.dispose();
+    super.dispose();
   }
 
   @override
@@ -66,7 +74,13 @@ class _ContactListState extends State<ContactList> {
               return ContactWidget(
                   key: ValueKey(contact.userID),
                   hasCheckbox: widget.hasCheckbox,
-                  onChange: widget.onChange,
+                  onChange: (value, contact) {
+                    checkedCache[contact.userID] = value;
+                    widget.onChange(value, contact);
+                  },
+                  checked: checkedCache[contact.userID] != null
+                      ? checkedCache[contact.userID]
+                      : false,
                   avatarSize: 42.0,
                   contact: contact,
                   onTap: () => widget.onTap(contact));

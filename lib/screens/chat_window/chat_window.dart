@@ -63,6 +63,7 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
     getMsgHistory();
 
     unSupscription = $WS.on(CHEvent.ALL_MSG(widget.chat.chatID), (res) {
+      if (res.messageType == ChatMessageType.ReadState) return;
       setState(() {
         msgs = [res]..addAll(List.from(msgs));
       });
@@ -114,6 +115,7 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
       print('获取聊天记录 $pageIndex');
       var res = await widget.chatRepository
           .getMsgHistory(pageIndex, 20, widget.chat.chatID, [1, 2]);
+      if (!mounted) return;
       if (res.stateUpdates.length < 20) {
         hasReachedMax = true;
       }
@@ -207,6 +209,7 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
             );
           }
           var stateUpdate = msgs[index];
+
           return MsgBubble(
             key: ValueKey(stateUpdate.messageID),
             userName: widget.authState.account.user.userName,

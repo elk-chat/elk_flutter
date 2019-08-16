@@ -186,7 +186,7 @@ class WebSocket extends EventEmitter {
     lastHeartBeatTimer?.cancel();
     lastHeartBeatTimer = Timer(
         Duration(
-            milliseconds: 4000 +
+            milliseconds: 10000 +
                 (heartBeatMilliseconds == null ? 4000 : heartBeatMilliseconds)),
         () {
       print('超时');
@@ -285,6 +285,7 @@ class WebSocket extends EventEmitter {
     stopHeartBeat();
     clearQueues();
     setHeaderSSID(BigInt.from(10));
+    currentStatus = WSStatus.disconnected;
     emit(LOGOUT);
   }
 

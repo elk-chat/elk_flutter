@@ -35,6 +35,8 @@ class _MoreScreenState extends State<MoreScreen>
     // 获取认证 bloc，用于登出请求
     final AuthBloc authBloc = BlocProvider.of<AuthBloc>(context);
     final ContactBloc contactBloc = BlocProvider.of<ContactBloc>(context);
+    final ChatBloc chatBloc = BlocProvider.of<ChatBloc>(context);
+
     var userInfo = widget.authState.account;
     return Scaffold(
       appBar: AppBar(
@@ -68,45 +70,38 @@ class _MoreScreenState extends State<MoreScreen>
                 child: CupertinoButton(
                     color: Colors.red,
                     onPressed: () {
-                      showDialog(
-                          barrierDismissible: false,
-                          context: context,
-                          builder: (context) {
-                            // SystemChrome.setEnabledSystemUIOverlays([]);
-                            return WillPopScope(
-                                child: CupertinoAlertDialog(
-                                  title: Text('温馨提示'),
-                                  content: Container(
-                                      padding: const EdgeInsets.only(top: 10.0),
-                                      child: Text('要退出登录?')),
-                                  actions: <Widget>[
-                                    CupertinoDialogAction(
-                                        onPressed: () {
-                                          // SystemChrome
-                                          //     .setEnabledSystemUIOverlays(
-                                          //         SystemUiOverlay.values);
-                                          return Navigator.of(context)
-                                              .pop(false);
-                                        },
-                                        child: Text('取消')),
-                                    CupertinoDialogAction(
-                                        onPressed: () {
-                                          Navigator.of(context).pop(false);
-                                          // SystemChrome
-                                          //     .setEnabledSystemUIOverlays(
-                                          //         SystemUiOverlay.values);
-                                          contactBloc.dispatch(ClearContact());
-                                          authBloc.dispatch(LoggedOut());
-                                        },
-                                        child: Text('确定'))
-                                  ],
+                      showCupertinoModalPopup(
+                          builder: (BuildContext context) {
+                            return CupertinoActionSheet(
+                              title: Text('退出登录'),
+                              message: Text('请选择退出登录方式'),
+                              actions: <Widget>[
+                                CupertinoActionSheetAction(
+                                  child: Text('退出'),
+                                  onPressed: () {
+                                    Navigator.of(context).pop(false);
+                                    authBloc.dispatch(LoggedOut());
+                                  },
                                 ),
-                                onWillPop: () async {
-                                  // await SystemChrome.setEnabledSystemUIOverlays(
-                                  //     SystemUiOverlay.values);
-                                  return true;
-                                });
-                          });
+                                CupertinoActionSheetAction(
+                                  child: Text('清除记录并退出'),
+                                  onPressed: () {
+                                    Navigator.of(context).pop(false);
+                                    authBloc.dispatch(LoggedOut());
+                                    contactBloc.dispatch(ClearContact());
+                                    chatBloc.dispatch(ClearChat());
+                                  },
+                                ),
+                              ],
+                              cancelButton: CupertinoActionSheetAction(
+                                child: Text('取消'),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            );
+                          },
+                          context: context);
                     },
                     child:
                         Text('退出登录', style: TextStyle(color: Colors.white)))),

@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:elk_chat/chat_hub/const.dart';
+import 'package:elk_chat/init_websocket.dart';
 import 'package:elk_chat/protocol/api/api.dart';
 import 'package:elk_chat/protocol/api/chat.dart';
 import 'package:elk_chat/protocol/api/proto_helper.dart';
@@ -36,9 +38,13 @@ class ChatRepository {
         // 过滤掉联系人
         chats = chats.where((i) => i.chatType != 3).toList().reversed.toList();
 
+        // 获取未读数
+        getChatsLastUnread(chats);
+
+        // 获取最后一条消息
+        getChatsLastMsg(chats);
         /*
-          // 获取未读数
-          getChatsLastUnread(chats);
+
 
           // 获取聊天成员
           getChatMembers(chats);
@@ -101,9 +107,10 @@ class ChatRepository {
     return _completer.future;
   }
 
-  Future getMsgHistory(int pageIndex, int pageSize, Int64 chatID,
+  Future<ChatGetChatStateMessagesResp> getMsgHistory(
+      int pageIndex, int pageSize, Int64 chatID,
       [List<int> messageTypes]) {
-    Completer _completer = Completer();
+    Completer _completer = Completer<ChatGetChatStateMessagesResp>();
     _ChatGetChatStateMessagesCondition.clear();
     _ChatGetChatStateMessagesReq.paging.pageIndex = Int64(pageIndex);
     _ChatGetChatStateMessagesReq.paging.pageSize = Int64(pageSize);
@@ -126,18 +133,44 @@ class ChatRepository {
     return _completer.future;
   }
 
+  // 获取最后一条消息
+  Future getChatsLastMsg(List<Chat> chats) async {
+    chats.forEach((i) async {
+      try {
+        var res = await getMsgHistory(0, 1, i.chatID, [1, 2]);
+        // 如果有最后一条消息，通知排序
+        if (res.stateUpdates.length > 0) {
+          $WS.emit(CHEvent.ON_CHAT_LAST_MSG, res.stateUpdates[0]);
+          $WS.emit(CHEvent.ALL_MSG(i.chatID), res.stateUpdates[0]);
+        }
+      } catch (e) {
+        print('chatID ${i.chatID} 获取最后一条消息失败 $e');
+      }
+    });
+  }
+
   // 获取未读数
   Future getChatsLastUnread(List<Chat> chats) async {
     chats.forEach((i) {
       _UserGetChatUserSuperscriptReq.chatID = i.chatID;
       getChatsLastUnreadState(_UserGetChatUserSuperscriptReq, (data) {
-        print('${i.chatID}未读数：');
-        print(data.res);
+        if (data.hasError) {
+          print('获取未读数出错 chatID-${i.chatID}: $data');
+          return;
+        }
+
+        var unreadCount = data.res.superscriptNumber;
+        $WS.emit(CHEvent.INIT_CHAT_UNREAD_ALL, {
+          'type': 'init',
+          'unreadCount': unreadCount,
+          'chatID': i.chatID,
+        });
       });
     });
   }
 
-  Future getStateReads(List<Chat> chats) async {
+  // 查看该 Chat 中的最后已读消息 state
+  Future getLastReadState(List<Chat> chats) async {
     chats.forEach((i) {
       _ChatGetStateReadReq.chatID = i.chatID;
       getStateRead(_ChatGetStateReadReq, (data) {

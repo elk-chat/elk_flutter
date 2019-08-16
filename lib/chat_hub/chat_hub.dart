@@ -1,18 +1,122 @@
 // chathub
 
+import 'dart:async';
+
 import 'package:elk_chat/protocol/network/websocket.dart';
 import 'package:elk_chat/protocol/protobuf/koi.pb.dart';
 import 'package:elk_chat/protocol/api/chat.dart';
 import 'package:elk_chat/chat_hub/const.dart';
+import 'package:fixnum/fixnum.dart';
 
 class ChatHub {
   WebSocket $WS;
+  // 聊天列表数据
+  // List _chats = [
+  //   {
+  //     'chat': {}, // 聊天信息
+  //     'members': [], // 聊天成员
+  //     'msgs': [], // 信息列表
+  //     'unread': 0, // 未读
+  //   },
+  // ];
+
+  // 聊天未读数映射
+  Map<Int64, Int64> unreadMap = {};
+
+  // 聊天最后更新时间映射
+  Map<Int64, StateUpdate> lastMsgMap = {};
 
   ChatHub(WebSocket $WS) {
     this.$WS = $WS;
 
-    $WS.on(WS_RECEIVE_STATE_UPDATE, (payload) {
-      /*
+    // 服务端推送消息
+    $WS.on(WS_RECEIVE_STATE_UPDATE, onReceiveMsg);
+
+    // 未读
+    $WS.on(CHEvent.INIT_CHAT_UNREAD_ALL, onUnreadMsg);
+
+    // 聊天列表排序：获取到聊天列表每个聊天的最后一条消息创建时间，进行排序
+    $WS.on(CHEvent.ON_CHAT_LAST_MSG, onLastMsg);
+  }
+
+  emitSort() {
+    $WS.emit(CHEvent.SORT_CHATS_BY_LAST_MSG, sortMsgMapByTime(this.lastMsgMap));
+  }
+
+  Timer sortTimer;
+
+  onLastMsg(payload) {
+    var chatID = payload.chatID, stateUpdate = payload;
+    // 如果没有并且更新时间大于之前的
+    if (lastMsgMap[chatID] == null ||
+        lastMsgMap[chatID].actionTime <= stateUpdate.actionTime) {
+      lastMsgMap[chatID] = stateUpdate;
+
+      sortTimer?.cancel();
+      sortTimer = Timer(Duration(milliseconds: 200), () {
+        emitSort();
+      });
+    }
+  }
+
+  getLastMsg(Int64 chatID) {
+    return lastMsgMap[chatID] != null ? [lastMsgMap[chatID]] : [];
+  }
+
+  sortMsgMapByTime(Map msgMap) {
+    var msgs = msgMap.values.toList();
+    msgs.sort((a, b) => b.actionTime.compareTo(a.actionTime));
+    return msgs;
+  }
+
+  // 收到未读数
+  onUnreadMsg(payload) {
+    var type = payload['type'], chatID = payload['chatID'];
+
+    if (type == 'init') {
+      var unreadCount = payload['unreadCount'];
+      unreadMap[chatID] = unreadCount;
+    } else if (type == 'increase') {
+      unreadMap[chatID]++;
+    } else if (type == 'decrease') {
+      if (unreadMap[chatID] == 0) {
+        print('chat $chatID 未读错误!');
+      }
+      unreadMap[chatID]--;
+    }
+
+    $WS.emit(CHEvent.INIT_CHAT_UNREAD(chatID), unreadMap[chatID]);
+    $WS.emit(CHEvent.GET_ALL_CHAT_UNREAD, getAllUnreadCount());
+  }
+
+  // 获取 chat 未读
+  Int64 getUnreadCount(chatID) {
+    if (unreadMap[chatID] == null) {
+      unreadMap[chatID] = Int64(0);
+    }
+    return unreadMap[chatID];
+  }
+
+  // 获取所有未读，显示在导航栏底部
+  Int64 getAllUnreadCount() {
+    Int64 unreadCount = Int64(0);
+    unreadMap.forEach((chatID, count) {
+      unreadCount += count;
+    });
+    return unreadCount;
+  }
+
+  // 告诉服务端，消息已收到
+  receivedMsgAck(StateUpdate su) {
+    var ack = StateAck();
+    ack.chatID = su.chatID;
+    ack.messageID = su.messageID;
+    // ack.state = su.state;
+    msgStateAck(ack);
+  }
+
+  onReceiveMsg(payload) {
+    /*
       字段 
       ..aInt64(1, 'chatID')
       ..aInt64(2, 'senderID')
@@ -21,12 +125,13 @@ class ChatHub {
       ..a<Int64>(5, 'state', $pb.PbFieldType.OU6, Int64.ZERO)
       ..aInt64(6, 'actionTime')
       */
-      StateUpdate res = payload['res'];
-      // 告诉服务端，消息已收到
-      receivedMsgAck(res);
+    StateUpdate res = payload['res'];
 
-      // 目前六种类型：
-      /*
+    // 告诉服务端，消息已收到
+    receivedMsgAck(res);
+
+    // 目前六种类型：
+    /*
         ..aInt64(1, 'chatID')
         ..aOS(2, 'senderName')
         ..aOS(3, 'addedMemeberName')
@@ -68,35 +173,43 @@ class ChatHub {
         updateMessageChatDeleteMessage： 删除消息
       */
 
-      UpdateMessage updMsg = res.updateMessage;
-      String eventName;
-      print('收到推送消息：$res updMsg: $updMsg');
+    UpdateMessage updMsg = res.updateMessage;
+    String eventName;
+    print('收到推送消息：$res updMsg: $updMsg');
 
-      if (updMsg.hasUpdateMessageChatAddMember()) {
-        eventName = CHEvent.ADD_MEMBER(res.chatID);
-      } else if (updMsg.hasUpdateMessageChatDeleteMember()) {
-        eventName = CHEvent.DELETE_MEMBER(res.chatID);
-      } else if (updMsg.hasUpdateMessageChatSendMessage()) {
-        eventName = CHEvent.SEND_MSG(res.chatID, res.messageID);
-      } else if (updMsg.hasUpdateMessageChatReadMessage()) {
-        eventName = CHEvent.READ_MSG(res.chatID, res.messageID);
-      } else if (updMsg.hasUpdateMessageChatDeleteMessage()) {
-        eventName = CHEvent.DELETE_MSG(res.chatID, res.messageID);
-      } else if (updMsg.hasUpdateMessageChatSetTyping()) {
-        eventName = CHEvent.SET_TYPING(res.chatID);
-      }
+    if (updMsg.hasUpdateMessageChatAddMember()) {
+      eventName = CHEvent.ADD_MEMBER(res.chatID);
 
-      $WS.emit(eventName, res);
-      $WS.emit(CHEvent.ALL_MSG(res.chatID), res);
-    });
+      // 触发排序
+      $WS.emit(CHEvent.ON_CHAT_LAST_MSG, res);
+    } else if (updMsg.hasUpdateMessageChatDeleteMember()) {
+      eventName = CHEvent.DELETE_MEMBER(res.chatID);
+
+      // 触发排序
+      $WS.emit(CHEvent.ON_CHAT_LAST_MSG, res);
+    } else if (updMsg.hasUpdateMessageChatSendMessage()) {
+      eventName = CHEvent.SEND_MSG(res.chatID, res.messageID);
+      // 未读+1，已读就在渲染里面加，如果未读，又渲染了的话 未读 -1
+      $WS.emit(CHEvent.INIT_CHAT_UNREAD_ALL,
+          {'type': 'increase', 'chatID': res.chatID});
+
+      // 触发排序
+      $WS.emit(CHEvent.ON_CHAT_LAST_MSG, res);
+    } else if (updMsg.hasUpdateMessageChatReadMessage()) {
+      eventName = CHEvent.READ_MSG(res.chatID, res.messageID);
+    } else if (updMsg.hasUpdateMessageChatDeleteMessage()) {
+      eventName = CHEvent.DELETE_MSG(res.chatID, res.messageID);
+    } else if (updMsg.hasUpdateMessageChatSetTyping()) {
+      eventName = CHEvent.SET_TYPING(res.chatID);
+    }
+
+    $WS.emit(eventName, res);
+    $WS.emit(CHEvent.ALL_MSG(res.chatID), res);
   }
 
-  // 告诉服务端，消息已收到
-  receivedMsgAck(StateUpdate su) {
-    var ack = StateAck();
-    ack.chatID = su.chatID;
-    ack.messageID = su.messageID;
-    // ack.state = su.state;
-    msgStateAck(ack);
+  clear() {
+    unreadMap = {};
+    lastMsgMap = {};
+    sortTimer?.cancel();
   }
 }

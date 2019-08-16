@@ -1,3 +1,4 @@
+import 'package:elk_chat/widgets/chat_icon_badge.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 
@@ -35,9 +36,8 @@ class _TabsScreenState extends State<TabsScreen> {
   Widget build(BuildContext context) {
     final List<BottomNavigationBarItem> bottomTabs = [
       BottomNavigationBarItem(
-        icon: IconBadge(
+        icon: ChatUnreadBadge(
             size: _iconSize,
-            count: 10,
             icon: MaterialIcons.getIconData('chat-bubble-outline')),
         activeIcon: Icon(
           MaterialIcons.getIconData('chat-bubble'),

@@ -284,12 +284,13 @@ class WebSocket extends EventEmitter {
     isLogined = false;
     stopHeartBeat();
     clearQueues();
-    setHeaderSSID(BigInt.from(10));
+    closeChannel();
     currentStatus = WSStatus.disconnected;
     emit(LOGOUT);
   }
 
   void closeChannel() {
+    setHeaderSSID(BigInt.from(10));
     streamListener?.cancel();
     channel.sink?.close(status.goingAway);
   }

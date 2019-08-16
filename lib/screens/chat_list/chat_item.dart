@@ -1,6 +1,7 @@
 import 'package:elk_chat/init_websocket.dart';
 import 'package:elk_chat/chat_hub/const.dart';
 import 'package:elk_chat/protocol/api/proto_helper.dart';
+import 'package:elk_chat/screens/chat_list/unread_badge.dart';
 import 'package:elk_chat/screens/screens.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
@@ -41,7 +42,7 @@ class _ChatItemState extends State<ChatItem> {
   final DateFormat dateFormat = DateFormat('MM/dd HH:mm');
   List<User> members = [];
   Map chatInfo = {'title': '', 'avatarFileID': Int64(0)};
-  List<StateUpdate> lastMessages = [];
+  List<dynamic> lastMessages = [];
 
   Function unSupscription;
 
@@ -50,23 +51,26 @@ class _ChatItemState extends State<ChatItem> {
     super.initState();
     // 获取未读，上层获取
 
+    var chatID = widget.chat.chatID;
+    var lastMsgs = $CH.getLastMsg(chatID);
+    setState(() {
+      lastMessages = lastMsgs;
+    });
+
     // 获取成员，（单人聊天标题），先从缓存中取
-    var users = ChatMembersCache[widget.chat.chatID];
+    var users = ChatMembersCache[chatID];
     if (users != null) {
       setState(() {
         members = users;
         chatInfo = getChatInfo(users);
-        lastMessages = getLastMessages();
       });
     } else {
       getMembers();
     }
 
-    // 获取最好一条消息
-    getMessages();
-
     // 监听新消息/发送消息
-    unSupscription = $WS.on(CHEvent.ALL_MSG(widget.chat.chatID), (res) {
+    unSupscription = $WS.on(CHEvent.ALL_MSG(chatID), (res) {
+      StateUpdatesCache[chatID] = [res];
       setState(() {
         lastMessages = [res];
       });
@@ -101,13 +105,6 @@ class _ChatItemState extends State<ChatItem> {
     return info;
   }
 
-  getLastMessages() {
-    if (StateUpdatesCache[widget.chat.chatID] != null) {
-      return StateUpdatesCache[widget.chat.chatID];
-    }
-    return [];
-  }
-
   // 获取聊天成员
   getMembers() async {
     List<User> users;
@@ -118,7 +115,6 @@ class _ChatItemState extends State<ChatItem> {
         setState(() {
           members = users;
           chatInfo = getChatInfo(users);
-          lastMessages = getLastMessages();
         });
       }
     } catch (e) {
@@ -127,20 +123,21 @@ class _ChatItemState extends State<ChatItem> {
   }
 
   // 获取消息
-  getMessages() async {
-    try {
-      var res = await widget.chatRepository
-          .getMsgHistory(0, 1, widget.chat.chatID, [1, 2]);
-      StateUpdatesCache[widget.chat.chatID] = res.stateUpdates;
-      if (mounted) {
-        setState(() {
-          lastMessages = res.stateUpdates;
-        });
-      }
-    } catch (e) {
-      print('getMessages error $e');
-    }
-  }
+  // getMessages() async {
+  //   try {
+  //     var chatID = widget.chat.chatID;
+  //     // 获取最后一条消息
+  //     var res = await widget.chatRepository.getMsgHistory(0, 1, chatID, [1, 2]);
+  //     StateUpdatesCache[chatID] = res.stateUpdates;
+  //     if (mounted) {
+  //       setState(() {
+  //         lastMessages = res.stateUpdates;
+  //       });
+  //     }
+  //   } catch (e) {
+  //     print('getMessages error $e');
+  //   }
+  // }
 
   // 获取消息类型
   String getMessageText(UpdateMessage message) {
@@ -165,6 +162,8 @@ class _ChatItemState extends State<ChatItem> {
   @override
   Widget build(BuildContext context) {
     var chat = widget.chat;
+    var lastMsg =
+        lastMessages.length == 0 ? null : lastMessages[lastMessages.length - 1];
     return ListTile(
       onTap: () {
         Navigator.push(
@@ -191,11 +190,21 @@ class _ChatItemState extends State<ChatItem> {
             chatInfo['title'],
             style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16.0),
           ),
-          Text(
-            dateFormat.format(DateTime.fromMillisecondsSinceEpoch(
-                chat.updatedAt.toInt() * 1000)),
-            style: const TextStyle(color: Colors.grey, fontSize: 14.0),
-          ),
+          Row(
+            children: <Widget>[
+              UnreadBadge(
+                chatID: widget.chat.chatID,
+              ),
+              SizedBox(width: 8.0),
+              Text(
+                dateFormat.format(DateTime.fromMillisecondsSinceEpoch(
+                    (lastMsg == null ? chat.updatedAt : lastMsg.actionTime)
+                            .toInt() *
+                        1000)),
+                style: const TextStyle(color: Colors.grey, fontSize: 14.0),
+              ),
+            ],
+          )
         ],
       ),
       subtitle: Container(
@@ -204,8 +213,7 @@ class _ChatItemState extends State<ChatItem> {
         child: lastMessages.length == 0
             ? null
             : Text(
-                getMessageText(
-                    lastMessages[lastMessages.length - 1].updateMessage),
+                getMessageText(lastMsg.updateMessage),
                 style: const TextStyle(color: Colors.black45, fontSize: 14.0),
               ),
       ),

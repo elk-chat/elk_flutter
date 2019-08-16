@@ -1,3 +1,4 @@
+import 'package:elk_chat/init_websocket.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter_icons/flutter_icons.dart';
@@ -80,6 +81,7 @@ class _MoreScreenState extends State<MoreScreen>
                                   child: Text('退出'),
                                   onPressed: () {
                                     Navigator.of(context).pop(false);
+                                    $CH.clear();
                                     authBloc.dispatch(LoggedOut());
                                   },
                                 ),
@@ -87,6 +89,7 @@ class _MoreScreenState extends State<MoreScreen>
                                   child: Text('清除记录并退出'),
                                   onPressed: () {
                                     Navigator.of(context).pop(false);
+                                    $CH.clear();
                                     authBloc.dispatch(LoggedOut());
                                     contactBloc.dispatch(ClearContact());
                                     chatBloc.dispatch(ClearChat());

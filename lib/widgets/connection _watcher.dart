@@ -88,6 +88,7 @@ class _ConnectionWatcherState extends State<ConnectionWatcher> {
       }
       isAuthing = true;
       try {
+        print('正在登录...');
         await widget.authRepository.handleLogin(widget.authState.account.token);
       } catch (e) {
         print('重新登录失败: $e');
@@ -112,6 +113,7 @@ class _ConnectionWatcherState extends State<ConnectionWatcher> {
   }
 
   onStatusChange(payload) async {
+    if (isAuthing) return;
     print('onStatusChange payload $payload');
     if (widget.authState is AuthAuthenticated) {
       if (payload.type == WSStatus.disconnected) {
@@ -122,8 +124,11 @@ class _ConnectionWatcherState extends State<ConnectionWatcher> {
         var now = DateTime.now();
         if (lastUpdatingTime != null) {
           var durationSeconds = now.difference(lastUpdatingTime).inSeconds;
-          // 5 秒内避免再次同步
-          if (durationSeconds <= 5) return;
+          // 2 秒内避免再次同步
+          if (durationSeconds <= 5) {
+            print('避免触发更新，avoid updating');
+            return;
+          }
         }
         lastUpdatingTime = now;
         if ($WS.isLogined) {

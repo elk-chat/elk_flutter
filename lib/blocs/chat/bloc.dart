@@ -46,6 +46,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         yield ChatError();
       }
     }
+    if (event is SortChatList) {
+      yield ChatLoaded(chats: event.chats, hasReachedMax: false);
+    }
   }
 
   bool _hasReachedMax(ChatState state) =>

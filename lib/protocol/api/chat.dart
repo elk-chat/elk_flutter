@@ -16,13 +16,13 @@ getChatsLastUnreadState(
       method: "UserGetChatUserSuperscriptReq", protobuf: proto, cb: cb);
 }
 
-/// 查看该 Chat 中的最后已读消息
+/// 查看该 Chat 中的最后已读消息 state
 getStateRead(ChatGetStateReadReq proto, WebsocketCallback cb,
     [ChatGetStateReadResp resp]) {
   return $WS.send(method: "ChatGetStateReadReq", protobuf: proto, cb: cb);
 }
 
-/// 同步单个 Chat 的聊天状态
+/// 通过上面已读的消息状态，同步接下来的未读 Chat 的聊天状态
 syncChatMessageState(ChatSyncChatStateMessagesReq proto, WebsocketCallback cb,
     [ChatSyncChatStateMessagesResp resp]) {
   return $WS.send(

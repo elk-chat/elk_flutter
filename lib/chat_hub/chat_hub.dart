@@ -190,8 +190,13 @@ class ChatHub {
     } else if (updMsg.hasUpdateMessageChatSendMessage()) {
       eventName = CHEvent.SEND_MSG(res.chatID, res.messageID);
       // 未读+1，已读就在渲染里面加，如果未读，又渲染了的话 未读 -1
-      $WS.emit(CHEvent.INIT_CHAT_UNREAD_ALL,
-          {'type': 'increase', 'chatID': res.chatID});
+      // 如果是自己的推送消息，不管
+      if (res.senderID != $WS.user.userID) {
+        $WS.emit(CHEvent.INIT_CHAT_UNREAD_ALL,
+            {'type': 'increase', 'chatID': res.chatID});
+      } else {
+        print('自己的消息推送，未读不+1');
+      }
 
       // 触发排序
       $WS.emit(CHEvent.ON_CHAT_LAST_MSG, res);

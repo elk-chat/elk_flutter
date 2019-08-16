@@ -91,12 +91,19 @@ class WebSocket extends EventEmitter {
 
   final Logger log = Logger('websocket');
 
+  // 当前已经登录的 User
+  User user;
+
   WebSocket(String wsUrl, int pingInterval, [int timeout = 20]) {
     this.wsUrl = wsUrl;
     this.intPingInterval = pingInterval;
     this.pingInterval = Duration(seconds: pingInterval);
     this.timeout = Duration(seconds: timeout);
     _init();
+  }
+
+  setUser(User _user) {
+    user = _user;
   }
 
   /// 检查是否有连接
@@ -261,7 +268,8 @@ class WebSocket extends EventEmitter {
   }
 
   /// 登录后设置  sessionID
-  void setSSID(sessionID) {
+  void setSSID(sessionID, _user) {
+    setUser(_user);
     isLogined = true;
     setHeaderSSID(sessionID);
     heartBeat(() {

@@ -20,7 +20,7 @@ class AuthRepository {
     if (auth_info != null) {
       var account = UserLoginResp.fromJson(auth_info);
       if (account.token.isNotEmpty) {
-        $WS.setSSID(BigInt.from(10));
+        $WS.setSSID(BigInt.from(10), account.user);
       }
       _completer.complete(account);
     } else {
@@ -54,7 +54,7 @@ class AuthRepository {
         _completer.completeError(data.res);
       } else {
         _completer.complete(data.res);
-        $WS.setSSID(data.res?.sessionID);
+        $WS.setSSID(data.res.sessionID, data.res.user);
         persistAuthInfo(data.res);
       }
     });

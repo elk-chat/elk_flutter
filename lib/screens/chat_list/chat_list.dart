@@ -1,6 +1,4 @@
 import 'package:elk_chat/blocs/blocs.dart';
-import 'package:elk_chat/chat_hub/const.dart';
-import 'package:elk_chat/init_websocket.dart';
 import 'package:elk_chat/protocol/util/util.dart';
 import 'package:elk_chat/widgets/widgets.dart';
 import 'package:flutter/cupertino.dart';
@@ -31,36 +29,13 @@ class _ChatScreenState extends State<ChatListScreen>
     with AutomaticKeepAliveClientMixin<ChatListScreen> {
   final _scrollController = ScrollController();
   ChatBloc _chatBloc;
-  ChatLoaded _chatState;
+  Function unsubscription;
 
   @override
   void initState() {
     super.initState();
 
     _chatBloc = BlocProvider.of<ChatBloc>(context);
-
-    $WS.on(CHEvent.SORT_CHATS_BY_LAST_MSG, (payload) {
-      print('last msgs ${payload.length}');
-      if (_chatState is ChatLoaded) {
-        var chats = [];
-        // if (payload[0].chatID == _chatState.chats[0].chatID) {
-        //   print('顺序未变，避免排序');
-        //   return;
-        // }
-        print(
-            '_chatState.chats legnth ${_chatState.chats.length}; payload legnth ${payload.length};');
-        for (var i in payload) {
-          for (var j in _chatState.chats) {
-            if (i.chatID == j.chatID) {
-              chats.add(j);
-              break;
-            }
-          }
-        }
-
-        _chatBloc.dispatch(SortChatList(chats: chats));
-      }
-    });
   }
 
   @override
@@ -93,7 +68,6 @@ class _ChatScreenState extends State<ChatListScreen>
         bloc: _chatBloc,
         builder: (context, state) {
           if (state is ChatLoaded) {
-            _chatState = state;
             if (state.chats.isEmpty) {
               return Center(
                 child: Text('no chats'),

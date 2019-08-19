@@ -13,20 +13,20 @@ getChatsLastUnreadState(
     UserGetChatUserSuperscriptReq proto, WebsocketCallback cb,
     [UserGetChatUserSuperscriptResp resp]) {
   return $WS.send(
-      method: "UserGetChatUserSuperscriptReq", protobuf: proto, cb: cb);
-}
-
-/// 查看该 Chat 中的最后已读消息 state
-getStateRead(ChatGetStateReadReq proto, WebsocketCallback cb,
-    [ChatGetStateReadResp resp]) {
-  return $WS.send(method: "ChatGetStateReadReq", protobuf: proto, cb: cb);
+      method: "UserGetChatUserSuperscriptReq",
+      queueID: proto.chatID,
+      protobuf: proto,
+      cb: cb);
 }
 
 /// 通过上面已读的消息状态，同步接下来的未读 Chat 的聊天状态
 syncChatMessageState(ChatSyncChatStateMessagesReq proto, WebsocketCallback cb,
     [ChatSyncChatStateMessagesResp resp]) {
   return $WS.send(
-      method: "ChatSyncChatStateMessagesReq", protobuf: proto, cb: cb);
+      method: "ChatSyncChatStateMessagesReq",
+      queueID: proto.chatID,
+      protobuf: proto,
+      cb: cb);
 }
 
 /// 通过查询条件和分页控制，查询历史聊天信息
@@ -92,7 +92,8 @@ sendChatMsg(ChatSendMessageReq proto, WebsocketCallback cb,
 
 /// 正在输入
 setChatTyping(ChatSetTypingReq proto, [ChatSetTypingResp resp]) {
-  return $WS.send(method: "ChatSetTypingReq", protobuf: proto, hasResponse: false);
+  return $WS.send(
+      method: "ChatSetTypingReq", protobuf: proto, hasResponse: false);
 }
 
 /// 告诉服务端，已收到消息
@@ -104,7 +105,14 @@ msgStateAck(StateAck proto) {
       hasResponse: false);
 }
 
-/// 告诉服务端，该消息已读
+/// 查看该 Chat 中对方读到的消息 State，缺少自己读到的 State
+getStateRead(ChatGetStateReadReq proto, WebsocketCallback cb,
+    [ChatGetStateReadResp resp]) {
+  return $WS.send(method: "ChatGetStateReadReq", protobuf: proto, cb: cb);
+}
+
+/// 告诉服务端，该消息已读，上面的 stateRead 列为当前的 state，
+/// 有个缺点，太多未读消息，如果当前的是最后一条，那么之前的相当于也已经是已读
 readMsg(ChatReadMessageReq proto, WebsocketCallback cb) {
   return $WS.send(method: "ChatReadMessageReq", protobuf: proto, cb: cb);
 }

@@ -27,7 +27,7 @@ class _MsgBubbleState extends State<MsgBubble> {
     Widget tmp;
     switch (msg.contentType) {
       case ChatContentType.Text:
-        tmp = Text(msg.message, textAlign: TextAlign.right);
+        tmp = Text('${msg.message}  [${widget.stateUpdate.state}]', textAlign: TextAlign.right);
         break;
       case ChatContentType.Image:
         tmp = Img(fileID: msg.fileID, width: 100.0, height: 100.0, type: 3);
@@ -87,7 +87,7 @@ class _MsgBubbleState extends State<MsgBubble> {
                       margin: const BubbleEdges.only(top: 5.0),
                       alignment: Alignment.topLeft,
                       nip: BubbleNip.leftTop,
-                      child: Text(msg.message),
+                      child: Text('${msg.message} [${widget.stateUpdate.state}]'),
                     )
                   ],
                 ),

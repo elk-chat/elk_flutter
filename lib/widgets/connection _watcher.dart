@@ -1,4 +1,5 @@
 import 'package:elk_chat/blocs/blocs.dart';
+import 'package:elk_chat/chat_hub/const.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:elk_chat/repositorys/auth_repository.dart';
@@ -24,6 +25,7 @@ class _ConnectionWatcherState extends State<ConnectionWatcher> {
   Function logoutSupscription;
   Function chatListSubscription;
   Function contactListSubscription;
+  Function resortChatListSubscription;
 
   final int MAX_UPDATING = 2; // 聊天列表/联系人列表
   int updateCount = 0;
@@ -55,12 +57,16 @@ class _ConnectionWatcherState extends State<ConnectionWatcher> {
     logoutSupscription = $WS.on(LOGOUT, onLogout);
 
     contactListSubscription = $WS.on(UPDATE_CONTACT_LIST, (data) {
-      _contactBloc
-          .dispatch(FetchContactList(widget.authState.account.user.userID));
+      _contactBloc.dispatch(FetchContactList($WS.user.userID));
     });
 
     chatListSubscription = $WS.on(UPDATE_CHAT_LIST, (data) {
       _chatBloc.dispatch(FetchChatList());
+    });
+
+    resortChatListSubscription =
+        $WS.on(CHEvent.SORT_CHATS_BY_LAST_MSG, (payload) {
+      _chatBloc.dispatch(ResortChatList());
     });
   }
 
@@ -73,6 +79,7 @@ class _ConnectionWatcherState extends State<ConnectionWatcher> {
     logoutSupscription();
     chatListSubscription();
     contactListSubscription();
+    resortChatListSubscription();
     super.dispose();
   }
 

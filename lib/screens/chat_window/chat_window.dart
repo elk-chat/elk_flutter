@@ -71,6 +71,12 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
       _scrollController.animateTo(0.0,
           duration: Duration(milliseconds: 300), curve: Curves.easeOut);
     });
+
+    var _ChatGetStateReadReq = ChatGetStateReadReq();
+    _ChatGetStateReadReq.chatID = widget.chat.chatID;
+    getStateRead(_ChatGetStateReadReq, (data) {
+      print('stateRead $data');
+    });
   }
 
   @override
@@ -136,6 +142,18 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
   Future getImageFromGallery() async {
     try {
       imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
+      var bytes = await imageFile.readAsBytes();
+      var _UtilityUploadReq = UtilityUploadReq();
+      _UtilityUploadReq.chatID = widget.chat.chatID;
+      _UtilityUploadReq.data = bytes;
+      _UtilityUploadReq.fileName = DateTime.now().millisecondsSinceEpoch.toString();
+      uploadFile(_UtilityUploadReq, (data) {
+        if (data.hasError) {
+          print('${data.res}');
+        } else {
+          print(data.res.file);
+        }
+      });
       print('imageFile $imageFile');
     } catch (e) {
       print('image picker error $e');
@@ -226,98 +244,89 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
   }
 
   Widget buildInput() {
-    return Container(
-      child: Row(
-        children: <Widget>[
-          // Button send image
-          Material(
-            child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 1.0),
-              child: IconButton(
-                icon: Icon(MaterialCommunityIcons.getIconData(
-                    showAttachment ? 'chevron-down-circle' : 'attachment')),
-                onPressed: () {
-                  _focusNode.unfocus();
-                  setState(() {
-                    showSticker = false;
-                    showAttachment = !showAttachment;
-                  });
-                },
-                color: Colors.black45,
-              ),
-            ),
-            color: Colors.white10,
-          ),
-
-          // Edit text
-          Flexible(
-            fit: FlexFit.tight,
-            child: Container(
-              child: TextField(
-                style: TextStyle(color: Colors.black45, fontSize: 14.0),
-                keyboardType: TextInputType.multiline,
-                maxLines: null,
-                controller: _textEditingController,
-                autofocus: false,
-                onChanged: (value) {
-                  // 正在输入
-                  onTyping();
-                },
-                decoration: InputDecoration.collapsed(
-                  hintText: '',
-                  hintStyle: TextStyle(color: Colors.grey),
+    return GestureDetector(
+        onTap: focusInput,
+        child: Container(
+          child: Row(
+            children: <Widget>[
+              // Button send image
+              Material(
+                child: Container(
+                  margin: EdgeInsets.symmetric(horizontal: 1.0),
+                  child: IconButton(
+                    icon: Icon(MaterialCommunityIcons.getIconData(
+                        showAttachment ? 'chevron-down-circle' : 'attachment')),
+                    onPressed: () {
+                      _focusNode.unfocus();
+                      setState(() {
+                        showSticker = false;
+                        showAttachment = !showAttachment;
+                      });
+                    },
+                    color: Colors.black45,
+                  ),
                 ),
-                focusNode: _focusNode,
+                color: Colors.white10,
               ),
-            ),
-          ),
-          // 表情
-          // Material(
-          //   child: Container(
-          //     margin: EdgeInsets.symmetric(horizontal: 1.0),
-          //     child: IconButton(
-          //       icon:
-          //           Icon(MaterialCommunityIcons.getIconData('emoticon-happy')),
-          //       onPressed: () {
-          //         _focusNode.unfocus();
-          //         setState(() {
-          //           showSticker = !showSticker;
-          //           showAttachment = false;
-          //         });
-          //       },
-          //       color: Colors.black45,
-          //     ),
-          //   ),
-          //   color: Colors.white10,
-          // ),
-          // Button send message
-          Material(
-            child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 1.0),
-              child: IconButton(
-                icon: Icon(MaterialCommunityIcons.getIconData('send')),
-                onPressed: () {
-                  onSendMessage(
-                      _textEditingController.text, ChatContentType.Text);
-                },
-                color: Colors.black45,
+
+              // Edit text
+              Flexible(
+                child: ConstrainedBox(
+                    constraints: new BoxConstraints(
+                      maxHeight: 100.0,
+                    ),
+                    child: CupertinoTextField(
+                      padding: const EdgeInsets.all(0.0),
+                      // style: TextStyle(color: Colors.black87),
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
+                      controller: _textEditingController,
+                      focusNode: _focusNode,
+                      onChanged: (value) {
+                        // 正在输入
+                        onTyping();
+                      },
+                      placeholder: '输入',
+                      decoration: BoxDecoration(color: Colors.transparent),
+                      scrollPhysics: const BouncingScrollPhysics(),
+                    )),
               ),
-            ),
-            color: Colors.white10,
+              // Button send message
+              Material(
+                child: Container(
+                  margin: EdgeInsets.symmetric(horizontal: 1.0),
+                  child: IconButton(
+                    icon: Icon(MaterialCommunityIcons.getIconData('send')),
+                    onPressed: () {
+                      onSendMessage(
+                          _textEditingController.text, ChatContentType.Text);
+                    },
+                    color: Colors.black45,
+                  ),
+                ),
+                color: Colors.white10,
+              ),
+            ],
           ),
-        ],
-      ),
-      width: double.infinity,
-      height: 50.0,
-      decoration: BoxDecoration(
-          border:
-              Border(top: const BorderSide(color: Colors.black26, width: 0.5))),
-    );
+          width: double.infinity,
+          // height: 50.0,
+          decoration: BoxDecoration(
+              // color: Color(0xffeeeeee),
+              border: Border(
+                  top: const BorderSide(color: Colors.black26, width: 0.5))),
+        ));
+  }
+
+  focusInput() {
+    print('focus');
+    _focusNode.unfocus();
+    FocusScope.of(context).requestFocus(_focusNode);
   }
 
   onSendMessage(String msg, int contentType) async {
     var text = msg.trim();
     if (text.isEmpty) {
+      focusInput();
       return;
     }
     try {
@@ -358,115 +367,5 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
         )
       ],
     ));
-  }
-
-  Widget buildSticker() {
-    return Container(
-      child: Column(
-        children: <Widget>[
-          Row(
-            children: <Widget>[
-              FlatButton(
-                onPressed: () => onSendMessage('mimi1', 2),
-                child: Image.asset(
-                  'assets/sticker/mimi1.gif',
-                  width: 50.0,
-                  height: 50.0,
-                  fit: BoxFit.cover,
-                ),
-              ),
-              FlatButton(
-                onPressed: () => onSendMessage('mimi2', 2),
-                child: Image.asset(
-                  'assets/sticker/mimi2.gif',
-                  width: 50.0,
-                  height: 50.0,
-                  fit: BoxFit.cover,
-                ),
-              ),
-              FlatButton(
-                onPressed: () => onSendMessage('mimi3', 2),
-                child: Image.asset(
-                  'assets/sticker/mimi3.gif',
-                  width: 50.0,
-                  height: 50.0,
-                  fit: BoxFit.cover,
-                ),
-              )
-            ],
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          ),
-          Row(
-            children: <Widget>[
-              FlatButton(
-                onPressed: () => onSendMessage('mimi4', 2),
-                child: Image.asset(
-                  'assets/sticker/mimi4.gif',
-                  width: 50.0,
-                  height: 50.0,
-                  fit: BoxFit.cover,
-                ),
-              ),
-              FlatButton(
-                onPressed: () => onSendMessage('mimi5', 2),
-                child: Image.asset(
-                  'assets/sticker/mimi5.gif',
-                  width: 50.0,
-                  height: 50.0,
-                  fit: BoxFit.cover,
-                ),
-              ),
-              FlatButton(
-                onPressed: () => onSendMessage('mimi6', 2),
-                child: Image.asset(
-                  'assets/sticker/mimi6.gif',
-                  width: 50.0,
-                  height: 50.0,
-                  fit: BoxFit.cover,
-                ),
-              )
-            ],
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          ),
-          Row(
-            children: <Widget>[
-              FlatButton(
-                onPressed: () => onSendMessage('mimi7', 2),
-                child: Image.asset(
-                  'assets/sticker/mimi7.gif',
-                  width: 50.0,
-                  height: 50.0,
-                  fit: BoxFit.cover,
-                ),
-              ),
-              FlatButton(
-                onPressed: () => onSendMessage('mimi8', 2),
-                child: Image.asset(
-                  'assets/sticker/mimi8.gif',
-                  width: 50.0,
-                  height: 50.0,
-                  fit: BoxFit.cover,
-                ),
-              ),
-              FlatButton(
-                onPressed: () => onSendMessage('mimi9', 2),
-                child: Image.asset(
-                  'assets/sticker/mimi9.gif',
-                  width: 50.0,
-                  height: 50.0,
-                  fit: BoxFit.cover,
-                ),
-              )
-            ],
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          )
-        ],
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      ),
-      decoration: BoxDecoration(
-          border: Border(top: BorderSide(color: Colors.black26, width: 0.5))),
-      padding: EdgeInsets.all(5.0),
-      height: 180.0,
-    );
   }
 }

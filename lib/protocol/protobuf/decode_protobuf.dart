@@ -348,7 +348,7 @@ decodeProto = (buffer) => proto.UtilityFileStatReq.fromBuffer(buffer);
 decodeMethod ='SIG_UTILITY_FILE_STAT_RESP';
 decodeProto = (buffer) => proto.UtilityFileStatResp.fromBuffer(buffer);
 }
-
+  print(decodeMethod);
   assert(decodeProto != null);
   res['Data'] = decodeProto(res['DataBuf']);
   res['Method'] = decodeMethod;

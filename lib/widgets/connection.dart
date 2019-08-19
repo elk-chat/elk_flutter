@@ -42,8 +42,6 @@ class _ConnectionState extends State<Connection> {
           currentStatus = payload.type;
         });
       }
-    } else {
-      //
     }
   }
 

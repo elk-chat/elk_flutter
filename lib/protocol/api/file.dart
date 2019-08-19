@@ -6,7 +6,7 @@ import '../protobuf/koi.pb.dart';
 
 /// 上传文件
 uploadFile(UtilityUploadReq proto, WebsocketCallback cb,
-    [UtilityUploadReq resp]) {
+    [UtilityUploadResp resp]) {
   return $WS.send(method: "UtilityUploadReq", protobuf: proto, cb: cb);
 }
 

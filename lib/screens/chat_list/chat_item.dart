@@ -214,6 +214,9 @@ class _ChatItemState extends State<ChatItem> {
             ? null
             : Text(
                 getMessageText(lastMsg.updateMessage),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
+                softWrap: false,
                 style: const TextStyle(color: Colors.black45, fontSize: 14.0),
               ),
       ),

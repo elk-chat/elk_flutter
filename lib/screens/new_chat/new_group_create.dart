@@ -40,8 +40,8 @@ class _NewGroupChatState extends State<NewGroupChatCreateScreen> {
   handleCreateChat() async {
     try {
       var res = await widget.chatRepository.create(text);
+      _chatBloc.dispatch(AddChat(chat: res.chat));
       widget.chatRepository.addMembers(widget.members, res.chat.chatID);
-      _chatBloc.dispatch(FetchChatList());
       Navigator.popUntil(context, ModalRoute.withName('/'));
     } catch (e) {
       print('创建群聊失败：$e');

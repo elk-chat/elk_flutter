@@ -40,33 +40,27 @@ class ChatHub {
   }
 
   emitSort() {
-    $WS.emit(CHEvent.SORT_CHATS_BY_LAST_MSG, sortMsgMapByTime(this.lastMsgMap));
+    $WS.emit(CHEvent.SORT_CHATS_BY_LAST_MSG);
   }
 
   Timer sortTimer;
 
   onLastMsg(payload) {
+    if (payload == null) return;
     var chatID = payload.chatID, stateUpdate = payload;
-    // 如果没有并且更新时间大于之前的
-    if (lastMsgMap[chatID] == null ||
-        lastMsgMap[chatID].actionTime <= stateUpdate.actionTime) {
-      lastMsgMap[chatID] = stateUpdate;
-
+    lastMsgMap[chatID] = stateUpdate;
+    if (sortTimer != null) {
+      print('取消排序延迟200ms');
       sortTimer?.cancel();
-      sortTimer = Timer(Duration(milliseconds: 200), () {
-        emitSort();
-      });
     }
+    sortTimer = Timer(Duration(milliseconds: 200), () {
+      emitSort();
+      sortTimer = null;
+    });
   }
 
   getLastMsg(Int64 chatID) {
     return lastMsgMap[chatID] != null ? [lastMsgMap[chatID]] : [];
-  }
-
-  sortMsgMapByTime(Map msgMap) {
-    var msgs = msgMap.values.toList();
-    msgs.sort((a, b) => b.actionTime.compareTo(a.actionTime));
-    return msgs;
   }
 
   // 收到未读数
@@ -175,7 +169,6 @@ class ChatHub {
 
     UpdateMessage updMsg = res.updateMessage;
     String eventName;
-    print('收到推送消息：$res updMsg: $updMsg');
 
     if (updMsg.hasUpdateMessageChatAddMember()) {
       eventName = CHEvent.ADD_MEMBER(res.chatID);

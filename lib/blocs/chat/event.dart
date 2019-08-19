@@ -1,5 +1,6 @@
 // 加载事件
 
+import 'package:elk_chat/protocol/protobuf/koi.pb.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
@@ -10,13 +11,17 @@ class FetchChatList extends ChatEvent {
   String toString() => 'FetchChatList';
 }
 
-class SortChatList extends ChatEvent {
-  final List chats;
+class ResortChatList extends ChatEvent {
+  @override
+  String toString() => 'ResortChatList';
+}
 
-  SortChatList({@required this.chats});
+class AddChat extends ChatEvent {
+  final Chat chat;
+  AddChat({@required this.chat});
 
   @override
-  String toString() => 'SortChatList: length ${chats.length}';
+  String toString() => 'AddChat';
 }
 
 class ClearChat extends ChatEvent {

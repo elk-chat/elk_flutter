@@ -34,15 +34,15 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
       // yield ContactLoaded(contacts: [], hasReachedMax: false);
       yield ContactUninitialized();
     }
-    if (event is FetchContactList && !_hasReachedMax(currentState)) {
+    if (event is FetchContactList) {
       try {
         final contacts = await contactRepository.getContacts();
         // 提示更新完成+1
         $WS.emit(UPDATING);
         yield ContactLoaded(
-            contacts:
-                contacts.where((i) => i.userID != event.selfUserID).toList(),
-            hasReachedMax: false);
+          contacts:
+              contacts.where((i) => i.userID != event.selfUserID).toList(),
+        );
         return;
       } catch (_) {
         $WS.emit(UPDATING);
@@ -50,8 +50,13 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
         yield ContactError();
       }
     }
-  }
 
-  bool _hasReachedMax(ContactState state) =>
-      state is ContactLoaded && state.hasReachedMax;
+    if (event is AddContact) {
+      if (currentState is ContactLoaded) {
+        var contacts = (currentState as ContactLoaded).contacts.toList();
+        contacts.insert(0, event.user);
+        yield ContactLoaded(contacts: contacts);
+      }
+    }
+  }
 }

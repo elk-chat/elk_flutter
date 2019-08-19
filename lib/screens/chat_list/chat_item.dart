@@ -70,6 +70,7 @@ class _ChatItemState extends State<ChatItem> {
 
     // 监听新消息/发送消息
     unSupscription = $WS.on(CHEvent.ALL_MSG(chatID), (res) {
+      
       StateUpdatesCache[chatID] = [res];
       setState(() {
         lastMessages = [res];
@@ -87,6 +88,7 @@ class _ChatItemState extends State<ChatItem> {
     Map info = {};
 
     if (widget.chat.chatType == 2) {
+      // 如果是单对单聊天
       for (var i in members) {
         if (i.userID != widget.authState.account.user.userID) {
           info = {

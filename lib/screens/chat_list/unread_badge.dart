@@ -38,25 +38,25 @@ class _UnreadBadgeState extends State<UnreadBadge> {
 
   @override
   Widget build(BuildContext context) {
-    if (count <= 0) return SizedBox();
+    if (count == null || count <= 0) return SizedBox();
     return Container(
-        padding: EdgeInsets.all(2),
-        decoration: BoxDecoration(
-          color: Colors.red,
-          borderRadius: BorderRadius.circular(8),
+      padding: EdgeInsets.all(2),
+      decoration: BoxDecoration(
+        color: Colors.red,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      constraints: BoxConstraints(
+        minWidth: 14,
+        minHeight: 14,
+      ),
+      child: Text(
+        '$count',
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 10,
         ),
-        constraints: BoxConstraints(
-          minWidth: 14,
-          minHeight: 14,
-        ),
-        child: Text(
-          '$count',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 10,
-          ),
-          textAlign: TextAlign.center,
-        ),
-      );
+        textAlign: TextAlign.center,
+      ),
+    );
   }
 }

@@ -17,7 +17,11 @@ class CHEvent {
     return 'CH_SEND_MSG_${chatID}_${messageID}';
   }
 
-  static String READ_MSG(chatID, messageID) {
+  static String READ_MSG(chatID) {
+    return 'CH_READ_MSG_${chatID}';
+  }
+
+  static String READ_MSG_2(chatID, messageID) {
     return 'CH_READ_MSG_${chatID}_${messageID}';
   }
 

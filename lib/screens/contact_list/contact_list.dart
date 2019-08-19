@@ -1,4 +1,4 @@
-import 'package:elk_chat/repositorys/contact_repository.dart';
+import 'package:elk_chat/repositorys/repositorys.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:elk_chat/screens/contact_detail.dart';
@@ -9,12 +9,14 @@ import 'list.dart';
 class ContactScreen extends StatefulWidget {
   final title;
   final ContactRepository contactRepository;
+  final ChatRepository chatRepository;
   final AuthAuthenticated authState;
 
   ContactScreen(
       {Key key,
       @required this.title,
       @required this.contactRepository,
+      @required this.chatRepository,
       @required this.authState})
       : super(key: key);
 
@@ -54,8 +56,11 @@ class _ContactScreenState extends State<ContactScreen>
                   context,
                   MaterialPageRoute(
                       fullscreenDialog: true,
-                      builder: (BuildContext context) =>
-                          NewContactScreen(title: '新联系人')));
+                      builder: (BuildContext context) => NewContactScreen(
+                            title: '新联系人',
+                            authState: widget.authState,
+                            chatRepository: widget.chatRepository,
+                          )));
             },
           ),
         ],
@@ -67,6 +72,8 @@ class _ContactScreenState extends State<ContactScreen>
                 builder: (BuildContext context) => ProfileScreen(
                     title: contact.userName,
                     contact: contact,
+                    authState: widget.authState,
+                    chatRepository: widget.chatRepository,
                     isAtContact: true)));
       }),
     );

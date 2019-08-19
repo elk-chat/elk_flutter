@@ -73,6 +73,8 @@ class ChatHub {
     } else if (type == 'increase') {
       unreadMap[chatID]++;
     } else if (type == 'decrease') {
+      unreadMap[chatID]--;
+    } else if (type == 'decrease') {
       if (unreadMap[chatID] == 0) {
         print('chat $chatID 未读错误!');
       }
@@ -110,6 +112,12 @@ class ChatHub {
   }
 
   onReceiveMsg(payload) {
+    if (payload.hasError) {
+      print('收到推送消息失败 $payload');
+      return;
+    } else {
+      print('收到推送消息 ${payload['res']}');
+    }
     /*
       字段 
       ..aInt64(1, 'chatID')
@@ -169,8 +177,12 @@ class ChatHub {
 
     UpdateMessage updMsg = res.updateMessage;
     String eventName;
-
+    bool messageUpdate = true;
     if (updMsg.hasUpdateMessageChatAddMember()) {
+      // 添加成员，如果当前没有这个聊天，就创建
+      // if (lastMsgMap[res.chatID)) {
+
+      // }
       eventName = CHEvent.ADD_MEMBER(res.chatID);
 
       // 触发排序
@@ -181,6 +193,7 @@ class ChatHub {
       // 触发排序
       $WS.emit(CHEvent.ON_CHAT_LAST_MSG, res);
     } else if (updMsg.hasUpdateMessageChatSendMessage()) {
+      // 发消息，如果当前没有这个聊天，就创建
       eventName = CHEvent.SEND_MSG(res.chatID, res.messageID);
       // 未读+1，已读就在渲染里面加，如果未读，又渲染了的话 未读 -1
       // 如果是自己的推送消息，不管
@@ -194,15 +207,21 @@ class ChatHub {
       // 触发排序
       $WS.emit(CHEvent.ON_CHAT_LAST_MSG, res);
     } else if (updMsg.hasUpdateMessageChatReadMessage()) {
-      eventName = CHEvent.READ_MSG(res.chatID, res.messageID);
+      messageUpdate = false;
+      eventName = CHEvent.READ_MSG(res.chatID);
+      // eventName = CHEvent.READ_MSG_2(res.chatID, res.messageID);
     } else if (updMsg.hasUpdateMessageChatDeleteMessage()) {
+      messageUpdate = false;
       eventName = CHEvent.DELETE_MSG(res.chatID, res.messageID);
     } else if (updMsg.hasUpdateMessageChatSetTyping()) {
+      messageUpdate = false;
       eventName = CHEvent.SET_TYPING(res.chatID);
     }
 
     $WS.emit(eventName, res);
-    $WS.emit(CHEvent.ALL_MSG(res.chatID), res);
+    if (messageUpdate) {
+      $WS.emit(CHEvent.ALL_MSG(res.chatID), res);
+    }
   }
 
   clear() {

@@ -1,7 +1,12 @@
 import 'package:bubble/bubble.dart';
+import 'package:elk_chat/chat_hub/const.dart';
+import 'package:elk_chat/init_websocket.dart';
+import 'package:elk_chat/protocol/api/chat.dart';
 import 'package:elk_chat/protocol/api/state.dart';
 import 'package:elk_chat/protocol/protobuf/koi.pb.dart';
+import 'package:elk_chat/widgets/flushbar.dart';
 import 'package:elk_chat/widgets/widgets.dart';
+import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -9,11 +14,15 @@ class MsgBubble extends StatefulWidget {
   final StateUpdate stateUpdate;
   final bool isSelf;
   final String userName;
+  final Function getStateRead;
+  final Function setOwnStateRead;
 
   MsgBubble(
       {Key key,
       @required this.stateUpdate,
       @required this.isSelf,
+      @required this.getStateRead,
+      @required this.setOwnStateRead,
       this.userName})
       : super(key: key);
 
@@ -22,12 +31,56 @@ class MsgBubble extends StatefulWidget {
 
 class _MsgBubbleState extends State<MsgBubble> {
   final DateFormat dateFormat = DateFormat('MM/dd HH:mm');
+  Int64 stateRead;
+  Int64 ownStateRead;
+  Function unsubscription;
+
+  getStateRead() {
+    var state = widget.getStateRead();
+    // 别人读到的 state，用于已读/未读
+    stateRead = state.stateRead;
+    ownStateRead = state.ownStateRead;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // 标未已读
+    getStateRead();
+    // 自己读到的 state
+    if (!widget.isSelf && ownStateRead < widget.stateUpdate.state) {
+      ChatReadMessageReq _ChatReadMessageReq = ChatReadMessageReq();
+      _ChatReadMessageReq.chatID = widget.stateUpdate.chatID;
+      _ChatReadMessageReq.stateRead = widget.stateUpdate.state;
+      widget.setOwnStateRead(widget.stateUpdate.state);
+      readMsg(_ChatReadMessageReq, (data) {
+        if (data.hasError) {
+          showFlushBar('标记为已读失败 ${data.res}', context);
+        } else {
+          if (mounted) {
+            //  未读清空，有bug，目前将就处理
+            Int64 zero = Int64(0);
+            $CH.unreadMap[widget.stateUpdate.chatID] = zero;
+            $WS.emit(CHEvent.INIT_CHAT_UNREAD(widget.stateUpdate.chatID), zero);
+          }
+          print('已标为已读');
+        }
+      });
+    }
+    if (widget.isSelf) {
+      // 监听该消息已读未读
+    }
+    print(
+        'msg bubble ownStateRead ${ownStateRead} 消息state ：${widget.stateUpdate.state}');
+  }
 
   Widget getMsgContentByType(UpdateMessageChatSendMessage msg) {
     Widget tmp;
     switch (msg.contentType) {
       case ChatContentType.Text:
-        tmp = Text('${msg.message}  [${widget.stateUpdate.state}]', textAlign: TextAlign.right);
+        tmp = Text(
+            '${msg.message}  [${stateRead}-${widget.stateUpdate.state}] ${stateRead >= widget.stateUpdate.state ? '已读' : '未读'}',
+            textAlign: TextAlign.right);
         break;
       case ChatContentType.Image:
         tmp = Img(fileID: msg.fileID, width: 100.0, height: 100.0, type: 3);
@@ -41,6 +94,8 @@ class _MsgBubbleState extends State<MsgBubble> {
 
   @override
   Widget build(BuildContext context) {
+    getStateRead();
+
     var state = widget.stateUpdate;
     var updMsg = state.updateMessage;
     if (state.messageType == ChatMessageType.AddMember) {
@@ -87,7 +142,8 @@ class _MsgBubbleState extends State<MsgBubble> {
                       margin: const BubbleEdges.only(top: 5.0),
                       alignment: Alignment.topLeft,
                       nip: BubbleNip.leftTop,
-                      child: Text('${msg.message} [${widget.stateUpdate.state}]'),
+                      child:
+                          Text('${msg.message} [${widget.stateUpdate.state}]'),
                     )
                   ],
                 ),

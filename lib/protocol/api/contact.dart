@@ -15,12 +15,8 @@ searchUser(UserGetUsersReq proto, WebsocketCallback cb) {
 /**
  * 添加联系人
  */
-addContact(Map formData, WebsocketCallback cb) {
-  return $WS.send(
-      method: "ContactAddReq",
-      protobuf: ContactAddReq(),
-      data: formData,
-      cb: cb);
+addContact(ContactAddReq _ContactAddReq, WebsocketCallback cb) {
+  return $WS.send(method: "ContactAddReq", protobuf: _ContactAddReq, cb: cb);
 }
 
 /**
@@ -33,33 +29,24 @@ getContactList(ContactGetContactsReq pto, WebsocketCallback cb) {
 /**
  * 删除联系人
  */
-deleteContact(Map formData, WebsocketCallback cb) {
+deleteContact(ContactDeleteReq _ContactDeleteReq, WebsocketCallback cb) {
   return $WS.send(
-      method: "ContactDeleteReq",
-      protobuf: ContactDeleteReq(),
-      data: formData,
-      cb: cb);
+      method: "ContactDeleteReq", protobuf: _ContactDeleteReq, cb: cb);
 }
 
 /**
  * 更新联系人信息
  */
-updateContact(Map formData, WebsocketCallback cb) {
+updateContact(ContactUpdateReq _ContactUpdateReq, WebsocketCallback cb) {
   return $WS.send(
-      method: "ContactUpdateReq",
-      protobuf: ContactUpdateReq(),
-      data: formData,
-      cb: cb);
+      method: "ContactUpdateReq", protobuf: _ContactUpdateReq, cb: cb);
 }
 
 /**
  * 获取单个用户信息
  */
 getFullUser(UserGetFullUserReq proto, WebsocketCallback cb) {
-  return $WS.send(
-      method: "UserGetFullUserReq",
-      protobuf: proto,
-      cb: cb);
+  return $WS.send(method: "UserGetFullUserReq", protobuf: proto, cb: cb);
 }
 
 /**

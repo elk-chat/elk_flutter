@@ -52,12 +52,9 @@ createGroupChat(ChatCreateReq proto, WebsocketCallback cb,
  * PeerID: 启动这个聊天的用户 userID
  */
 /// 创建单人聊天
-initPeerChat(Map formData, WebsocketCallback cb) {
+initPeerChat(ChatInitiateReq _ChatInitiateReq, WebsocketCallback cb) {
   return $WS.send(
-      method: "ChatInitiateReq",
-      protobuf: ChatInitiateReq(),
-      data: formData,
-      cb: cb);
+      method: "ChatInitiateReq", protobuf: _ChatInitiateReq, cb: cb);
 }
 
 /// 向对应的聊天添加人员
@@ -117,8 +114,7 @@ readMsg(ChatReadMessageReq proto, WebsocketCallback cb) {
   return $WS.send(method: "ChatReadMessageReq", protobuf: proto, cb: cb);
 }
 
-/// 查看 Chat 的已读消息
-/// 暂时没看到哪里用到
+/// 查看 Chat 中自己读到的 stateRead，已经合并到 ChatGetStateReadReq
 // getChatReadState(Map formData, WebsocketCallback cb) {
 //   return $WS.send(
 //       method: "UserGetChatUserStateReq",

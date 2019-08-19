@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:elk_chat/init_websocket.dart';
+import 'package:elk_chat/blocs/auth/auth_state.dart';
+import 'package:elk_chat/repositorys/chat_repository.dart';
 import 'package:elk_chat/widgets/flushbar.dart';
-import 'package:fixnum/fixnum.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:elk_chat/protocol/api/api.dart';
@@ -11,16 +11,22 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:elk_chat/blocs/contact/contact.dart';
 import 'package:elk_chat/protocol/protobuf/koi.pb.dart';
 
+import 'chat_window/chat_window.dart';
+
 /// 个人资料
 class ProfileScreen extends StatefulWidget {
   final String title;
   final User contact;
   final bool isAtContact;
+  final ChatRepository chatRepository;
+  final AuthState authState;
 
   ProfileScreen(
       {Key key,
       @required this.title,
       @required this.contact,
+      @required this.chatRepository,
+      @required this.authState,
       this.isAtContact = false})
       : super(key: key);
 
@@ -33,17 +39,36 @@ class _EditProfileScreenState extends State<ProfileScreen> {
   ContactBloc _contactBloc;
   Timer timer;
   bool _isAtContact = false;
+  ContactAddReq _ContactAddReq = ContactAddReq();
 
-  handleChat() {
-    // todo 检查是否存在于聊天中，如果存在，则不发送创建聊天，直接导航到聊天
+  @override
+  void initState() {
+    super.initState();
+    _contactBloc = BlocProvider.of<ContactBloc>(context);
+  }
+
+  onChat() async {
+    var chat = Chat();
+    chat.chatType = ChatType.OneToOne;
+    Navigator.popUntil(context, ModalRoute.withName('/'));
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) => ChatWindowScreen(
+                  title: Text(widget.contact.userName),
+                  chat: chat,
+                  user: widget.contact,
+                  chatRepository: widget.chatRepository,
+                  authState: widget.authState,
+                )));
   }
 
   handleSaveContact() {
     setState(() {
       loading = true;
     });
-    addContact({'userID': Int64.parseInt('${widget.contact.userID}')},
-        (result) {
+    _ContactAddReq.userID = widget.contact.userID;
+    addContact(_ContactAddReq, (result) {
       if (result.hasError) {
         showFlushBar(result.res, context);
         if (mounted) {
@@ -52,21 +77,11 @@ class _EditProfileScreenState extends State<ProfileScreen> {
           });
         }
       } else {
-        $WS.emit(UPDATE_CONTACT_LIST);
-        if (mounted) {
-          timer = Timer(
-              Duration(milliseconds: $WS.heartBeatMilliseconds + 1000), () {
-            Navigator.popUntil(context, ModalRoute.withName('/'));
-          });
-        }
+        _contactBloc.dispatch(AddContact(user: widget.contact));
+        // $WS.emit(UPDATE_CONTACT_LIST);
+        Navigator.popUntil(context, ModalRoute.withName('/'));
       }
     });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _contactBloc = BlocProvider.of<ContactBloc>(context);
   }
 
   @override
@@ -81,7 +96,6 @@ class _EditProfileScreenState extends State<ProfileScreen> {
           builder: (context, state) {
             _isAtContact = widget.isAtContact;
             // 判断是否在联系人列表中，如果不在联系人列表中，需要展示添加到通讯录
-            // todo 检查是否在聊天列表中，如果在聊天列表中，直接进入聊天
             if (!_isAtContact && state is ContactLoaded) {
               if (state.contacts.isNotEmpty) {
                 for (var v in state.contacts) {
@@ -106,7 +120,7 @@ class _EditProfileScreenState extends State<ProfileScreen> {
                       horizontal: 12.0, vertical: 10.0),
                   child: CupertinoButton(
                       padding: const EdgeInsets.all(12.0),
-                      onPressed: handleChat,
+                      onPressed: onChat,
                       color: Colors.blue,
                       child: Text('发消息')),
                 ),

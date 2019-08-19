@@ -1,4 +1,6 @@
 import 'package:elk_chat/blocs/blocs.dart';
+import 'package:elk_chat/protocol/api/state.dart';
+import 'package:elk_chat/protocol/protobuf/koi.pb.dart';
 import 'package:elk_chat/repositorys/chat_repository.dart';
 import 'package:elk_chat/screens/chat_window/chat_window.dart';
 import 'package:flutter/material.dart';
@@ -42,12 +44,16 @@ class _NewChatScreenState extends State<NewChatScreen> {
       ),
       body: ContactList(
         onTap: (contact) {
+          var chat = Chat();
+          chat.chatType = ChatType.OneToOne;
+          Navigator.popUntil(context, ModalRoute.withName('/'));
           Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (BuildContext context) => ChatWindowScreen(
                         title: Text(contact.userName),
-                        contact: contact,
+                        chat: chat,
+                        user: contact,
                         chatRepository: widget.chatRepository,
                         authState: widget.authState,
                       )));

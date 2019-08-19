@@ -75,6 +75,7 @@ class _TabsScreenState extends State<TabsScreen> {
           authState: widget.authState),
       ContactScreen(
           title: Connection(title: '通讯录'),
+          chatRepository: widget.chatRepository,
           contactRepository: widget.contactRepository,
           authState: widget.authState),
       MoreScreen(title: Connection(title: '设置'), authState: widget.authState),

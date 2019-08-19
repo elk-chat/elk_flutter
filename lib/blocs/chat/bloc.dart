@@ -48,15 +48,25 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
     if (event is AddChat) {
       if (currentState is ChatLoaded) {
-        var chats = List.from((currentState as ChatLoaded).chats)
-          ..insert(0, event.chat);
-        yield ChatLoaded(chats: chats);
+        var chats = (currentState as ChatLoaded).chats.toList();
+        var inChat = false;
+        // 判断有没有在聊天中
+        for (var i in chats) {
+          if (i.chatID == event.chat.chatID) {
+            inChat = true;
+            break;
+          }
+        }
+        if (!inChat) {
+          chats.insert(0, event.chat);
+          yield ChatLoaded(chats: chats);
+        }
       }
     }
 
     if (event is ResortChatList) {
       var chats =
-          resortChatByUpdateTime(List.from((currentState as ChatLoaded).chats));
+          resortChatByUpdateTime((currentState as ChatLoaded).chats.toList());
       yield ChatLoaded(chats: chats);
     }
 

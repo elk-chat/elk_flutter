@@ -92,7 +92,7 @@ class _NewGroupChatState extends State<NewGroupChatSelectUsersScreen> {
                 Flexible(
                     child: ContactList(
                         onChange: (value, user) {
-                          var newSelectUsers = List.from(selectUsers);
+                          var newSelectUsers = selectUsers.toList();
 
                           if (!value) {
                             bool filter(i) {

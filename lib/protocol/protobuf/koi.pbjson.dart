@@ -600,6 +600,7 @@ const ChatGetStateReadResp$json = const {
   '1': 'ChatGetStateReadResp',
   '2': const [
     const {'1': 'StateRead', '3': 1, '4': 1, '5': 4, '10': 'StateRead'},
+    const {'1': 'OwnStateRead', '3': 2, '4': 1, '5': 4, '10': 'OwnStateRead'},
   ],
 };
 

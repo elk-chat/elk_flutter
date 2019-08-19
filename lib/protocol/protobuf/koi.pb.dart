@@ -2493,6 +2493,7 @@ class ChatGetStateReadReq extends $pb.GeneratedMessage {
 class ChatGetStateReadResp extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('ChatGetStateReadResp', package: const $pb.PackageName('kproto'))
     ..a<Int64>(1, 'stateRead', $pb.PbFieldType.OU6, Int64.ZERO)
+    ..a<Int64>(2, 'ownStateRead', $pb.PbFieldType.OU6, Int64.ZERO)
     ..hasRequiredFields = false
   ;
 
@@ -2514,6 +2515,11 @@ class ChatGetStateReadResp extends $pb.GeneratedMessage {
   set stateRead(Int64 v) { $_setInt64(0, v); }
   $core.bool hasStateRead() => $_has(0);
   void clearStateRead() => clearField(1);
+
+  Int64 get ownStateRead => $_getI64(1);
+  set ownStateRead(Int64 v) { $_setInt64(1, v); }
+  $core.bool hasOwnStateRead() => $_has(1);
+  void clearOwnStateRead() => clearField(2);
 }
 
 class ChatSetTypingReq extends $pb.GeneratedMessage {

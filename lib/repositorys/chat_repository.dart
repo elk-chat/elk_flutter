@@ -135,7 +135,7 @@ class ChatRepository {
 
   // 获取最后一条消息
   Future getChatsLastMsg(List<Chat> chats) async {
-    chats.forEach((i) async {
+    fn(i) async {
       try {
         var res = await getMsgHistory(0, 1, i.chatID, [1, 2]);
         // 如果有最后一条消息，通知排序
@@ -144,9 +144,14 @@ class ChatRepository {
           $WS.emit(CHEvent.ALL_MSG(i.chatID), res.stateUpdates[0]);
         }
       } catch (e) {
-        print('chatID ${i.chatID} 获取最后一条消息失败 $e');
+        print('chatID ${i.chatID} 获取最后一条消息失败 $e，重试');
+        Timer(Duration(seconds: 1), () {
+          fn(i);
+        });
       }
-    });
+    }
+
+    chats.forEach(fn);
   }
 
   // 获取未读数

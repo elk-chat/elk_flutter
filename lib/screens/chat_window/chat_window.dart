@@ -6,9 +6,11 @@ import 'package:elk_chat/chat_hub/const.dart';
 import 'package:elk_chat/init_websocket.dart';
 import 'package:elk_chat/protocol/api/api.dart';
 import 'package:elk_chat/protocol/protobuf/koi.pb.dart';
+import 'package:elk_chat/widgets/flushbar.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:elk_chat/repositorys/repositorys.dart';
@@ -18,15 +20,15 @@ import 'msg_bubble.dart';
 class ChatWindowScreen extends StatefulWidget {
   final title;
   final Chat chat;
-  final User contact;
+  final User user;
   final ChatRepository chatRepository;
   final AuthAuthenticated authState;
 
   ChatWindowScreen(
       {Key key,
       @required this.title,
-      this.chat,
-      this.contact,
+      @required this.chat,
+      this.user,
       @required this.chatRepository,
       @required this.authState})
       : super(key: key);
@@ -51,41 +53,102 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
   bool showSticker = false;
   bool showAttachment = false;
 
+  // 判断有没有初始化聊天
+  bool hasInit = false;
+
   Timer typingTimer;
 
   Function unSupscription;
+  Function readSubscription;
+
+  ChatInitiateReq _ChatInitiateReq = ChatInitiateReq();
+  Chat _chat;
+  ChatBloc _chatBloc;
+
+  ChatGetStateReadResp _stateRead;
 
   @override
   void initState() {
     super.initState();
-    _focusNode.addListener(onFocusChange);
-    _scrollController.addListener(_scrollListener);
-    getMsgHistory();
 
-    unSupscription = $WS.on(CHEvent.ALL_MSG(widget.chat.chatID), (res) {
-      if (res.messageType == ChatMessageType.ReadState) return;
-      setState(() {
-        msgs = [res]..addAll(List.from(msgs));
-      });
+    _chatBloc = BlocProvider.of<ChatBloc>(context);
 
-      _scrollController.animateTo(0.0,
-          duration: Duration(milliseconds: 300), curve: Curves.easeOut);
-    });
+    _chat = widget.chat;
+    // 判断有没有初始化聊天（从详情点击过去的）
+    hasInit = _chat.chatID.toInt() != 0;
 
-    var _ChatGetStateReadReq = ChatGetStateReadReq();
-    _ChatGetStateReadReq.chatID = widget.chat.chatID;
-    getStateRead(_ChatGetStateReadReq, (data) {
-      print('stateRead $data');
-    });
+    if (hasInit) {
+      init();
+    } else {
+      createChat();
+    }
   }
 
   @override
   void dispose() {
-    unSupscription();
     _scrollController.dispose();
     _textEditingController.dispose();
     _focusNode.dispose();
+
+    if (unSupscription != null) unSupscription();
+    if (readSubscription != null) readSubscription();
     super.dispose();
+  }
+
+  void createChat() {
+    _ChatInitiateReq.peerID = widget.user.userID;
+    initPeerChat(_ChatInitiateReq, (data) {
+      if (data.hasError) {
+        var error = 'initPeerChat error: ${data.res}';
+        showFlushBar(error, context);
+        print(error);
+      } else {
+        _chat = data.res.chat;
+        _chatBloc.dispatch(AddChat(chat: data.res.chat));
+        // 创建聊天
+        init();
+      }
+    });
+  }
+
+  void init() {
+    _focusNode.addListener(onFocusChange);
+    _scrollController.addListener(_scrollListener);
+
+    var _ChatGetStateReadReq = ChatGetStateReadReq();
+    _ChatGetStateReadReq.chatID = _chat.chatID;
+    // 获取读到哪条，需要监听 stateRead 变化
+    getStateRead(_ChatGetStateReadReq, (data) {
+      if (data.hasError) {
+        showFlushBar('获取未读 stateRead 失败: ${data.res}', context);
+      } else {
+        _stateRead = data.res;
+        print('未读 stateRead: ${data.res}');
+
+        readSubscription = $WS.on(CHEvent.READ_MSG(_chat.chatID), (res) {
+          _stateRead.stateRead = res.state;
+          if (mounted) {
+            setState(() {
+              _stateRead = _stateRead;
+            });
+          }
+        });
+        getMsgHistory();
+      }
+    });
+
+    unSupscription = $WS.on(CHEvent.ALL_MSG(_chat.chatID), (res) {
+      if (res.messageType == ChatMessageType.ReadState) return;
+      // 有新消息
+      if (mounted) {
+        setState(() {
+          msgs = [res]..addAll(msgs.toList());
+        });
+
+        _scrollController.animateTo(0.0,
+            duration: Duration(milliseconds: 300), curve: Curves.easeOut);
+      }
+    });
   }
 
   void onFocusChange() {
@@ -120,21 +183,25 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
     try {
       print('获取聊天记录 $pageIndex');
       var res = await widget.chatRepository
-          .getMsgHistory(pageIndex, 20, widget.chat.chatID, [1, 2]);
+          .getMsgHistory(pageIndex, 20, _chat.chatID, [1, 2]);
       if (!mounted) return;
       if (res.stateUpdates.length < 20) {
         hasReachedMax = true;
       }
-      setState(() {
-        loading = false;
-        pageIndex = pageIndex + 1;
-        pageSize = res.paging.pageSize;
-        msgs = List.from(msgs)..addAll(res.stateUpdates);
-      });
+      if (mounted) {
+        setState(() {
+          loading = false;
+          pageIndex = pageIndex + 1;
+          pageSize = res.paging.pageSize;
+          msgs = (msgs.toList())..addAll(res.stateUpdates);
+        });
+      }
     } catch (e) {
-      setState(() {
-        loading = false;
-      });
+      if (mounted) {
+        setState(() {
+          loading = false;
+        });
+      }
       print('getMsgHistory error $e');
     }
   }
@@ -144,11 +211,13 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
       imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
       var bytes = await imageFile.readAsBytes();
       var _UtilityUploadReq = UtilityUploadReq();
-      _UtilityUploadReq.chatID = widget.chat.chatID;
+      _UtilityUploadReq.chatID = _chat.chatID;
       _UtilityUploadReq.data = bytes;
-      _UtilityUploadReq.fileName = DateTime.now().millisecondsSinceEpoch.toString();
+      _UtilityUploadReq.fileName =
+          DateTime.now().millisecondsSinceEpoch.toString();
       uploadFile(_UtilityUploadReq, (data) {
         if (data.hasError) {
+          showFlushBar('UtilityUploadReq error ${data.res}', context);
           print('${data.res}');
         } else {
           print(data.res.file);
@@ -171,7 +240,7 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
 
   onTyping() {
     if (typingTimer == null) {
-      widget.chatRepository.sendTyping(widget.chat.chatID);
+      widget.chatRepository.sendTyping(_chat.chatID);
     } else {
       typingTimer?.cancel();
       typingTimer = Timer(Duration(milliseconds: 200), () {});
@@ -230,6 +299,13 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
 
           return MsgBubble(
             key: ValueKey(stateUpdate.messageID),
+            getStateRead: () => _stateRead,
+            setOwnStateRead: (stateRead) {
+              print('stateRead $stateRead');
+
+              _stateRead.ownStateRead = stateRead;
+              print('stateReadAll $_stateRead');
+            },
             userName: widget.authState.account.user.userName,
             isSelf:
                 stateUpdate.senderID == widget.authState.account.user.userID,
@@ -330,8 +406,8 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
       return;
     }
     try {
-      var res = await widget.chatRepository
-          .sendMsg(widget.chat.chatID, contentType, text);
+      var res =
+          await widget.chatRepository.sendMsg(_chat.chatID, contentType, text);
       print('res $res');
       _textEditingController.clear();
     } catch (e) {

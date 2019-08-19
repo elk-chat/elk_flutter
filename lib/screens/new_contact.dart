@@ -1,4 +1,6 @@
+import 'package:elk_chat/blocs/auth/auth_state.dart';
 import 'package:elk_chat/protocol/api/proto_helper.dart';
+import 'package:elk_chat/repositorys/chat_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -9,8 +11,15 @@ import 'contact_detail.dart';
 // 添加新联系人
 class NewContactScreen extends StatefulWidget {
   final String title;
+  final AuthState authState;
+  final ChatRepository chatRepository;
 
-  NewContactScreen({Key key, @required this.title}) : super(key: key);
+  NewContactScreen(
+      {Key key,
+      @required this.title,
+      @required this.authState,
+      @required this.chatRepository})
+      : super(key: key);
 
   @override
   _NewContactScreenState createState() => _NewContactScreenState();
@@ -47,7 +56,7 @@ class _NewContactScreenState extends State<NewContactScreen> {
     searchUser(_userGetUsersReq, (result) {
       if (!mounted) return;
       if (result.hasError) {
-        print(result);
+        print('searchUser has Error $result');
         setState(() {
           _status = 'error';
         });
@@ -67,8 +76,12 @@ class _NewContactScreenState extends State<NewContactScreen> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (BuildContext context) =>
-                ProfileScreen(title: contact.userName, contact: contact)));
+            builder: (BuildContext context) => ProfileScreen(
+                  title: contact.userName,
+                  contact: contact,
+                  authState: widget.authState,
+                  chatRepository: widget.chatRepository,
+                )));
   }
 
   @override

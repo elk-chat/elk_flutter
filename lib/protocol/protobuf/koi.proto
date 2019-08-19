@@ -407,6 +407,7 @@ message ChatGetStateReadReq {
 
 message ChatGetStateReadResp {
   uint64 StateRead  = 1;
+  uint64 OwnStateRead = 2;
 }
 
 message ChatSetTypingReq {

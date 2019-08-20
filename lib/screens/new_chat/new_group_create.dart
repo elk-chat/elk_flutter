@@ -40,6 +40,9 @@ class _NewGroupChatState extends State<NewGroupChatCreateScreen> {
   handleCreateChat() async {
     try {
       var res = await widget.chatRepository.create(text);
+      // res.chat.title = widget.title;
+      // res.chat.avatarFileID = widget.avatarFileID;
+      print('res.chat ${res.chat}');
       _chatBloc.dispatch(AddChat(chat: res.chat));
       widget.chatRepository.addMembers(widget.members, res.chat.chatID);
       Navigator.popUntil(context, ModalRoute.withName('/'));

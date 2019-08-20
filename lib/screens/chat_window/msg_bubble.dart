@@ -47,8 +47,10 @@ class _MsgBubbleState extends State<MsgBubble> {
     super.initState();
     // 标未已读
     getStateRead();
-    // 自己读到的 state
-    if (!widget.isSelf && ownStateRead < widget.stateUpdate.state) {
+    // 自己读到的 state，消息类型为发送的消息，并且没有发送过的
+    if ((widget.stateUpdate.messageType == ChatMessageType.SendMessage) &&
+        !widget.isSelf &&
+        ownStateRead < widget.stateUpdate.state) {
       ChatReadMessageReq _ChatReadMessageReq = ChatReadMessageReq();
       _ChatReadMessageReq.chatID = widget.stateUpdate.chatID;
       _ChatReadMessageReq.stateRead = widget.stateUpdate.state;

@@ -48,7 +48,9 @@ class ChatHub {
   onLastMsg(payload) {
     if (payload == null) return;
     var chatID = payload.chatID, stateUpdate = payload;
+    var notInChatList = lastMsgMap[chatID] == null;
     lastMsgMap[chatID] = stateUpdate;
+    if (notInChatList) return;
     if (sortTimer != null) {
       print('取消排序延迟200ms');
       sortTimer?.cancel();
@@ -66,7 +68,9 @@ class ChatHub {
   // 收到未读数
   onUnreadMsg(payload) {
     var type = payload['type'], chatID = payload['chatID'];
-
+    if (unreadMap[chatID] == null) {
+      unreadMap[chatID] = Int64(0);
+    }
     if (type == 'init') {
       var unreadCount = payload['unreadCount'];
       unreadMap[chatID] = unreadCount;
@@ -112,7 +116,7 @@ class ChatHub {
   }
 
   onReceiveMsg(payload) {
-    if (payload.hasError) {
+    if (payload['hasError']) {
       print('收到推送消息失败 $payload');
       return;
     } else {
@@ -178,21 +182,20 @@ class ChatHub {
     UpdateMessage updMsg = res.updateMessage;
     String eventName;
     bool messageUpdate = true;
+    bool addChat = false;
+    print('unreadMap[res.chatID] ${unreadMap[res.chatID]}');
     if (updMsg.hasUpdateMessageChatAddMember()) {
-      // 添加成员，如果当前没有这个聊天，就创建
-      // if (lastMsgMap[res.chatID)) {
+      addChat = unreadMap[res.chatID] == null;
+      // 触发排序
+      $WS.emit(CHEvent.ON_CHAT_LAST_MSG, res);
 
-      // }
       eventName = CHEvent.ADD_MEMBER(res.chatID);
-
-      // 触发排序
-      $WS.emit(CHEvent.ON_CHAT_LAST_MSG, res);
-    } else if (updMsg.hasUpdateMessageChatDeleteMember()) {
-      eventName = CHEvent.DELETE_MEMBER(res.chatID);
-
-      // 触发排序
-      $WS.emit(CHEvent.ON_CHAT_LAST_MSG, res);
     } else if (updMsg.hasUpdateMessageChatSendMessage()) {
+      // 收到新消息
+      addChat = unreadMap[res.chatID] == null;
+      // 触发排序
+      $WS.emit(CHEvent.ON_CHAT_LAST_MSG, res);
+
       // 发消息，如果当前没有这个聊天，就创建
       eventName = CHEvent.SEND_MSG(res.chatID, res.messageID);
       // 未读+1，已读就在渲染里面加，如果未读，又渲染了的话 未读 -1
@@ -203,6 +206,8 @@ class ChatHub {
       } else {
         print('自己的消息推送，未读不+1');
       }
+    } else if (updMsg.hasUpdateMessageChatDeleteMember()) {
+      eventName = CHEvent.DELETE_MEMBER(res.chatID);
 
       // 触发排序
       $WS.emit(CHEvent.ON_CHAT_LAST_MSG, res);
@@ -221,6 +226,9 @@ class ChatHub {
     $WS.emit(eventName, res);
     if (messageUpdate) {
       $WS.emit(CHEvent.ALL_MSG(res.chatID), res);
+    }
+    if (addChat) {
+      $WS.emit(CHEvent.ADD_CHAT, res);
     }
   }
 

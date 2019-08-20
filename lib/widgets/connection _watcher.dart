@@ -1,5 +1,7 @@
 import 'package:elk_chat/blocs/blocs.dart';
 import 'package:elk_chat/chat_hub/const.dart';
+import 'package:elk_chat/protocol/api/api.dart';
+import 'package:elk_chat/protocol/protobuf/koi.pb.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:elk_chat/repositorys/auth_repository.dart';
@@ -26,6 +28,7 @@ class _ConnectionWatcherState extends State<ConnectionWatcher> {
   Function chatListSubscription;
   Function contactListSubscription;
   Function resortChatListSubscription;
+  Function addChatSubscription;
 
   final int MAX_UPDATING = 2; // 聊天列表/联系人列表
   int updateCount = 0;
@@ -68,10 +71,51 @@ class _ConnectionWatcherState extends State<ConnectionWatcher> {
         $WS.on(CHEvent.SORT_CHATS_BY_LAST_MSG, (payload) {
       _chatBloc.dispatch(ResortChatList());
     });
+
+    addChatSubscription = $WS.on(CHEvent.ADD_CHAT, (payload) {
+      if (payload.senderID == $WS.user.userID) return;
+      UpdateMessage updMsg = payload.updateMessage;
+      Chat chat = Chat();
+      chat.chatID = payload.chatID;
+      chat.createAt = payload.actionTime;
+      chat.updatedAt = payload.actionTime;
+      print('add chat $chat');
+      if (updMsg.hasUpdateMessageChatAddMember()) {
+        chat.chatType = ChatType.Group;
+        print('add chat group $chat');
+      } else if (updMsg.hasUpdateMessageChatSendMessage()) {
+        /*
+          chatID: 218
+          senderID: 98
+          messageID: 383474961559326720
+          messageType: 1
+          state: 1
+          actionTime: 1566230443
+          updateMessage: {
+            updateMessageChatSendMessage: {
+              chatID: 218
+              senderName: jj2
+              message: qwe
+              contentType: 1
+              actionTime: 1566230443
+            }
+          }
+        */
+        chat.chatType = ChatType.OneToOne;
+        print('add chat one to one $chat');
+      }
+      // 如果是群聊天，再去获取一次群列表
+      if (chat.chatType == ChatType.Group) {
+        $WS.emit(UPDATE_CHAT_LIST);
+      }
+      // 缺点：群聊天没有标题和头像，如果是群聊天，那么触发获取最新聊天列表
+      _chatBloc.dispatch(AddChat(chat: chat));
+    });
   }
 
   @override
   void dispose() {
+    addChatSubscription();
     authSubscription();
     wsStatusSubscription();
     heartBeatSubscription();

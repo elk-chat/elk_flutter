@@ -108,6 +108,7 @@ class _LoginFormState extends State<LoginForm> {
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 20.0),
                               child: TextField(
+                                  autocorrect: false,
                                   onChanged: (val) {
                                     setState(() {
                                       _text = val;

@@ -149,6 +149,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 Container(
                     padding: EdgeInsets.symmetric(horizontal: 20.0),
                     child: TextField(
+                      autocorrect: false,
                       focusNode: _usernameFocusNode,
                       controller: _usernameController,
                       textInputAction: TextInputAction.next,
@@ -246,7 +247,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       },
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(40.0)),
-                child: Text(loading ? '立即注���中' : '立即注册',
+                child: Text(loading ? '立即注册中' : '立即注册',
                     style: TextStyle(color: Colors.white)),
                 color: Colors.blue,
               ),

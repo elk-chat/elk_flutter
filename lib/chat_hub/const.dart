@@ -59,4 +59,7 @@ class CHEvent {
 
   // 触发排序
   static String SORT_CHATS_BY_LAST_MSG = 'SORT_CHATS_BY_LAST_MSGS';
+
+  // 添加聊天
+  static String ADD_CHAT = 'ADD_CHAT';
 }

@@ -45,6 +45,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       // yield ChatLoaded(chats: [], hasReachedMax: false);
       yield ChatUninitialized();
     }
+    print(
+        '$event; event is AddChat ${event is AddChat};currentState is ChatLoaded ${currentState is ChatLoaded}');
 
     if (event is AddChat) {
       if (currentState is ChatLoaded) {
@@ -57,6 +59,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
             break;
           }
         }
+        print('inChat $inChat');
         if (!inChat) {
           chats.insert(0, event.chat);
           yield ChatLoaded(chats: chats);

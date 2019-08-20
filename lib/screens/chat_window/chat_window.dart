@@ -49,6 +49,7 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
   Int64 pageSize;
   Int64 allCount;
   List<StateUpdate> msgs = [];
+  // List<StateUpdate> _tmpMsgs = [];
 
   bool showSticker = false;
   bool showAttachment = false;
@@ -141,12 +142,31 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
       if (res.messageType == ChatMessageType.ReadState) return;
       // 有新消息
       if (mounted) {
+        List<StateUpdate> msgList = [res]..addAll(msgs.toList());
+        // _tmpMsgs = [];
+        msgList.sort((a, b) => b.state.compareTo(a.state));
         setState(() {
-          msgs = [res]..addAll(msgs.toList());
+          msgs = msgList;
         });
 
         _scrollController.animateTo(0.0,
             duration: Duration(milliseconds: 300), curve: Curves.easeOut);
+        /*
+        _tmpMsgs.add(res);
+        // 50 毫秒执行一次更新
+        Timer(Duration(milliseconds: 50), () {
+          if (!mounted || _tmpMsgs.isEmpty) return;
+          List<StateUpdate> msgList = _tmpMsgs..addAll(msgs.toList());
+          _tmpMsgs = [];
+          msgList.sort((a, b) => b.state.compareTo(a.state));
+          setState(() {
+            msgs = msgList;
+          });
+
+          _scrollController.animateTo(0.0,
+              duration: Duration(milliseconds: 300), curve: Curves.easeOut);
+        });
+        */
       }
     });
   }
@@ -269,7 +289,8 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
           // ),
         ],
       ),
-      body: Stack(
+      body: SafeArea(
+          child: Stack(
         children: <Widget>[
           Column(
             children: <Widget>[
@@ -280,7 +301,7 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
             ],
           )
         ],
-      ),
+      )),
     );
   }
 

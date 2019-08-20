@@ -141,6 +141,7 @@ class _NewContactScreenState extends State<NewContactScreen> {
           Container(
               padding: const EdgeInsets.only(left: 5.0, right: 5.0, top: 0.0),
               child: TextField(
+                autocorrect: false,
                 autofocus: true,
                 controller: _controller,
                 onSubmitted: (text) {

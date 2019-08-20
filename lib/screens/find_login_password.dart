@@ -50,6 +50,7 @@ class FindLoginPwdScreen extends StatelessWidget {
                 Container(
                     padding: EdgeInsets.symmetric(horizontal: 20.0),
                     child: TextField(
+                      autocorrect: false,
                       style: TextStyle(color: Colors.blue),
                       decoration: InputDecoration(
                           hintText: "用户名",

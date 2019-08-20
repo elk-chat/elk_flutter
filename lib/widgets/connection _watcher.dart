@@ -64,7 +64,7 @@ class _ConnectionWatcherState extends State<ConnectionWatcher> {
     });
 
     chatListSubscription = $WS.on(UPDATE_CHAT_LIST, (data) {
-      _chatBloc.dispatch(FetchChatList());
+      _chatBloc.dispatch(FetchChatList(emitUpdated: true, sync: true));
     });
 
     resortChatListSubscription =
@@ -106,7 +106,7 @@ class _ConnectionWatcherState extends State<ConnectionWatcher> {
       }
       // 如果是群聊天，再去获取一次群列表
       if (chat.chatType == ChatType.Group) {
-        $WS.emit(UPDATE_CHAT_LIST);
+        _chatBloc.dispatch(FetchChatList(emitUpdated: false, sync: false));
       }
       // 缺点：群聊天没有标题和头像，如果是群聊天，那么触发获取最新聊天列表
       _chatBloc.dispatch(AddChat(chat: chat));
@@ -175,14 +175,14 @@ class _ConnectionWatcherState extends State<ConnectionWatcher> {
         var now = DateTime.now();
         if (lastUpdatingTime != null) {
           var durationSeconds = now.difference(lastUpdatingTime).inSeconds;
-          // 2 秒内避免再次同步
+          // 5 秒内避免再次同步
           if (durationSeconds <= 5) {
             print('避免触发更新，avoid updating');
             return;
           }
         }
-        lastUpdatingTime = now;
         if ($WS.isLogined) {
+          lastUpdatingTime = now;
           print('已连接, 触发更新 updating $payload');
           $WS.emit(UPDATE_CONTACT_LIST);
           $WS.emit(UPDATE_CHAT_LIST);

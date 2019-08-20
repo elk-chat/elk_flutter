@@ -27,7 +27,7 @@ class ChatRepository {
       ChatGetChatStateMessagesCondition();
 
   // 获取聊天列表
-  Future<List<Chat>> getChats() async {
+  Future<List<Chat>> getChats([bool sync = true]) async {
     Completer _completer = Completer<List<Chat>>();
 
     getChatList(_ChatGetChatsReq, (data) {
@@ -36,16 +36,19 @@ class ChatRepository {
       } else {
         List<Chat> chats = data.res.chats;
         // 过滤掉联系人
-        chats = chats.where((i) => i.chatType != 3).toList().reversed.toList();
+        chats = chats.where((i) => i.chatType != 3).toList();
 
-        // 获取未读数
-        getChatsLastUnread(chats);
+        print('sync $sync');
+        if (sync) {
+          // 获取未读数
+          print('获取未读数');
+          getChatsLastUnread(chats);
 
-        // 获取最后一条消息
-        getChatsLastMsg(chats);
+          // 获取最后一条消息
+          print('获取最后一条消息');
+          getChatsLastMsg(chats);
+        }
         /*
-
-
           // 获取聊天成员
           getChatMembers(chats);
 
@@ -107,15 +110,28 @@ class ChatRepository {
     return _completer.future;
   }
 
-  Future<ChatGetChatStateMessagesResp> getMsgHistory(
-      int pageIndex, int pageSize, Int64 chatID,
-      [List<int> messageTypes]) {
+  Future<ChatGetChatStateMessagesResp> getMsgHistory(Int64 chatID,
+      [List<int> messageTypes,
+      int pageIndex,
+      int pageSize,
+      Int64 stateBefore,
+      Int64 stateAfter]) {
     Completer _completer = Completer<ChatGetChatStateMessagesResp>();
-    _ChatGetChatStateMessagesCondition.clear();
-    _ChatGetChatStateMessagesReq.paging.pageIndex = Int64(pageIndex);
-    _ChatGetChatStateMessagesReq.paging.pageSize = Int64(pageSize);
+    if (pageIndex != null) {
+      _ChatGetChatStateMessagesReq.paging.pageIndex = Int64(pageIndex);
+    }
+    if (pageSize != null) {
+      _ChatGetChatStateMessagesReq.paging.pageSize = Int64(pageSize);
+    }
 
+    _ChatGetChatStateMessagesCondition.clear();
     _ChatGetChatStateMessagesCondition.chatID = chatID;
+    if (stateBefore != null) {
+      _ChatGetChatStateMessagesCondition.stateBefore = stateBefore;
+    }
+    if (stateAfter != null) {
+      _ChatGetChatStateMessagesCondition.stateAfter = stateAfter;
+    }
     if (messageTypes != null) {
       for (var i in messageTypes) {
         _ChatGetChatStateMessagesCondition.messageTypes.add(i);
@@ -137,7 +153,8 @@ class ChatRepository {
   Future getChatsLastMsg(List<Chat> chats) async {
     fn(i) async {
       try {
-        var res = await getMsgHistory(0, 1, i.chatID, [1, 2]);
+        var res = await getMsgHistory(i.chatID, [1, 2], 0, 1);
+        print('res.stateUpdates ${res.stateUpdates.length}');
         // 如果有最后一条消息，通知排序
         if (res.stateUpdates.length > 0) {
           $WS.emit(CHEvent.ON_CHAT_LAST_MSG, res.stateUpdates[0]);

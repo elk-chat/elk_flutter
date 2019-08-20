@@ -75,7 +75,7 @@ class _MoreScreenState extends State<MoreScreen>
                           builder: (BuildContext context) {
                             return CupertinoActionSheet(
                               title: Text('退出登录'),
-                              message: Text('请选择退出登录方式'),
+                              message: Text('请选择退出方式'),
                               actions: <Widget>[
                                 CupertinoActionSheetAction(
                                   child: Text('退出'),

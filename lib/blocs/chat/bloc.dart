@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:elk_chat/init_websocket.dart';
 import 'package:elk_chat/protocol/protobuf/koi.pb.dart';
 import 'package:meta/meta.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:bloc/bloc.dart';
 import 'chat.dart';
 import 'package:elk_chat/repositorys/chat_repository.dart';
@@ -13,18 +12,18 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   ChatBloc({@required this.chatRepository});
 
-  @override
-  Stream<ChatState> transform(
-    Stream<ChatEvent> events,
-    Stream<ChatState> Function(ChatEvent event) next,
-  ) {
-    return super.transform(
-      (events as Observable<ChatEvent>).debounceTime(
-        Duration(milliseconds: 500),
-      ),
-      next,
-    );
-  }
+  // @override
+  // Stream<ChatState> transform(
+  //   Stream<ChatEvent> events,
+  //   Stream<ChatState> Function(ChatEvent event) next,
+  // ) {
+  //   return super.transform(
+  //     (events as Observable<ChatEvent>).debounceTime(
+  //       Duration(milliseconds: 100),
+  //     ),
+  //     next,
+  //   );
+  // }
 
   @override
   get initialState => ChatUninitialized();
@@ -76,13 +75,17 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     if (event is FetchChatList) {
       try {
         // final sortedChats = $CH.chats;
-        final chats = await chatRepository.getChats();
+        final chats = await chatRepository.getChats(event.sync);
         // 提示更新完成+1
-        $WS.emit(UPDATING);
+        if (event.emitUpdated) {
+          $WS.emit(UPDATING);
+        }
         yield ChatLoaded(chats: resortChatByUpdateTime(chats));
       } catch (_) {
         print('FetchChatList error: $_');
-        $WS.emit(UPDATING);
+        if (event.emitUpdated) {
+          $WS.emit(UPDATING);
+        }
         yield ChatError();
       }
     }

@@ -372,6 +372,7 @@ class UpdateMessageChatSendMessage extends $pb.GeneratedMessage {
     ..a<$core.int>(4, 'contentType', $pb.PbFieldType.O3)
     ..aInt64(5, 'fileID')
     ..aInt64(6, 'actionTime')
+    ..a<Markup>(7, 'markup', $pb.PbFieldType.OM, Markup.getDefault, Markup.create)
     ..hasRequiredFields = false
   ;
 
@@ -418,6 +419,11 @@ class UpdateMessageChatSendMessage extends $pb.GeneratedMessage {
   set actionTime(Int64 v) { $_setInt64(5, v); }
   $core.bool hasActionTime() => $_has(5);
   void clearActionTime() => clearField(6);
+
+  Markup get markup => $_getN(6);
+  set markup(Markup v) { setField(7, v); }
+  $core.bool hasMarkup() => $_has(6);
+  void clearMarkup() => clearField(7);
 }
 
 class UpdateMessageChatDeleteMessage extends $pb.GeneratedMessage {
@@ -2348,12 +2354,86 @@ class ChatGetMembersResp extends $pb.GeneratedMessage {
   $core.List<Member> get members => $_getList(0);
 }
 
+class Markup extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('Markup', package: const $pb.PackageName('kproto'))
+    ..a<$core.int>(1, 'columnSize', $pb.PbFieldType.O3)
+    ..pc<MarkupElement>(2, 'elements', $pb.PbFieldType.PM,MarkupElement.create)
+    ..hasRequiredFields = false
+  ;
+
+  Markup._() : super();
+  factory Markup() => create();
+  factory Markup.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory Markup.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  Markup clone() => Markup()..mergeFromMessage(this);
+  Markup copyWith(void Function(Markup) updates) => super.copyWith((message) => updates(message as Markup));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static Markup create() => Markup._();
+  Markup createEmptyInstance() => create();
+  static $pb.PbList<Markup> createRepeated() => $pb.PbList<Markup>();
+  static Markup getDefault() => _defaultInstance ??= create()..freeze();
+  static Markup _defaultInstance;
+
+  $core.int get columnSize => $_get(0, 0);
+  set columnSize($core.int v) { $_setSignedInt32(0, v); }
+  $core.bool hasColumnSize() => $_has(0);
+  void clearColumnSize() => clearField(1);
+
+  $core.List<MarkupElement> get elements => $_getList(1);
+}
+
+class MarkupElement extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('MarkupElement', package: const $pb.PackageName('kproto'))
+    ..a<$core.int>(1, 'elementType', $pb.PbFieldType.O3)
+    ..aOS(2, 'caption')
+    ..aInt64(3, 'fileID')
+    ..aOS(4, 'message')
+    ..hasRequiredFields = false
+  ;
+
+  MarkupElement._() : super();
+  factory MarkupElement() => create();
+  factory MarkupElement.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory MarkupElement.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  MarkupElement clone() => MarkupElement()..mergeFromMessage(this);
+  MarkupElement copyWith(void Function(MarkupElement) updates) => super.copyWith((message) => updates(message as MarkupElement));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static MarkupElement create() => MarkupElement._();
+  MarkupElement createEmptyInstance() => create();
+  static $pb.PbList<MarkupElement> createRepeated() => $pb.PbList<MarkupElement>();
+  static MarkupElement getDefault() => _defaultInstance ??= create()..freeze();
+  static MarkupElement _defaultInstance;
+
+  $core.int get elementType => $_get(0, 0);
+  set elementType($core.int v) { $_setSignedInt32(0, v); }
+  $core.bool hasElementType() => $_has(0);
+  void clearElementType() => clearField(1);
+
+  $core.String get caption => $_getS(1, '');
+  set caption($core.String v) { $_setString(1, v); }
+  $core.bool hasCaption() => $_has(1);
+  void clearCaption() => clearField(2);
+
+  Int64 get fileID => $_getI64(2);
+  set fileID(Int64 v) { $_setInt64(2, v); }
+  $core.bool hasFileID() => $_has(2);
+  void clearFileID() => clearField(3);
+
+  $core.String get message => $_getS(3, '');
+  set message($core.String v) { $_setString(3, v); }
+  $core.bool hasMessage() => $_has(3);
+  void clearMessage() => clearField(4);
+}
+
 class ChatSendMessageReq extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('ChatSendMessageReq', package: const $pb.PackageName('kproto'))
     ..aInt64(1, 'chatID')
     ..a<$core.int>(2, 'contentType', $pb.PbFieldType.O3)
     ..aOS(3, 'message')
     ..aInt64(4, 'fileID')
+    ..a<Markup>(5, 'markup', $pb.PbFieldType.OM, Markup.getDefault, Markup.create)
     ..hasRequiredFields = false
   ;
 
@@ -2390,6 +2470,11 @@ class ChatSendMessageReq extends $pb.GeneratedMessage {
   set fileID(Int64 v) { $_setInt64(3, v); }
   $core.bool hasFileID() => $_has(3);
   void clearFileID() => clearField(4);
+
+  Markup get markup => $_getN(4);
+  set markup(Markup v) { setField(5, v); }
+  $core.bool hasMarkup() => $_has(4);
+  void clearMarkup() => clearField(5);
 }
 
 class ChatSendMessageResp extends $pb.GeneratedMessage {
@@ -2634,9 +2719,11 @@ class ChatGetChatStateMessagesCondition extends $pb.GeneratedMessage {
     ..aInt64(1, 'senderID')
     ..aInt64(2, 'chatID')
     ..a<Int64>(3, 'state', $pb.PbFieldType.OU6, Int64.ZERO)
-    ..p<$core.int>(4, 'messageTypes', $pb.PbFieldType.P3)
-    ..aOS(5, 'messageContent')
-    ..a<TimeRange>(6, 'actionTimeRange', $pb.PbFieldType.OM, TimeRange.getDefault, TimeRange.create)
+    ..a<Int64>(4, 'stateBefore', $pb.PbFieldType.OU6, Int64.ZERO)
+    ..a<Int64>(5, 'stateAfter', $pb.PbFieldType.OU6, Int64.ZERO)
+    ..p<$core.int>(6, 'messageTypes', $pb.PbFieldType.P3)
+    ..aOS(7, 'messageContent')
+    ..a<TimeRange>(8, 'actionTimeRange', $pb.PbFieldType.OM, TimeRange.getDefault, TimeRange.create)
     ..hasRequiredFields = false
   ;
 
@@ -2669,17 +2756,27 @@ class ChatGetChatStateMessagesCondition extends $pb.GeneratedMessage {
   $core.bool hasState() => $_has(2);
   void clearState() => clearField(3);
 
-  $core.List<$core.int> get messageTypes => $_getList(3);
+  Int64 get stateBefore => $_getI64(3);
+  set stateBefore(Int64 v) { $_setInt64(3, v); }
+  $core.bool hasStateBefore() => $_has(3);
+  void clearStateBefore() => clearField(4);
 
-  $core.String get messageContent => $_getS(4, '');
-  set messageContent($core.String v) { $_setString(4, v); }
-  $core.bool hasMessageContent() => $_has(4);
-  void clearMessageContent() => clearField(5);
+  Int64 get stateAfter => $_getI64(4);
+  set stateAfter(Int64 v) { $_setInt64(4, v); }
+  $core.bool hasStateAfter() => $_has(4);
+  void clearStateAfter() => clearField(5);
 
-  TimeRange get actionTimeRange => $_getN(5);
-  set actionTimeRange(TimeRange v) { setField(6, v); }
-  $core.bool hasActionTimeRange() => $_has(5);
-  void clearActionTimeRange() => clearField(6);
+  $core.List<$core.int> get messageTypes => $_getList(5);
+
+  $core.String get messageContent => $_getS(6, '');
+  set messageContent($core.String v) { $_setString(6, v); }
+  $core.bool hasMessageContent() => $_has(6);
+  void clearMessageContent() => clearField(7);
+
+  TimeRange get actionTimeRange => $_getN(7);
+  set actionTimeRange(TimeRange v) { setField(8, v); }
+  $core.bool hasActionTimeRange() => $_has(7);
+  void clearActionTimeRange() => clearField(8);
 }
 
 class ChatGetChatStateMessagesReq extends $pb.GeneratedMessage {

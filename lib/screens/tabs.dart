@@ -39,10 +39,8 @@ class _TabsScreenState extends State<TabsScreen> {
         icon: ChatUnreadBadge(
             size: _iconSize,
             icon: MaterialIcons.getIconData('chat-bubble-outline')),
-        activeIcon: Icon(
-          MaterialIcons.getIconData('chat-bubble'),
-          size: _iconSize,
-        ),
+        activeIcon: ChatUnreadBadge(
+            size: _iconSize, icon: MaterialIcons.getIconData('chat-bubble')),
         title: Container(height: 0.0),
       ),
       BottomNavigationBarItem(

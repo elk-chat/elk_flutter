@@ -12,6 +12,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:elk_chat/repositorys/repositorys.dart';
 import 'msg_bubble.dart';
@@ -41,6 +42,7 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
   final _scrollController = ScrollController();
   final _textEditingController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
+  final int PAGE_SIZE = 12;
 
   File imageFile;
   int pageIndex = 0;
@@ -66,7 +68,7 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
   Chat _chat;
   ChatBloc _chatBloc;
 
-  ChatGetStateReadResp _stateRead;
+  ChatGetStateReadResp _stateRead = ChatGetStateReadResp();
 
   @override
   void initState() {
@@ -127,14 +129,15 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
         print('未读 stateRead: ${data.res}');
 
         readSubscription = $WS.on(CHEvent.READ_MSG(_chat.chatID), (res) {
-          _stateRead.stateRead = res.state;
+          _stateRead.stateRead =
+              res.updateMessage.updateMessageChatReadMessage.stateRead;
           if (mounted) {
             setState(() {
               _stateRead = _stateRead;
             });
           }
         });
-        getMsgHistory();
+        getMsgHistory(null, null);
       }
     });
 
@@ -142,8 +145,20 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
       if (res.messageType == ChatMessageType.ReadState) return;
       // 有新消息
       if (mounted) {
+        // 去重
+        bool duplicates = false;
+        for (var i in msgs) {
+          if (i.state == res.state) {
+            duplicates = true;
+            print('重复消息 $res');
+            break;
+          }
+        }
+        if (duplicates) return;
+        // 是否可以取后面的进行优化？
         List<StateUpdate> msgList = [res]..addAll(msgs.toList());
         // _tmpMsgs = [];
+        // 根据 state 排序，这里的 state 有可能是重复的
         msgList.sort((a, b) => b.state.compareTo(a.state));
         setState(() {
           msgs = msgList;
@@ -183,10 +198,16 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
 
   // 列表是倒过来的，所以滚动到顶部，这里是滚动到底部
   void _scrollListener() {
+    if (hasReachedMax || loading) return;
     if ((_scrollController.offset + 50) >=
         _scrollController.position.maxScrollExtent) {
       // print("reach the top");
-      getMsgHistory();
+      var firstMsg = msgs[msgs.length - 1];
+      print('first msg $firstMsg');
+      getMsgHistory(
+        firstMsg == null ? null : firstMsg.state,
+        null,
+      );
     }
     if (_scrollController.offset <=
             _scrollController.position.minScrollExtent &&
@@ -195,17 +216,25 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
     }
   }
 
-  Future getMsgHistory() async {
-    if (hasReachedMax || loading) return;
+  Future getMsgHistory(Int64 stateBefore, Int64 stateAfter) async {
     setState(() {
       loading = true;
     });
     try {
       print('获取聊天记录 $pageIndex');
-      var res = await widget.chatRepository
-          .getMsgHistory(pageIndex, 20, _chat.chatID, [1, 2]);
+      var res = await widget.chatRepository.getMsgHistory(
+        _chat.chatID,
+        [1, 2], // messageTypes
+        null, //pageIndex
+        PAGE_SIZE, // pageSize
+
+        stateBefore, //stateBefore,
+        stateAfter, // stateAfter,
+      );
       if (!mounted) return;
-      if (res.stateUpdates.length < 20) {
+      print(
+          'res.stateUpdates.length ${res.stateUpdates.length} res.paging ${res.paging}');
+      if (res.stateUpdates.length < PAGE_SIZE) {
         hasReachedMax = true;
       }
       if (mounted) {
@@ -260,10 +289,11 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
 
   onTyping() {
     if (typingTimer == null) {
+      typingTimer = Timer(Duration(seconds: 1), () {
+        print('停止输入');
+        typingTimer = null;
+      });
       widget.chatRepository.sendTyping(_chat.chatID);
-    } else {
-      typingTimer?.cancel();
-      typingTimer = Timer(Duration(milliseconds: 200), () {});
     }
   }
 
@@ -429,7 +459,7 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
     try {
       var res =
           await widget.chatRepository.sendMsg(_chat.chatID, contentType, text);
-      print('res $res');
+      print('send message response: $res');
       _textEditingController.clear();
     } catch (e) {
       print('send message error $e');

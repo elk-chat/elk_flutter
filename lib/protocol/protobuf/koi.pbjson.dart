@@ -95,6 +95,7 @@ const UpdateMessageChatSendMessage$json = const {
     const {'1': 'ContentType', '3': 4, '4': 1, '5': 5, '10': 'ContentType'},
     const {'1': 'FileID', '3': 5, '4': 1, '5': 3, '10': 'FileID'},
     const {'1': 'ActionTime', '3': 6, '4': 1, '5': 3, '10': 'ActionTime'},
+    const {'1': 'Markup', '3': 7, '4': 1, '5': 11, '6': '.kproto.Markup', '10': 'Markup'},
   ],
 };
 
@@ -563,6 +564,24 @@ const ChatGetMembersResp$json = const {
   ],
 };
 
+const Markup$json = const {
+  '1': 'Markup',
+  '2': const [
+    const {'1': 'ColumnSize', '3': 1, '4': 1, '5': 5, '10': 'ColumnSize'},
+    const {'1': 'Elements', '3': 2, '4': 3, '5': 11, '6': '.kproto.MarkupElement', '10': 'Elements'},
+  ],
+};
+
+const MarkupElement$json = const {
+  '1': 'MarkupElement',
+  '2': const [
+    const {'1': 'ElementType', '3': 1, '4': 1, '5': 5, '10': 'ElementType'},
+    const {'1': 'Caption', '3': 2, '4': 1, '5': 9, '10': 'Caption'},
+    const {'1': 'FileID', '3': 3, '4': 1, '5': 3, '10': 'FileID'},
+    const {'1': 'Message', '3': 4, '4': 1, '5': 9, '10': 'Message'},
+  ],
+};
+
 const ChatSendMessageReq$json = const {
   '1': 'ChatSendMessageReq',
   '2': const [
@@ -570,6 +589,7 @@ const ChatSendMessageReq$json = const {
     const {'1': 'ContentType', '3': 2, '4': 1, '5': 5, '10': 'ContentType'},
     const {'1': 'Message', '3': 3, '4': 1, '5': 9, '10': 'Message'},
     const {'1': 'FileID', '3': 4, '4': 1, '5': 3, '10': 'FileID'},
+    const {'1': 'Markup', '3': 5, '4': 1, '5': 11, '6': '.kproto.Markup', '10': 'Markup'},
   ],
 };
 
@@ -637,9 +657,11 @@ const ChatGetChatStateMessagesCondition$json = const {
     const {'1': 'SenderID', '3': 1, '4': 1, '5': 3, '10': 'SenderID'},
     const {'1': 'ChatID', '3': 2, '4': 1, '5': 3, '10': 'ChatID'},
     const {'1': 'State', '3': 3, '4': 1, '5': 4, '10': 'State'},
-    const {'1': 'MessageTypes', '3': 4, '4': 3, '5': 5, '10': 'MessageTypes'},
-    const {'1': 'MessageContent', '3': 5, '4': 1, '5': 9, '10': 'MessageContent'},
-    const {'1': 'ActionTimeRange', '3': 6, '4': 1, '5': 11, '6': '.kproto.TimeRange', '10': 'ActionTimeRange'},
+    const {'1': 'StateBefore', '3': 4, '4': 1, '5': 4, '10': 'StateBefore'},
+    const {'1': 'StateAfter', '3': 5, '4': 1, '5': 4, '10': 'StateAfter'},
+    const {'1': 'MessageTypes', '3': 6, '4': 3, '5': 5, '10': 'MessageTypes'},
+    const {'1': 'MessageContent', '3': 7, '4': 1, '5': 9, '10': 'MessageContent'},
+    const {'1': 'ActionTimeRange', '3': 8, '4': 1, '5': 11, '6': '.kproto.TimeRange', '10': 'ActionTimeRange'},
   ],
 };
 

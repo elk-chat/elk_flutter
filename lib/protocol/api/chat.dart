@@ -81,7 +81,7 @@ createChatAndAddMember(Map formData, WebsocketCallback cb) {
   /// 调用添加联系人
 }
 
-/// 发送聊天消息
+/// 发送聊天消息，放在队列中，自定义reqID
 sendChatMsg(ChatSendMessageReq proto, WebsocketCallback cb,
     [ChatSendMessageResp resp]) {
   return $WS.send(method: "ChatSendMessageReq", protobuf: proto, cb: cb);

@@ -315,8 +315,8 @@ class WebSocket extends EventEmitter {
       dynamic protobuf,
       Map data,
       WebsocketCallback cb,
-      // requestId: 通过  $WS.getRequestID() 生成，参数可选
-      BigInt requestId,
+      // requestID: 通过  $WS.getRequestID() 生成，参数可选
+      BigInt requestID,
       // 是否需要没网络时，返回
       bool delay = false,
       // 如果没有网络，是否需���放到队列中
@@ -330,7 +330,7 @@ class WebSocket extends EventEmitter {
     method = stringUtil.getConstantCase(text: method);
     sendCount++;
     // 用时间戳和随机数作为 RequestID
-    BigInt rid = requestId is BigInt ? requestId : genRequestID();
+    BigInt rid = requestID is BigInt ? requestID : genRequestID();
     String eventName = getEventName(rid);
     String _queueID = '${method}_${queueID}';
     Uint8List dataBuf;

@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:elk_chat/init_websocket.dart';
 import 'package:meta/meta.dart';
-import 'package:rxdart/rxdart.dart';
+// import 'package:rxdart/rxdart.dart';
 import 'package:bloc/bloc.dart';
 import 'contact.dart';
 import '../../repositorys/contact_repository.dart';
@@ -12,18 +12,18 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
 
   ContactBloc({@required this.contactRepository});
 
-  @override
-  Stream<ContactState> transform(
-    Stream<ContactEvent> events,
-    Stream<ContactState> Function(ContactEvent event) next,
-  ) {
-    return super.transform(
-      (events as Observable<ContactEvent>).debounceTime(
-        Duration(milliseconds: 500),
-      ),
-      next,
-    );
-  }
+  // @override
+  // Stream<ContactState> transform(
+  //   Stream<ContactEvent> events,
+  //   Stream<ContactState> Function(ContactEvent event) next,
+  // ) {
+  //   return super.transform(
+  //     (events as Observable<ContactEvent>).debounceTime(
+  //       Duration(milliseconds: 100),
+  //     ),
+  //     next,
+  //   );
+  // }
 
   @override
   get initialState => ContactUninitialized();

@@ -263,6 +263,12 @@ decodeProto = (buffer) => proto.ChatGetMembersReq.fromBuffer(buffer);
 } else if (sig == SigMapper['SIG_CHAT_GET_MEMBERS_RESP']) {
 decodeMethod ='SIG_CHAT_GET_MEMBERS_RESP';
 decodeProto = (buffer) => proto.ChatGetMembersResp.fromBuffer(buffer);
+} else if (sig == SigMapper['SIG_MARKUP']) {
+decodeMethod ='SIG_MARKUP';
+decodeProto = (buffer) => proto.Markup.fromBuffer(buffer);
+} else if (sig == SigMapper['SIG_MARKUP_ELEMENT']) {
+decodeMethod ='SIG_MARKUP_ELEMENT';
+decodeProto = (buffer) => proto.MarkupElement.fromBuffer(buffer);
 } else if (sig == SigMapper['SIG_CHAT_SEND_MESSAGE_REQ']) {
 decodeMethod ='SIG_CHAT_SEND_MESSAGE_REQ';
 decodeProto = (buffer) => proto.ChatSendMessageReq.fromBuffer(buffer);

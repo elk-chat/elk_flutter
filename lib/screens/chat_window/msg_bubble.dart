@@ -4,10 +4,10 @@ import 'package:elk_chat/init_websocket.dart';
 import 'package:elk_chat/protocol/api/chat.dart';
 import 'package:elk_chat/protocol/api/state.dart';
 import 'package:elk_chat/protocol/protobuf/koi.pb.dart';
-import 'package:elk_chat/widgets/flushbar.dart';
 import 'package:elk_chat/widgets/widgets.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 
 class MsgBubble extends StatefulWidget {
@@ -57,13 +57,14 @@ class _MsgBubbleState extends State<MsgBubble> {
       widget.setOwnStateRead(widget.stateUpdate.state);
       readMsg(_ChatReadMessageReq, (data) {
         if (data.hasError) {
-          showFlushBar('标记为已读失败 ${data.res}', context);
+          print("标为已读失败 $data");
         } else {
           if (mounted) {
-            //  未读清空，有bug，目前将就处理
+            //  未读清空，有 bug：目前直接清零，本来应该是，读到哪条就减少多少未读数
             Int64 zero = Int64(0);
             $CH.unreadMap[widget.stateUpdate.chatID] = zero;
             $WS.emit(CHEvent.INIT_CHAT_UNREAD(widget.stateUpdate.chatID), zero);
+            $WS.emit(CHEvent.GET_ALL_CHAT_UNREAD, $CH.getAllUnreadCount());
           }
           print('已标为已读');
         }
@@ -81,7 +82,7 @@ class _MsgBubbleState extends State<MsgBubble> {
     switch (msg.contentType) {
       case ChatContentType.Text:
         tmp = Text(
-            '${msg.message}  [${stateRead}-${widget.stateUpdate.state}] ${stateRead >= widget.stateUpdate.state ? '已读' : '未读'}',
+            '${msg.message}  [stateRead${stateRead}-${widget.stateUpdate.state}] ${stateRead >= widget.stateUpdate.state ? '已读' : '未读'}',
             textAlign: TextAlign.right);
         break;
       case ChatContentType.Image:

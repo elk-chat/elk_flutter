@@ -48,9 +48,9 @@ class ChatHub {
   onLastMsg(payload) {
     if (payload == null) return;
     var chatID = payload.chatID, stateUpdate = payload;
-    var notInChatList = lastMsgMap[chatID] == null;
+    // var notInChatList = lastMsgMap[chatID] == null;
     lastMsgMap[chatID] = stateUpdate;
-    if (notInChatList) return;
+    // if (notInChatList) return;
     if (sortTimer != null) {
       print('取消排序延迟200ms');
       sortTimer?.cancel();
@@ -103,6 +103,7 @@ class ChatHub {
     unreadMap.forEach((chatID, count) {
       unreadCount += count;
     });
+    print('unreadCount $unreadCount');
     return unreadCount;
   }
 

@@ -123,7 +123,7 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
     // 获取读到哪条，需要监听 stateRead 变化
     getStateRead(_ChatGetStateReadReq, (data) {
       if (data.hasError) {
-        showFlushBar('获取未读 stateRead 失败: ${data.res}', context);
+        // showFlushBar('获取未读 stateRead 失败: ${data.res}', context);
       } else {
         _stateRead = data.res;
         print('未读 stateRead: ${data.res}');

@@ -273,8 +273,22 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
         }
       });
       print('imageFile $imageFile');
+
+      print('file name ${imageFile.path.split('/').last}');
+
+      readFileFromPath(imageFile.path);
     } catch (e) {
       print('image picker error $e');
+    }
+  }
+
+  readFileFromPath(path) async {
+    try {
+      var file = await File(path);
+      var bytes = await file.readAsBytes();
+      print('readFileFromPath bytes length ${bytes.length}');
+    } catch (e) {
+      print('readFileFromPath error $e');
     }
   }
 

@@ -70,11 +70,6 @@ class _MsgBubbleState extends State<MsgBubble> {
         }
       });
     }
-    if (widget.isSelf) {
-      // 监听该消息已读未读
-    }
-    print(
-        'msg bubble ownStateRead ${ownStateRead} 消息state ：${widget.stateUpdate.state}');
   }
 
   Widget getMsgContentByType(UpdateMessageChatSendMessage msg) {

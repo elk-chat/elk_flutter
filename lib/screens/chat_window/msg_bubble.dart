@@ -7,7 +7,7 @@ import 'package:elk_chat/protocol/protobuf/koi.pb.dart';
 import 'package:elk_chat/widgets/widgets.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+// import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 
 class MsgBubble extends StatefulWidget {

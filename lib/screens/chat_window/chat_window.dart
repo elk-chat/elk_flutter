@@ -46,7 +46,7 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
 
   File imageFile;
   int pageIndex = 0;
-  bool loading = false;
+  bool loading = true;
   bool hasReachedMax = false;
   Int64 pageSize;
   Int64 allCount;
@@ -101,6 +101,7 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
   void createChat() {
     _ChatInitiateReq.peerID = widget.user.userID;
     initPeerChat(_ChatInitiateReq, (data) {
+      if (!mounted) return;
       if (data.hasError) {
         var error = 'initPeerChat error: ${data.res}';
         showFlushBar(error, context);

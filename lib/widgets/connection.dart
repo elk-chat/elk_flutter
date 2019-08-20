@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:elk_chat/init_websocket.dart';
@@ -20,28 +22,32 @@ class Connection extends StatefulWidget {
 class _ConnectionState extends State<Connection> {
   Function wsStatusSubscription;
   WSStatus currentStatus = $WS.currentStatus;
+  Timer _timer;
 
   @override
   void initState() {
+    super.initState();
+
     // 状态更新
     wsStatusSubscription = $WS.on(WS_STATUS, onStatusChange);
-
-    super.initState();
   }
 
   @override
   void dispose() {
-    wsStatusSubscription();
     super.dispose();
+    wsStatusSubscription();
   }
 
   onStatusChange(payload) {
     if (payload != null && currentStatus != payload.type) {
-      if (mounted) {
-        setState(() {
-          currentStatus = payload.type;
-        });
-      }
+      _timer?.cancel();
+      _timer = Timer(Duration(milliseconds: 100), () {
+        if (mounted) {
+          setState(() {
+            currentStatus = payload.type;
+          });
+        }
+      });
     }
   }
 

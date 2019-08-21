@@ -240,6 +240,7 @@ class UpdateMessage extends $pb.GeneratedMessage {
     ..a<UpdateMessageChatDeleteMember>(4, 'updateMessageChatDeleteMember', $pb.PbFieldType.OM, UpdateMessageChatDeleteMember.getDefault, UpdateMessageChatDeleteMember.create)
     ..a<UpdateMessageChatSetTyping>(5, 'updateMessageChatSetTyping', $pb.PbFieldType.OM, UpdateMessageChatSetTyping.getDefault, UpdateMessageChatSetTyping.create)
     ..a<UpdateMessageChatDeleteMessage>(6, 'updateMessageChatDeleteMessage', $pb.PbFieldType.OM, UpdateMessageChatDeleteMessage.getDefault, UpdateMessageChatDeleteMessage.create)
+    ..a<UpdateMessageChatPinMessage>(7, 'updateMessageChatPinMessage', $pb.PbFieldType.OM, UpdateMessageChatPinMessage.getDefault, UpdateMessageChatPinMessage.create)
     ..hasRequiredFields = false
   ;
 
@@ -286,6 +287,11 @@ class UpdateMessage extends $pb.GeneratedMessage {
   set updateMessageChatDeleteMessage(UpdateMessageChatDeleteMessage v) { setField(6, v); }
   $core.bool hasUpdateMessageChatDeleteMessage() => $_has(5);
   void clearUpdateMessageChatDeleteMessage() => clearField(6);
+
+  UpdateMessageChatPinMessage get updateMessageChatPinMessage => $_getN(6);
+  set updateMessageChatPinMessage(UpdateMessageChatPinMessage v) { setField(7, v); }
+  $core.bool hasUpdateMessageChatPinMessage() => $_has(6);
+  void clearUpdateMessageChatPinMessage() => clearField(7);
 }
 
 class UpdateMessageChatAddMember extends $pb.GeneratedMessage {
@@ -366,13 +372,7 @@ class UpdateMessageChatDeleteMember extends $pb.GeneratedMessage {
 
 class UpdateMessageChatSendMessage extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('UpdateMessageChatSendMessage', package: const $pb.PackageName('kproto'))
-    ..aInt64(1, 'chatID')
-    ..aOS(2, 'senderName')
-    ..aOS(3, 'message')
-    ..a<$core.int>(4, 'contentType', $pb.PbFieldType.O3)
-    ..aInt64(5, 'fileID')
-    ..aInt64(6, 'actionTime')
-    ..a<Markup>(7, 'markup', $pb.PbFieldType.OM, Markup.getDefault, Markup.create)
+    ..a<ChatMessage>(1, 'chatMessage', $pb.PbFieldType.OM, ChatMessage.getDefault, ChatMessage.create)
     ..hasRequiredFields = false
   ;
 
@@ -390,40 +390,10 @@ class UpdateMessageChatSendMessage extends $pb.GeneratedMessage {
   static UpdateMessageChatSendMessage getDefault() => _defaultInstance ??= create()..freeze();
   static UpdateMessageChatSendMessage _defaultInstance;
 
-  Int64 get chatID => $_getI64(0);
-  set chatID(Int64 v) { $_setInt64(0, v); }
-  $core.bool hasChatID() => $_has(0);
-  void clearChatID() => clearField(1);
-
-  $core.String get senderName => $_getS(1, '');
-  set senderName($core.String v) { $_setString(1, v); }
-  $core.bool hasSenderName() => $_has(1);
-  void clearSenderName() => clearField(2);
-
-  $core.String get message => $_getS(2, '');
-  set message($core.String v) { $_setString(2, v); }
-  $core.bool hasMessage() => $_has(2);
-  void clearMessage() => clearField(3);
-
-  $core.int get contentType => $_get(3, 0);
-  set contentType($core.int v) { $_setSignedInt32(3, v); }
-  $core.bool hasContentType() => $_has(3);
-  void clearContentType() => clearField(4);
-
-  Int64 get fileID => $_getI64(4);
-  set fileID(Int64 v) { $_setInt64(4, v); }
-  $core.bool hasFileID() => $_has(4);
-  void clearFileID() => clearField(5);
-
-  Int64 get actionTime => $_getI64(5);
-  set actionTime(Int64 v) { $_setInt64(5, v); }
-  $core.bool hasActionTime() => $_has(5);
-  void clearActionTime() => clearField(6);
-
-  Markup get markup => $_getN(6);
-  set markup(Markup v) { setField(7, v); }
-  $core.bool hasMarkup() => $_has(6);
-  void clearMarkup() => clearField(7);
+  ChatMessage get chatMessage => $_getN(0);
+  set chatMessage(ChatMessage v) { setField(1, v); }
+  $core.bool hasChatMessage() => $_has(0);
+  void clearChatMessage() => clearField(1);
 }
 
 class UpdateMessageChatDeleteMessage extends $pb.GeneratedMessage {
@@ -532,6 +502,38 @@ class UpdateMessageChatSetTyping extends $pb.GeneratedMessage {
   set senderName($core.String v) { $_setString(1, v); }
   $core.bool hasSenderName() => $_has(1);
   void clearSenderName() => clearField(2);
+}
+
+class UpdateMessageChatPinMessage extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('UpdateMessageChatPinMessage', package: const $pb.PackageName('kproto'))
+    ..aInt64(1, 'chatID')
+    ..a<Int64>(2, 'pinState', $pb.PbFieldType.OU6, Int64.ZERO)
+    ..hasRequiredFields = false
+  ;
+
+  UpdateMessageChatPinMessage._() : super();
+  factory UpdateMessageChatPinMessage() => create();
+  factory UpdateMessageChatPinMessage.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory UpdateMessageChatPinMessage.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  UpdateMessageChatPinMessage clone() => UpdateMessageChatPinMessage()..mergeFromMessage(this);
+  UpdateMessageChatPinMessage copyWith(void Function(UpdateMessageChatPinMessage) updates) => super.copyWith((message) => updates(message as UpdateMessageChatPinMessage));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static UpdateMessageChatPinMessage create() => UpdateMessageChatPinMessage._();
+  UpdateMessageChatPinMessage createEmptyInstance() => create();
+  static $pb.PbList<UpdateMessageChatPinMessage> createRepeated() => $pb.PbList<UpdateMessageChatPinMessage>();
+  static UpdateMessageChatPinMessage getDefault() => _defaultInstance ??= create()..freeze();
+  static UpdateMessageChatPinMessage _defaultInstance;
+
+  Int64 get chatID => $_getI64(0);
+  set chatID(Int64 v) { $_setInt64(0, v); }
+  $core.bool hasChatID() => $_has(0);
+  void clearChatID() => clearField(1);
+
+  Int64 get pinState => $_getI64(1);
+  set pinState(Int64 v) { $_setInt64(1, v); }
+  $core.bool hasPinState() => $_has(1);
+  void clearPinState() => clearField(2);
 }
 
 class AuthPQReq extends $pb.GeneratedMessage {
@@ -1433,6 +1435,98 @@ class UserGetChatUserStateResp extends $pb.GeneratedMessage {
   set state(ChatUserState v) { setField(1, v); }
   $core.bool hasState() => $_has(0);
   void clearState() => clearField(1);
+}
+
+class UserAddBlockedUserReq extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('UserAddBlockedUserReq', package: const $pb.PackageName('kproto'))
+    ..aInt64(1, 'userID')
+    ..hasRequiredFields = false
+  ;
+
+  UserAddBlockedUserReq._() : super();
+  factory UserAddBlockedUserReq() => create();
+  factory UserAddBlockedUserReq.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory UserAddBlockedUserReq.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  UserAddBlockedUserReq clone() => UserAddBlockedUserReq()..mergeFromMessage(this);
+  UserAddBlockedUserReq copyWith(void Function(UserAddBlockedUserReq) updates) => super.copyWith((message) => updates(message as UserAddBlockedUserReq));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static UserAddBlockedUserReq create() => UserAddBlockedUserReq._();
+  UserAddBlockedUserReq createEmptyInstance() => create();
+  static $pb.PbList<UserAddBlockedUserReq> createRepeated() => $pb.PbList<UserAddBlockedUserReq>();
+  static UserAddBlockedUserReq getDefault() => _defaultInstance ??= create()..freeze();
+  static UserAddBlockedUserReq _defaultInstance;
+
+  Int64 get userID => $_getI64(0);
+  set userID(Int64 v) { $_setInt64(0, v); }
+  $core.bool hasUserID() => $_has(0);
+  void clearUserID() => clearField(1);
+}
+
+class UserAddBlockedUserResp extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('UserAddBlockedUserResp', package: const $pb.PackageName('kproto'))
+    ..hasRequiredFields = false
+  ;
+
+  UserAddBlockedUserResp._() : super();
+  factory UserAddBlockedUserResp() => create();
+  factory UserAddBlockedUserResp.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory UserAddBlockedUserResp.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  UserAddBlockedUserResp clone() => UserAddBlockedUserResp()..mergeFromMessage(this);
+  UserAddBlockedUserResp copyWith(void Function(UserAddBlockedUserResp) updates) => super.copyWith((message) => updates(message as UserAddBlockedUserResp));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static UserAddBlockedUserResp create() => UserAddBlockedUserResp._();
+  UserAddBlockedUserResp createEmptyInstance() => create();
+  static $pb.PbList<UserAddBlockedUserResp> createRepeated() => $pb.PbList<UserAddBlockedUserResp>();
+  static UserAddBlockedUserResp getDefault() => _defaultInstance ??= create()..freeze();
+  static UserAddBlockedUserResp _defaultInstance;
+}
+
+class UserDeleteBlockedUserReq extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('UserDeleteBlockedUserReq', package: const $pb.PackageName('kproto'))
+    ..aInt64(1, 'userID')
+    ..hasRequiredFields = false
+  ;
+
+  UserDeleteBlockedUserReq._() : super();
+  factory UserDeleteBlockedUserReq() => create();
+  factory UserDeleteBlockedUserReq.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory UserDeleteBlockedUserReq.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  UserDeleteBlockedUserReq clone() => UserDeleteBlockedUserReq()..mergeFromMessage(this);
+  UserDeleteBlockedUserReq copyWith(void Function(UserDeleteBlockedUserReq) updates) => super.copyWith((message) => updates(message as UserDeleteBlockedUserReq));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static UserDeleteBlockedUserReq create() => UserDeleteBlockedUserReq._();
+  UserDeleteBlockedUserReq createEmptyInstance() => create();
+  static $pb.PbList<UserDeleteBlockedUserReq> createRepeated() => $pb.PbList<UserDeleteBlockedUserReq>();
+  static UserDeleteBlockedUserReq getDefault() => _defaultInstance ??= create()..freeze();
+  static UserDeleteBlockedUserReq _defaultInstance;
+
+  Int64 get userID => $_getI64(0);
+  set userID(Int64 v) { $_setInt64(0, v); }
+  $core.bool hasUserID() => $_has(0);
+  void clearUserID() => clearField(1);
+}
+
+class UserDeleteBlockedUserResp extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('UserDeleteBlockedUserResp', package: const $pb.PackageName('kproto'))
+    ..hasRequiredFields = false
+  ;
+
+  UserDeleteBlockedUserResp._() : super();
+  factory UserDeleteBlockedUserResp() => create();
+  factory UserDeleteBlockedUserResp.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory UserDeleteBlockedUserResp.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  UserDeleteBlockedUserResp clone() => UserDeleteBlockedUserResp()..mergeFromMessage(this);
+  UserDeleteBlockedUserResp copyWith(void Function(UserDeleteBlockedUserResp) updates) => super.copyWith((message) => updates(message as UserDeleteBlockedUserResp));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static UserDeleteBlockedUserResp create() => UserDeleteBlockedUserResp._();
+  UserDeleteBlockedUserResp createEmptyInstance() => create();
+  static $pb.PbList<UserDeleteBlockedUserResp> createRepeated() => $pb.PbList<UserDeleteBlockedUserResp>();
+  static UserDeleteBlockedUserResp getDefault() => _defaultInstance ??= create()..freeze();
+  static UserDeleteBlockedUserResp _defaultInstance;
 }
 
 class ChatUserSettings extends $pb.GeneratedMessage {
@@ -2427,13 +2521,89 @@ class MarkupElement extends $pb.GeneratedMessage {
   void clearMessage() => clearField(4);
 }
 
+class ChatMessage extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('ChatMessage', package: const $pb.PackageName('kproto'))
+    ..aInt64(1, 'chatID')
+    ..aOS(2, 'senderName')
+    ..a<$core.int>(3, 'contentType', $pb.PbFieldType.O3)
+    ..aOS(4, 'message')
+    ..aInt64(5, 'fileID')
+    ..aInt64(6, 'actionTime')
+    ..a<Markup>(7, 'markup', $pb.PbFieldType.OM, Markup.getDefault, Markup.create)
+    ..a<Int64>(8, 'replyState', $pb.PbFieldType.OU6, Int64.ZERO)
+    ..aInt64(9, 'forwardChatID')
+    ..a<Int64>(10, 'forwardState', $pb.PbFieldType.OU6, Int64.ZERO)
+    ..hasRequiredFields = false
+  ;
+
+  ChatMessage._() : super();
+  factory ChatMessage() => create();
+  factory ChatMessage.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory ChatMessage.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  ChatMessage clone() => ChatMessage()..mergeFromMessage(this);
+  ChatMessage copyWith(void Function(ChatMessage) updates) => super.copyWith((message) => updates(message as ChatMessage));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static ChatMessage create() => ChatMessage._();
+  ChatMessage createEmptyInstance() => create();
+  static $pb.PbList<ChatMessage> createRepeated() => $pb.PbList<ChatMessage>();
+  static ChatMessage getDefault() => _defaultInstance ??= create()..freeze();
+  static ChatMessage _defaultInstance;
+
+  Int64 get chatID => $_getI64(0);
+  set chatID(Int64 v) { $_setInt64(0, v); }
+  $core.bool hasChatID() => $_has(0);
+  void clearChatID() => clearField(1);
+
+  $core.String get senderName => $_getS(1, '');
+  set senderName($core.String v) { $_setString(1, v); }
+  $core.bool hasSenderName() => $_has(1);
+  void clearSenderName() => clearField(2);
+
+  $core.int get contentType => $_get(2, 0);
+  set contentType($core.int v) { $_setSignedInt32(2, v); }
+  $core.bool hasContentType() => $_has(2);
+  void clearContentType() => clearField(3);
+
+  $core.String get message => $_getS(3, '');
+  set message($core.String v) { $_setString(3, v); }
+  $core.bool hasMessage() => $_has(3);
+  void clearMessage() => clearField(4);
+
+  Int64 get fileID => $_getI64(4);
+  set fileID(Int64 v) { $_setInt64(4, v); }
+  $core.bool hasFileID() => $_has(4);
+  void clearFileID() => clearField(5);
+
+  Int64 get actionTime => $_getI64(5);
+  set actionTime(Int64 v) { $_setInt64(5, v); }
+  $core.bool hasActionTime() => $_has(5);
+  void clearActionTime() => clearField(6);
+
+  Markup get markup => $_getN(6);
+  set markup(Markup v) { setField(7, v); }
+  $core.bool hasMarkup() => $_has(6);
+  void clearMarkup() => clearField(7);
+
+  Int64 get replyState => $_getI64(7);
+  set replyState(Int64 v) { $_setInt64(7, v); }
+  $core.bool hasReplyState() => $_has(7);
+  void clearReplyState() => clearField(8);
+
+  Int64 get forwardChatID => $_getI64(8);
+  set forwardChatID(Int64 v) { $_setInt64(8, v); }
+  $core.bool hasForwardChatID() => $_has(8);
+  void clearForwardChatID() => clearField(9);
+
+  Int64 get forwardState => $_getI64(9);
+  set forwardState(Int64 v) { $_setInt64(9, v); }
+  $core.bool hasForwardState() => $_has(9);
+  void clearForwardState() => clearField(10);
+}
+
 class ChatSendMessageReq extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('ChatSendMessageReq', package: const $pb.PackageName('kproto'))
-    ..aInt64(1, 'chatID')
-    ..a<$core.int>(2, 'contentType', $pb.PbFieldType.O3)
-    ..aOS(3, 'message')
-    ..aInt64(4, 'fileID')
-    ..a<Markup>(5, 'markup', $pb.PbFieldType.OM, Markup.getDefault, Markup.create)
+    ..a<ChatMessage>(1, 'chatMessage', $pb.PbFieldType.OM, ChatMessage.getDefault, ChatMessage.create)
     ..hasRequiredFields = false
   ;
 
@@ -2451,30 +2621,10 @@ class ChatSendMessageReq extends $pb.GeneratedMessage {
   static ChatSendMessageReq getDefault() => _defaultInstance ??= create()..freeze();
   static ChatSendMessageReq _defaultInstance;
 
-  Int64 get chatID => $_getI64(0);
-  set chatID(Int64 v) { $_setInt64(0, v); }
-  $core.bool hasChatID() => $_has(0);
-  void clearChatID() => clearField(1);
-
-  $core.int get contentType => $_get(1, 0);
-  set contentType($core.int v) { $_setSignedInt32(1, v); }
-  $core.bool hasContentType() => $_has(1);
-  void clearContentType() => clearField(2);
-
-  $core.String get message => $_getS(2, '');
-  set message($core.String v) { $_setString(2, v); }
-  $core.bool hasMessage() => $_has(2);
-  void clearMessage() => clearField(3);
-
-  Int64 get fileID => $_getI64(3);
-  set fileID(Int64 v) { $_setInt64(3, v); }
-  $core.bool hasFileID() => $_has(3);
-  void clearFileID() => clearField(4);
-
-  Markup get markup => $_getN(4);
-  set markup(Markup v) { setField(5, v); }
-  $core.bool hasMarkup() => $_has(4);
-  void clearMarkup() => clearField(5);
+  ChatMessage get chatMessage => $_getN(0);
+  set chatMessage(ChatMessage v) { setField(1, v); }
+  $core.bool hasChatMessage() => $_has(0);
+  void clearChatMessage() => clearField(1);
 }
 
 class ChatSendMessageResp extends $pb.GeneratedMessage {
@@ -2547,6 +2697,58 @@ class ChatDeleteMessageResp extends $pb.GeneratedMessage {
   static $pb.PbList<ChatDeleteMessageResp> createRepeated() => $pb.PbList<ChatDeleteMessageResp>();
   static ChatDeleteMessageResp getDefault() => _defaultInstance ??= create()..freeze();
   static ChatDeleteMessageResp _defaultInstance;
+}
+
+class ChatPinMessageReq extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('ChatPinMessageReq', package: const $pb.PackageName('kproto'))
+    ..aInt64(1, 'chatID')
+    ..a<Int64>(2, 'pinState', $pb.PbFieldType.OU6, Int64.ZERO)
+    ..hasRequiredFields = false
+  ;
+
+  ChatPinMessageReq._() : super();
+  factory ChatPinMessageReq() => create();
+  factory ChatPinMessageReq.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory ChatPinMessageReq.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  ChatPinMessageReq clone() => ChatPinMessageReq()..mergeFromMessage(this);
+  ChatPinMessageReq copyWith(void Function(ChatPinMessageReq) updates) => super.copyWith((message) => updates(message as ChatPinMessageReq));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static ChatPinMessageReq create() => ChatPinMessageReq._();
+  ChatPinMessageReq createEmptyInstance() => create();
+  static $pb.PbList<ChatPinMessageReq> createRepeated() => $pb.PbList<ChatPinMessageReq>();
+  static ChatPinMessageReq getDefault() => _defaultInstance ??= create()..freeze();
+  static ChatPinMessageReq _defaultInstance;
+
+  Int64 get chatID => $_getI64(0);
+  set chatID(Int64 v) { $_setInt64(0, v); }
+  $core.bool hasChatID() => $_has(0);
+  void clearChatID() => clearField(1);
+
+  Int64 get pinState => $_getI64(1);
+  set pinState(Int64 v) { $_setInt64(1, v); }
+  $core.bool hasPinState() => $_has(1);
+  void clearPinState() => clearField(2);
+}
+
+class ChatPinMessageResp extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('ChatPinMessageResp', package: const $pb.PackageName('kproto'))
+    ..hasRequiredFields = false
+  ;
+
+  ChatPinMessageResp._() : super();
+  factory ChatPinMessageResp() => create();
+  factory ChatPinMessageResp.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory ChatPinMessageResp.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  ChatPinMessageResp clone() => ChatPinMessageResp()..mergeFromMessage(this);
+  ChatPinMessageResp copyWith(void Function(ChatPinMessageResp) updates) => super.copyWith((message) => updates(message as ChatPinMessageResp));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static ChatPinMessageResp create() => ChatPinMessageResp._();
+  ChatPinMessageResp createEmptyInstance() => create();
+  static $pb.PbList<ChatPinMessageResp> createRepeated() => $pb.PbList<ChatPinMessageResp>();
+  static ChatPinMessageResp getDefault() => _defaultInstance ??= create()..freeze();
+  static ChatPinMessageResp _defaultInstance;
 }
 
 class ChatGetStateReadReq extends $pb.GeneratedMessage {

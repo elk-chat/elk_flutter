@@ -62,4 +62,17 @@ class CHEvent {
 
   // 添加聊天
   static String ADD_CHAT = 'ADD_CHAT';
+
+  /** 消息发送队列 */
+  static String ADD_MSG_TO_QUEUE(chatID) {
+    return 'ADD_MSG_TO_QUEUE_$chatID';
+  }
+
+  static String REMOVE_MSG_FROM_QUEUE(chatID) {
+    return 'REMOVE_MSG_FROM_QUEUE_$chatID';
+  }
+
+  static String SEND_MSG_ERROR(chatID) {
+    return 'SEND_MSG_ERROR_$chatID';
+  }
 }

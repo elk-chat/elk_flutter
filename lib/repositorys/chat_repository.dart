@@ -15,7 +15,7 @@ class ChatRepository {
   ChatGetStateReadReq _ChatGetStateReadReq = ChatGetStateReadReq(); // 已读状态
   ChatCreateReq _ChatCreateReq = ChatCreateReq(); // 创建聊天
   ChatAddMemberReq _ChatAddMemberReq = ChatAddMemberReq(); // 添加聊天成员
-  ChatSendMessageReq _ChatSendMessageReq = ChatSendMessageReq(); // 发送消息
+  // ChatSendMessageReq _ChatSendMessageReq = ChatSendMessageReq(); // 发送消息
   ChatSyncChatStateMessagesReq _ChatSyncChatStateMessagesReq =
       ChatSyncChatStateMessagesReq();
 
@@ -154,7 +154,6 @@ class ChatRepository {
     fn(i) async {
       try {
         var res = await getMsgHistory(i.chatID, [1, 2], 0, 1);
-        print('res.stateUpdates ${res.stateUpdates.length}');
         // 如果有最后一条消息，通知排序
         if (res.stateUpdates.length > 0) {
           $WS.emit(CHEvent.ON_CHAT_LAST_MSG, res.stateUpdates[0]);
@@ -228,15 +227,18 @@ class ChatRepository {
 
   Future sendMsg(Int64 chatID, int contentType,
       [String message, Int64 fileID]) async {
-    _ChatSendMessageReq.chatID = chatID;
-    _ChatSendMessageReq.contentType = contentType;
+    ChatSendMessageReq _ChatSendMessageReq = ChatSendMessageReq();
+    ChatMessage _ChatMessage = ChatMessage();
+    _ChatMessage.chatID = chatID;
+    _ChatMessage.contentType = contentType;
     if (message.isNotEmpty) {
-      _ChatSendMessageReq.message = message;
+      _ChatMessage.message = message;
     }
     if (contentType != ChatContentType.Text && fileID != null) {
-      _ChatSendMessageReq.fileID = fileID;
+      _ChatMessage.fileID = fileID;
     }
-    sendChatMsg(_ChatSendMessageReq, (data) {
+    _ChatSendMessageReq.chatMessage = _ChatMessage;
+    sendChatMsg($WS.genRequestID(), _ChatSendMessageReq, (data) {
       print('发送消息返回：$data');
     });
   }

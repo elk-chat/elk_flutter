@@ -154,7 +154,7 @@ class _ChatItemState extends State<ChatItem> {
       text = '${message.updateMessageChatReadMessage.senderName} 已读';
     } else if (message.hasUpdateMessageChatSendMessage()) {
       text =
-          '${message.updateMessageChatSendMessage.senderName}: ${message.updateMessageChatSendMessage.message}';
+          '${message.updateMessageChatSendMessage.chatMessage.senderName}: ${message.updateMessageChatSendMessage.chatMessage.message}';
     } else if (message.hasUpdateMessageChatSetTyping()) {
       text = '${message.updateMessageChatSetTyping.senderName} 正在输入..';
     }

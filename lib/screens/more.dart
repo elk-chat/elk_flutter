@@ -74,8 +74,8 @@ class _MoreScreenState extends State<MoreScreen>
                       showCupertinoModalPopup(
                           builder: (BuildContext context) {
                             return CupertinoActionSheet(
-                              title: Text('退出登录'),
-                              message: Text('请选择退出方式'),
+                              title: Text('请选择退出方式'),
+                              // message: Text('请选择退出方式'),
                               actions: <Widget>[
                                 CupertinoActionSheetAction(
                                   child: Text('退出'),
@@ -86,7 +86,7 @@ class _MoreScreenState extends State<MoreScreen>
                                   },
                                 ),
                                 CupertinoActionSheetAction(
-                                  child: Text('清除记录并退出'),
+                                  child: Text('清除记录退出'),
                                   onPressed: () {
                                     Navigator.of(context).pop(false);
                                     $CH.clear();

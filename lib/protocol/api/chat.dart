@@ -82,9 +82,14 @@ createChatAndAddMember(Map formData, WebsocketCallback cb) {
 }
 
 /// 发送聊天消息，放在队列中，自定义reqID
-sendChatMsg(ChatSendMessageReq proto, WebsocketCallback cb,
+sendChatMsg(BigInt requestID, ChatSendMessageReq proto, WebsocketCallback cb,
     [ChatSendMessageResp resp]) {
-  return $WS.send(method: "ChatSendMessageReq", protobuf: proto, cb: cb);
+  return $WS.send(
+      method: "ChatSendMessageReq",
+      hasTimeout: false,
+      requestID: requestID,
+      protobuf: proto,
+      cb: cb);
 }
 
 /// 正在输入

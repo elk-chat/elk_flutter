@@ -53,6 +53,9 @@ decodeProto = (buffer) => proto.UpdateMessageChatReadMessage.fromBuffer(buffer);
 } else if (sig == SigMapper['SIG_UPDATE_MESSAGE_CHAT_SET_TYPING']) {
 decodeMethod ='SIG_UPDATE_MESSAGE_CHAT_SET_TYPING';
 decodeProto = (buffer) => proto.UpdateMessageChatSetTyping.fromBuffer(buffer);
+} else if (sig == SigMapper['SIG_UPDATE_MESSAGE_CHAT_PIN_MESSAGE']) {
+decodeMethod ='SIG_UPDATE_MESSAGE_CHAT_PIN_MESSAGE';
+decodeProto = (buffer) => proto.UpdateMessageChatPinMessage.fromBuffer(buffer);
 } else if (sig == SigMapper['SIG_AUTH_P_Q_REQ']) {
 decodeMethod ='SIG_AUTH_P_Q_REQ';
 decodeProto = (buffer) => proto.AuthPQReq.fromBuffer(buffer);
@@ -158,6 +161,18 @@ decodeProto = (buffer) => proto.UserGetChatUserStateReq.fromBuffer(buffer);
 } else if (sig == SigMapper['SIG_USER_GET_CHAT_USER_STATE_RESP']) {
 decodeMethod ='SIG_USER_GET_CHAT_USER_STATE_RESP';
 decodeProto = (buffer) => proto.UserGetChatUserStateResp.fromBuffer(buffer);
+} else if (sig == SigMapper['SIG_USER_ADD_BLOCKED_USER_REQ']) {
+decodeMethod ='SIG_USER_ADD_BLOCKED_USER_REQ';
+decodeProto = (buffer) => proto.UserAddBlockedUserReq.fromBuffer(buffer);
+} else if (sig == SigMapper['SIG_USER_ADD_BLOCKED_USER_RESP']) {
+decodeMethod ='SIG_USER_ADD_BLOCKED_USER_RESP';
+decodeProto = (buffer) => proto.UserAddBlockedUserResp.fromBuffer(buffer);
+} else if (sig == SigMapper['SIG_USER_DELETE_BLOCKED_USER_REQ']) {
+decodeMethod ='SIG_USER_DELETE_BLOCKED_USER_REQ';
+decodeProto = (buffer) => proto.UserDeleteBlockedUserReq.fromBuffer(buffer);
+} else if (sig == SigMapper['SIG_USER_DELETE_BLOCKED_USER_RESP']) {
+decodeMethod ='SIG_USER_DELETE_BLOCKED_USER_RESP';
+decodeProto = (buffer) => proto.UserDeleteBlockedUserResp.fromBuffer(buffer);
 } else if (sig == SigMapper['SIG_CHAT_USER_SETTINGS']) {
 decodeMethod ='SIG_CHAT_USER_SETTINGS';
 decodeProto = (buffer) => proto.ChatUserSettings.fromBuffer(buffer);
@@ -269,6 +284,9 @@ decodeProto = (buffer) => proto.Markup.fromBuffer(buffer);
 } else if (sig == SigMapper['SIG_MARKUP_ELEMENT']) {
 decodeMethod ='SIG_MARKUP_ELEMENT';
 decodeProto = (buffer) => proto.MarkupElement.fromBuffer(buffer);
+} else if (sig == SigMapper['SIG_CHAT_MESSAGE']) {
+decodeMethod ='SIG_CHAT_MESSAGE';
+decodeProto = (buffer) => proto.ChatMessage.fromBuffer(buffer);
 } else if (sig == SigMapper['SIG_CHAT_SEND_MESSAGE_REQ']) {
 decodeMethod ='SIG_CHAT_SEND_MESSAGE_REQ';
 decodeProto = (buffer) => proto.ChatSendMessageReq.fromBuffer(buffer);
@@ -281,6 +299,12 @@ decodeProto = (buffer) => proto.ChatDeleteMessageReq.fromBuffer(buffer);
 } else if (sig == SigMapper['SIG_CHAT_DELETE_MESSAGE_RESP']) {
 decodeMethod ='SIG_CHAT_DELETE_MESSAGE_RESP';
 decodeProto = (buffer) => proto.ChatDeleteMessageResp.fromBuffer(buffer);
+} else if (sig == SigMapper['SIG_CHAT_PIN_MESSAGE_REQ']) {
+decodeMethod ='SIG_CHAT_PIN_MESSAGE_REQ';
+decodeProto = (buffer) => proto.ChatPinMessageReq.fromBuffer(buffer);
+} else if (sig == SigMapper['SIG_CHAT_PIN_MESSAGE_RESP']) {
+decodeMethod ='SIG_CHAT_PIN_MESSAGE_RESP';
+decodeProto = (buffer) => proto.ChatPinMessageResp.fromBuffer(buffer);
 } else if (sig == SigMapper['SIG_CHAT_GET_STATE_READ_REQ']) {
 decodeMethod ='SIG_CHAT_GET_STATE_READ_REQ';
 decodeProto = (buffer) => proto.ChatGetStateReadReq.fromBuffer(buffer);

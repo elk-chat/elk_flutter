@@ -15,7 +15,10 @@ import 'package:flutter_icons/flutter_icons.dart';
 // import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:elk_chat/repositorys/repositorys.dart';
+import 'package:intl/intl.dart';
 import 'msg_bubble.dart';
+import 'queue_msg.dart';
+import 'queue_msg_bubble.dart';
 
 // 聊天窗口
 class ChatWindowScreen extends StatefulWidget {
@@ -43,6 +46,7 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
   final _textEditingController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
   final int PAGE_SIZE = 12;
+  final DateFormat dateFormat = DateFormat('MM/dd HH:mm');
 
   File imageFile;
   int pageIndex = 0;
@@ -50,8 +54,13 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
   bool hasReachedMax = false;
   Int64 pageSize;
   Int64 allCount;
+  // 消息列表，优化：滚动太多的时候，从内存中移除
   List<StateUpdate> msgs = [];
-  // List<StateUpdate> _tmpMsgs = [];
+  // 新来的消息列表
+  List<StateUpdate> coming_msgs = [];
+
+  // 发送中或者待发送列表
+  List<QueueMsg> queue_msgs = [];
 
   bool showSticker = false;
   bool showAttachment = false;
@@ -155,10 +164,10 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
             break;
           }
         }
+        // 如果重复，去掉
         if (duplicates) return;
         // 是否可以取后面的进行优化？
         List<StateUpdate> msgList = [res]..addAll(msgs.toList());
-        // _tmpMsgs = [];
         // 根据 state 排序，这里的 state 有可能是重复的
         msgList.sort((a, b) => b.state.compareTo(a.state));
         setState(() {
@@ -167,22 +176,6 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
 
         _scrollController.animateTo(0.0,
             duration: Duration(milliseconds: 300), curve: Curves.easeOut);
-        /*
-        _tmpMsgs.add(res);
-        // 50 毫秒执行一次更新
-        Timer(Duration(milliseconds: 50), () {
-          if (!mounted || _tmpMsgs.isEmpty) return;
-          List<StateUpdate> msgList = _tmpMsgs..addAll(msgs.toList());
-          _tmpMsgs = [];
-          msgList.sort((a, b) => b.state.compareTo(a.state));
-          setState(() {
-            msgs = msgList;
-          });
-
-          _scrollController.animateTo(0.0,
-              duration: Duration(milliseconds: 300), curve: Curves.easeOut);
-        });
-        */
       }
     });
   }
@@ -233,8 +226,7 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
         stateAfter, // stateAfter,
       );
       if (!mounted) return;
-      print(
-          'res.stateUpdates.length ${res.stateUpdates.length} res.paging ${res.paging}');
+
       if (res.stateUpdates.length < PAGE_SIZE) {
         hasReachedMax = true;
       }
@@ -351,20 +343,41 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
   }
 
   Widget buildMessageList() {
+    int msgsLength = msgs.length + queue_msgs.length;
+    int allMsgsLength = msgsLength + (loading ? 1 : 0);
     return Flexible(
       child: ListView.builder(
         physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.all(10.0),
+        itemCount: allMsgsLength,
+        reverse: true,
+        controller: _scrollController,
         itemBuilder: (context, index) {
-          if (loading && index == msgs.length) {
+          if (loading && index == msgsLength) {
             return CupertinoActivityIndicator(
               radius: 10,
             );
           }
-          var stateUpdate = msgs[index];
+          // 如果是已经加载的消息
+          if (index < queue_msgs.length) {
+            var queueMsg = queue_msgs[index];
+            return QueueMsgBubble(
+                chatRepository: widget.chatRepository,
+                queueMsg: queueMsg,
+                dateFormat: dateFormat,
+                remove: () {
+                  setState(() {
+                    queue_msgs = queue_msgs
+                        .where((i) => i.actionTime != queueMsg.actionTime)
+                        .toList();
+                  });
+                });
+          }
 
+          var stateUpdate = msgs[index - queue_msgs.length];
           return MsgBubble(
             key: ValueKey(stateUpdate.messageID),
+            dateFormat: dateFormat,
             getStateRead: () => _stateRead,
             setOwnStateRead: (stateRead) {
               print('stateRead $stateRead');
@@ -378,9 +391,6 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
             stateUpdate: stateUpdate,
           );
         },
-        itemCount: msgs.length + (loading ? 1 : 0),
-        reverse: true,
-        controller: _scrollController,
       ),
     );
   }
@@ -465,20 +475,37 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
     FocusScope.of(context).requestFocus(_focusNode);
   }
 
+  // 发送消息直接推送到列表，等返回再移除
+  // 文件上传得到路径
   onSendMessage(String msg, int contentType) async {
-    var text = msg.trim();
-    if (text.isEmpty) {
+    var message = msg.trim();
+    if (message.isEmpty) {
       focusInput();
       return;
     }
-    try {
-      var res =
-          await widget.chatRepository.sendMsg(_chat.chatID, contentType, text);
-      print('send message response: $res');
+
+    setState(() {
+      QueueMsg _queueMsgItem = QueueMsg.fromMap({
+        'status': QueueMsgStatus.init,
+        'chatID': _chat.chatID,
+        'messageType': ChatMessageType.SendMessage,
+        'contentType': ChatContentType.Text,
+        'message': message,
+        'actionTime': DateTime.now().millisecondsSinceEpoch
+      });
+      setState(() {
+        queue_msgs = [_queueMsgItem]..addAll(queue_msgs);
+      });
       _textEditingController.clear();
-    } catch (e) {
-      print('send message error $e');
-    }
+    });
+    // try {
+    //   var res =
+    //       await widget.chatRepository.sendMsg(_chat.chatID, contentType, text);
+    //   print('send message response: $res');
+    //   _textEditingController.clear();
+    // } catch (e) {
+    //   print('send message error $e');
+    // }
   }
 
   Widget buildAttachment() {

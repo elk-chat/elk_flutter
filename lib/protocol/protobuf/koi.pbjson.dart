@@ -65,6 +65,7 @@ const UpdateMessage$json = const {
     const {'1': 'UpdateMessageChatDeleteMember', '3': 4, '4': 1, '5': 11, '6': '.kproto.UpdateMessageChatDeleteMember', '10': 'UpdateMessageChatDeleteMember'},
     const {'1': 'UpdateMessageChatSetTyping', '3': 5, '4': 1, '5': 11, '6': '.kproto.UpdateMessageChatSetTyping', '10': 'UpdateMessageChatSetTyping'},
     const {'1': 'UpdateMessageChatDeleteMessage', '3': 6, '4': 1, '5': 11, '6': '.kproto.UpdateMessageChatDeleteMessage', '10': 'UpdateMessageChatDeleteMessage'},
+    const {'1': 'UpdateMessageChatPinMessage', '3': 7, '4': 1, '5': 11, '6': '.kproto.UpdateMessageChatPinMessage', '10': 'UpdateMessageChatPinMessage'},
   ],
 };
 
@@ -89,13 +90,7 @@ const UpdateMessageChatDeleteMember$json = const {
 const UpdateMessageChatSendMessage$json = const {
   '1': 'UpdateMessageChatSendMessage',
   '2': const [
-    const {'1': 'ChatID', '3': 1, '4': 1, '5': 3, '10': 'ChatID'},
-    const {'1': 'SenderName', '3': 2, '4': 1, '5': 9, '10': 'SenderName'},
-    const {'1': 'Message', '3': 3, '4': 1, '5': 9, '10': 'Message'},
-    const {'1': 'ContentType', '3': 4, '4': 1, '5': 5, '10': 'ContentType'},
-    const {'1': 'FileID', '3': 5, '4': 1, '5': 3, '10': 'FileID'},
-    const {'1': 'ActionTime', '3': 6, '4': 1, '5': 3, '10': 'ActionTime'},
-    const {'1': 'Markup', '3': 7, '4': 1, '5': 11, '6': '.kproto.Markup', '10': 'Markup'},
+    const {'1': 'ChatMessage', '3': 1, '4': 1, '5': 11, '6': '.kproto.ChatMessage', '10': 'ChatMessage'},
   ],
 };
 
@@ -122,6 +117,14 @@ const UpdateMessageChatSetTyping$json = const {
   '2': const [
     const {'1': 'ChatID', '3': 1, '4': 1, '5': 3, '10': 'ChatID'},
     const {'1': 'SenderName', '3': 2, '4': 1, '5': 9, '10': 'SenderName'},
+  ],
+};
+
+const UpdateMessageChatPinMessage$json = const {
+  '1': 'UpdateMessageChatPinMessage',
+  '2': const [
+    const {'1': 'ChatID', '3': 1, '4': 1, '5': 3, '10': 'ChatID'},
+    const {'1': 'PinState', '3': 2, '4': 1, '5': 4, '10': 'PinState'},
   ],
 };
 
@@ -336,6 +339,28 @@ const UserGetChatUserStateResp$json = const {
   '2': const [
     const {'1': 'State', '3': 1, '4': 1, '5': 11, '6': '.kproto.ChatUserState', '10': 'State'},
   ],
+};
+
+const UserAddBlockedUserReq$json = const {
+  '1': 'UserAddBlockedUserReq',
+  '2': const [
+    const {'1': 'UserID', '3': 1, '4': 1, '5': 3, '10': 'UserID'},
+  ],
+};
+
+const UserAddBlockedUserResp$json = const {
+  '1': 'UserAddBlockedUserResp',
+};
+
+const UserDeleteBlockedUserReq$json = const {
+  '1': 'UserDeleteBlockedUserReq',
+  '2': const [
+    const {'1': 'UserID', '3': 1, '4': 1, '5': 3, '10': 'UserID'},
+  ],
+};
+
+const UserDeleteBlockedUserResp$json = const {
+  '1': 'UserDeleteBlockedUserResp',
 };
 
 const ChatUserSettings$json = const {
@@ -582,14 +607,26 @@ const MarkupElement$json = const {
   ],
 };
 
+const ChatMessage$json = const {
+  '1': 'ChatMessage',
+  '2': const [
+    const {'1': 'ChatID', '3': 1, '4': 1, '5': 3, '10': 'ChatID'},
+    const {'1': 'SenderName', '3': 2, '4': 1, '5': 9, '10': 'SenderName'},
+    const {'1': 'ContentType', '3': 3, '4': 1, '5': 5, '10': 'ContentType'},
+    const {'1': 'Message', '3': 4, '4': 1, '5': 9, '10': 'Message'},
+    const {'1': 'FileID', '3': 5, '4': 1, '5': 3, '10': 'FileID'},
+    const {'1': 'ActionTime', '3': 6, '4': 1, '5': 3, '10': 'ActionTime'},
+    const {'1': 'Markup', '3': 7, '4': 1, '5': 11, '6': '.kproto.Markup', '10': 'Markup'},
+    const {'1': 'ReplyState', '3': 8, '4': 1, '5': 4, '10': 'ReplyState'},
+    const {'1': 'ForwardChatID', '3': 9, '4': 1, '5': 3, '10': 'ForwardChatID'},
+    const {'1': 'ForwardState', '3': 10, '4': 1, '5': 4, '10': 'ForwardState'},
+  ],
+};
+
 const ChatSendMessageReq$json = const {
   '1': 'ChatSendMessageReq',
   '2': const [
-    const {'1': 'ChatID', '3': 1, '4': 1, '5': 3, '10': 'ChatID'},
-    const {'1': 'ContentType', '3': 2, '4': 1, '5': 5, '10': 'ContentType'},
-    const {'1': 'Message', '3': 3, '4': 1, '5': 9, '10': 'Message'},
-    const {'1': 'FileID', '3': 4, '4': 1, '5': 3, '10': 'FileID'},
-    const {'1': 'Markup', '3': 5, '4': 1, '5': 11, '6': '.kproto.Markup', '10': 'Markup'},
+    const {'1': 'ChatMessage', '3': 1, '4': 1, '5': 11, '6': '.kproto.ChatMessage', '10': 'ChatMessage'},
   ],
 };
 
@@ -607,6 +644,18 @@ const ChatDeleteMessageReq$json = const {
 
 const ChatDeleteMessageResp$json = const {
   '1': 'ChatDeleteMessageResp',
+};
+
+const ChatPinMessageReq$json = const {
+  '1': 'ChatPinMessageReq',
+  '2': const [
+    const {'1': 'ChatID', '3': 1, '4': 1, '5': 3, '10': 'ChatID'},
+    const {'1': 'PinState', '3': 2, '4': 1, '5': 4, '10': 'PinState'},
+  ],
+};
+
+const ChatPinMessageResp$json = const {
+  '1': 'ChatPinMessageResp',
 };
 
 const ChatGetStateReadReq$json = const {

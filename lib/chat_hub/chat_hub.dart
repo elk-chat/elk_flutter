@@ -2,6 +2,7 @@
 
 import 'dart:async';
 
+// import 'package:elk_chat/protocol/api/state.dart';
 import 'package:elk_chat/protocol/network/websocket.dart';
 import 'package:elk_chat/protocol/protobuf/koi.pb.dart';
 import 'package:elk_chat/protocol/api/chat.dart';
@@ -26,6 +27,14 @@ class ChatHub {
   // 聊天最后更新时间映射
   Map<Int64, StateUpdate> lastMsgMap = {};
 
+  // 发送消息列表映射, chatID: [requestID]
+  Map<Int64, List<Map>> msgQueueMap = {};
+  // requestID: _ChatSendMessadgeReqStr requestID
+  // Map<Int64, List<StateUpdate>> _queueMsgs = {};
+
+  // 文件上传映射，选择文件，获取本地 path，开始上传，上传成功，移除
+  Map<Int64, dynamic> uploadFileQueueMap = {};
+
   ChatHub(WebSocket $WS) {
     this.$WS = $WS;
 
@@ -37,7 +46,97 @@ class ChatHub {
 
     // 聊天列表排序：获取到聊天列表每个聊天的最后一条消息创建时间，进行排序
     $WS.on(CHEvent.ON_CHAT_LAST_MSG, onLastMsg);
+
+    // 聊天队列
+    // $WS.on(CHEvent.ADD_MSG_TO_QUEUE, onAddMsgQueue);
+    // $WS.on(CHEvent.REMOVE_MSG_FROM_QUEUE, onAddMsgQueue);
+    // $WS.on(CHEvent.SEND_MSG_ERROR, onSendMsgError);
   }
+
+  /*
+    _ChatSendMessageReqStr: _ChatSendMessageReq.writeToJson()
+  */
+  // addMsgToQueue(String _ChatSendMessageReqStr) {
+  //   BigInt requestID = $WS.genRequestID();
+  //   ChatSendMessageReq _ChatSendMessageReq =
+  //       ChatSendMessageReq.fromJson(_ChatSendMessageReqStr);
+  //   var chatID = _ChatSendMessageReq.chatID;
+  //   if (msgQueueMap[chatID] == null) {
+  //     msgQueueMap[chatID] = [];
+  //   }
+
+  //   msgQueueMap[chatID].add({
+  //     'requestID': requestID,
+  //     'reqStr': _ChatSendMessageReqStr,
+  //   });
+
+  //   _queueMsgs[chatID]
+  //       .add(transfromChatSendMessageReqToStateUpdate(_ChatSendMessageReq));
+  //   // 给聊天窗口
+  //   $WS.emit(CHEvent.ADD_MSG_TO_QUEUE(chatID), _queueMsgs[chatID]);
+  //   sendChatMsg(requestID, _ChatSendMessageReq, (data) {
+  //     print('发送消息返回：$data');
+  //     if (data.hasError) {
+
+  //     } else {
+
+  //     }
+  //   });
+  // }
+
+  // List<StateUpdate> getQueueMsgs(Int64 chatID) {
+  //   if (_queueMsgs[chatID] != null) {
+  //     return _queueMsgs[chatID];
+  //   }
+  //   if (msgQueueMap[chatID] != null) {
+  //     for (var map in msgQueueMap[chatID]) {
+  //       _queueMsgs[chatID]
+  //           .add(transfromChatSendMessageReqToStateUpdate(map['reqStr']));
+  //     }
+  //   }
+  //   return _queueMsgs[chatID];
+  // }
+
+  /*
+    ..aInt64(1, 'chatID')
+    ..aInt64(2, 'senderID')
+    ..a<Int64>(3, 'messageID', $pb.PbFieldType.OU6, Int64.ZERO)
+    ..a<$core.int>(4, 'messageType', $pb.PbFieldType.O3)
+    ..a<Int64>(5, 'state', $pb.PbFieldType.OU6, Int64.ZERO)
+    ..aInt64(6, 'actionTime')
+    ..a<UpdateMessage>(7, 'updateMessage', $pb.PbFieldType.OM, UpdateMessage.getDefault, UpdateMessage.create)
+  */
+  // StateUpdate transfromChatSendMessageReqToStateUpdate(
+  //     ChatSendMessageReq _cmq) {
+  //   StateUpdate _su = StateUpdate();
+  //   _su.senderID = $WS.user.userID;
+  //   _su.chatID = _cmq.chatID;
+  //   _su.messageType = ChatMessageType.SendMessage;
+  //   UpdateMessage _UpdateMessage = UpdateMessage();
+  //   /*
+  //   .aInt64(1, 'chatID')
+  //   ..aOS(2, 'senderName')
+  //   ..aOS(3, 'message')
+  //   ..a<$core.int>(4, 'contentType', $pb.PbFieldType.O3)
+  //   ..aInt64(5, 'fileID')
+  //   ..aInt64(6, 'actionTime')
+  //   ..a<Markup>(7, 'markup', $pb.PbFieldType.OM, Markup.getDefault, Markup.create)
+  //   */
+
+  //   UpdateMessageChatSendMessage _UpdateMessageChatSendMessage =
+  //       UpdateMessageChatSendMessage();
+
+  //   _UpdateMessageChatSendMessage.chatID = _cmq.chatID;
+  //   _UpdateMessageChatSendMessage.senderName = $WS.user.userName;
+  //   _UpdateMessageChatSendMessage.message = _cmq.message;
+  //   _UpdateMessageChatSendMessage.contentType = _cmq.contentType;
+  //   _UpdateMessageChatSendMessage.fileID = _cmq.fileID;
+
+  //   _UpdateMessage.updateMessageChatSendMessage = _UpdateMessageChatSendMessage;
+  //   _su.updateMessage = _UpdateMessage;
+
+  //   return _su;
+  // }
 
   emitSort() {
     $WS.emit(CHEvent.SORT_CHATS_BY_LAST_MSG);
@@ -103,7 +202,6 @@ class ChatHub {
     unreadMap.forEach((chatID, count) {
       unreadCount += count;
     });
-    print('unreadCount $unreadCount');
     return unreadCount;
   }
 
@@ -166,7 +264,7 @@ class ChatHub {
         ..aOS(2, 'senderName')
         ..a<Int64>(3, 'stateRead', $pb.PbFieldType.OU6, Int64.ZERO)
 
-        updateMessageChatReadMessage： 消息已读
+        updateMessageChatReadMessage�� 消息已读
 
         ..aInt64(1, 'chatID')
         ..aOS(2, 'senderName')
@@ -200,7 +298,7 @@ class ChatHub {
       // 发消息，如果当前没有这个聊天，就创建
       eventName = CHEvent.SEND_MSG(res.chatID, res.messageID);
       // 未读+1，已读就在渲染里面加，如果未读，又渲染了的话 未读 -1
-      // 如果是自己的推送消息，不管
+      // 如果是自己的推送消息���不管
       if (res.senderID != $WS.user.userID) {
         $WS.emit(CHEvent.INIT_CHAT_UNREAD_ALL,
             {'type': 'increase', 'chatID': res.chatID});

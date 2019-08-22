@@ -2,6 +2,7 @@ import 'package:elk_chat/init_websocket.dart';
 import 'package:elk_chat/chat_hub/const.dart';
 import 'package:elk_chat/protocol/api/proto_helper.dart';
 import 'package:elk_chat/screens/chat_list/unread_badge.dart';
+import 'package:elk_chat/screens/chat_window/queue_msg.dart';
 import 'package:elk_chat/screens/screens.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,7 @@ Map<Int64, List<User>> ChatMembersCache = {};
 
 // 缓存最后消息
 // todo 放到全局，并缓存到本地数据库
-Map<Int64, List<StateUpdate>> StateUpdatesCache = {};
+Map<Int64, List<dynamic>> StateUpdatesCache = {};
 
 // todo 添加订阅发布，目前的只有显示，如果新消息到达或者发布新消息，这里不会有变化
 // todo ChatHub 本地消息缓存与分发
@@ -70,7 +71,6 @@ class _ChatItemState extends State<ChatItem> {
 
     // 监听新消息/发送消息
     unSupscription = $WS.on(CHEvent.ALL_MSG(chatID), (res) {
-      
       StateUpdatesCache[chatID] = [res];
       setState(() {
         lastMessages = [res];
@@ -215,7 +215,9 @@ class _ChatItemState extends State<ChatItem> {
         child: lastMessages.length == 0
             ? null
             : Text(
-                getMessageText(lastMsg.updateMessage),
+                lastMsg is QueueMsg
+                    ? '${$WS.user.userName}: ${lastMsg.message}'
+                    : getMessageText(lastMsg.updateMessage),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 2,
                 softWrap: false,

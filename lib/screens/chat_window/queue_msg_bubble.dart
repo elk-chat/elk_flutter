@@ -35,7 +35,6 @@ class _QueueMsgBubbleState extends State<QueueMsgBubble> {
 
     queueMsg = widget.queueMsg;
     chatRepository = widget.chatRepository;
-
     status = queueMsg.status;
     if (status == QueueMsgStatus.init) {
       sendMsg();
@@ -43,9 +42,15 @@ class _QueueMsgBubbleState extends State<QueueMsgBubble> {
   }
 
   sendMsg() async {
+    if (status != QueueMsgStatus.loading) {
+      setState(() {
+        status = QueueMsgStatus.loading;
+      });
+    }
     try {
       var res = await chatRepository.sendMsg(
           queueMsg.chatID, queueMsg.contentType, queueMsg.message);
+
       widget.remove();
       print(res);
     } catch (e) {

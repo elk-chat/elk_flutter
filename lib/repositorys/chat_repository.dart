@@ -160,10 +160,10 @@ class ChatRepository {
           $WS.emit(CHEvent.ALL_MSG(i.chatID), res.stateUpdates[0]);
         }
       } catch (e) {
-        print('chatID ${i.chatID} 获取最后一条消息失败 $e，重试');
-        Timer(Duration(seconds: 1), () {
-          fn(i);
-        });
+        print('chatID ${i.chatID} 获取最后一条消息失败 $e');
+        // Timer(Duration(seconds: 1), () {
+        //   fn(i);
+        // });
       }
     }
 
@@ -238,9 +238,17 @@ class ChatRepository {
       _ChatMessage.fileID = fileID;
     }
     _ChatSendMessageReq.chatMessage = _ChatMessage;
+
+    Completer _completer = Completer();
     sendChatMsg($WS.genRequestID(), _ChatSendMessageReq, (data) {
       print('发送消息返回：$data');
+      if (data.hasError) {
+        _completer.completeError(data.res);
+      } else {
+        _completer.complete(data.res);
+      }
     });
+    return _completer.future;
   }
 
   sendTyping(Int64 chatID) {

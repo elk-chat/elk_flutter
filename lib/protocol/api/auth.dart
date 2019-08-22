@@ -6,12 +6,13 @@ import '../protobuf/koi.pb.dart';
 
 /// 登录/自动登录
 login(UserLoginReq proto, WebsocketCallback cb) {
-  return $WS.send(method: "UserLoginReq", protobuf: proto, cb: cb);
+  return $WS.send(method: "UserLoginReq", auth: false, protobuf: proto, cb: cb);
 }
 
 /// 注册
 register(UserRegisterReq proto, WebsocketCallback cb) {
-  return $WS.send(method: "UserRegisterReq", protobuf: proto, cb: cb);
+  return $WS.send(
+      method: "UserRegisterReq", auth: false, protobuf: proto, cb: cb);
 }
 
 /// 退出登录

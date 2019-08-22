@@ -76,7 +76,9 @@ class WebSocket extends EventEmitter {
 
   /// 待请求队列
   Map<String, List<Function>> _queues = Map();
-  Map<String, List<Function>> get queues => _queues;
+  Map<String, List<Function>> _logined_queues = Map();
+  // Map<String, List<Function>> get queues => _queues;
+  // Map<String, List<Function>> get logined_queues => _logined_queues;
 
   /// 发送途中，断开连接队列
   List<Function> _disconnectedCbs = List();
@@ -165,7 +167,7 @@ class WebSocket extends EventEmitter {
       WSStatusData payload = WSStatusData(type: currentStatus);
       emit(WS_STATUS, payload);
     }
-
+    isLogined = false;
     // 重连的时候关闭之前的连接
     if (channel != null) {
       closeChannel();
@@ -187,7 +189,10 @@ class WebSocket extends EventEmitter {
     final stopwatch = Stopwatch()..start();
     lastHeartBeatTime = DateTime.now();
     if (cb != null) {
-      authCallback = cb;
+      authCallback = () {
+        _executeLoginedQueues();
+        cb();
+      };
     }
     // 发送之前，弄个定时，如果超时没返回，说明断开
     lastHeartBeatTimer?.cancel();
@@ -289,10 +294,10 @@ class WebSocket extends EventEmitter {
 
   /// 退出登录
   void logout() {
-    isLogined = false;
     stopHeartBeat();
     clearQueues();
     closeChannel();
+    isLogined = false;
     currentStatus = WSStatus.disconnected;
     emit(LOGOUT);
   }
@@ -319,8 +324,10 @@ class WebSocket extends EventEmitter {
       BigInt requestID,
       // 是否需要没网络时，返回
       bool delay = false,
-      // 如果没有网络，是否需���放到队列中
+      // 如果没有网络，是否放到队列中
       bool queue = false,
+      // 是否需要登录
+      bool auth = true,
       // 用于同一个方法但是多个请求
       dynamic queueID = 0,
       // 是��需要超时，如果是文件上传，这���需要设置为 false
@@ -342,7 +349,7 @@ class WebSocket extends EventEmitter {
     Function disconnectedFn;
 
     void unsubscripe() {
-      _queues.remove(_queueID);
+      (!auth ? _queues : _logined_queues).remove(_queueID);
       timeoutTimer?.cancel();
       _disconnectedCbs.remove(disconnectedFn);
       off(eventName);
@@ -417,12 +424,13 @@ class WebSocket extends EventEmitter {
     void queueFn() {
       // 同一个请求方法，会发多次不同 ID 的请求查询数据
       if (!queue) {
-        if (_queues[_queueID] != null && _queues[_queueID].isNotEmpty) {
-          _queues.remove(_queueID);
+        if ((!auth ? _queues : _logined_queues)[_queueID] != null &&
+            (!auth ? _queues : _logined_queues)[_queueID].isNotEmpty) {
+          (!auth ? _queues : _logined_queues).remove(_queueID);
         }
       }
-      final List queueContainer =
-          _queues.putIfAbsent(_queueID, () => List<Function>());
+      final List queueContainer = (!auth ? _queues : _logined_queues)
+          .putIfAbsent(_queueID, () => List<Function>());
       queueContainer.add(fn);
       // 没网络。等待网络连接自动发送
       if (delay) {
@@ -453,20 +461,33 @@ class WebSocket extends EventEmitter {
   void _executeQueues() {
     if (currentStatus == WSStatus.connected) {
       _queues.forEach((k, v) {
+        _queues.remove(v);
         for (var handler in v) {
           handler();
         }
         log.info('_queues remove $v');
-        _queues.remove(v);
       });
     } else {
       //
     }
   }
 
+  // 执行登录后队列，bug：消息发送是有一定顺序的，而这个是同时异步发，没有顺序
+  // todo，如果是有顺序的，放在一个新的顺序 queues 里面
+  void _executeLoginedQueues() {
+    _logined_queues.forEach((k, v) {
+      _logined_queues.remove(v);
+      for (var handler in v) {
+        handler();
+      }
+      log.info('_logined_queues remove $v');
+    });
+  }
+
   /// 清除队列
   void clearQueues() {
     _queues.clear();
+    _logined_queues.clear();
     _disconnectedCbs.clear();
   }
 
@@ -548,6 +569,7 @@ class WebSocket extends EventEmitter {
   /// 监听连接断开
   void _onDone() {
     if (currentStatus != WSStatus.disconnected) {
+      isLogined = false;
       currentStatus = WSStatus.disconnected;
       doneCount++;
       // 停止心跳

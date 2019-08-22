@@ -168,8 +168,8 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
         if (duplicates) return;
         // 是否可以取后面的进行优化？
         List<StateUpdate> msgList = [res]..addAll(msgs.toList());
-        // 根据 state 排序，这里的 state 有可能是重复的
-        msgList.sort((a, b) => b.state.compareTo(a.state));
+        // 根据 messageID 排序，这里的 messageID 有可能是重复的
+        msgList.sort((a, b) => b.messageID.compareTo(a.messageID));
         setState(() {
           msgs = msgList;
         });
@@ -362,6 +362,7 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
           if (index < queue_msgs.length) {
             var queueMsg = queue_msgs[index];
             return QueueMsgBubble(
+                key: ValueKey(queueMsg.actionTime),
                 chatRepository: widget.chatRepository,
                 queueMsg: queueMsg,
                 dateFormat: dateFormat,
@@ -483,29 +484,22 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
       focusInput();
       return;
     }
+    var map = {
+      'status': QueueMsgStatus.init,
+      'chatID': _chat.chatID,
+      'messageType': ChatMessageType.SendMessage,
+      'contentType': ChatContentType.Text,
+      'message': message,
+      'actionTime': DateTime.now().millisecondsSinceEpoch
+    };
+    QueueMsg _queueMsgItem = QueueMsg.fromMap(map);
 
+    var list = [_queueMsgItem];
+    list.addAll(queue_msgs);
     setState(() {
-      QueueMsg _queueMsgItem = QueueMsg.fromMap({
-        'status': QueueMsgStatus.init,
-        'chatID': _chat.chatID,
-        'messageType': ChatMessageType.SendMessage,
-        'contentType': ChatContentType.Text,
-        'message': message,
-        'actionTime': DateTime.now().millisecondsSinceEpoch
-      });
-      setState(() {
-        queue_msgs = [_queueMsgItem]..addAll(queue_msgs);
-      });
-      _textEditingController.clear();
+      queue_msgs = list.toList();
     });
-    // try {
-    //   var res =
-    //       await widget.chatRepository.sendMsg(_chat.chatID, contentType, text);
-    //   print('send message response: $res');
-    //   _textEditingController.clear();
-    // } catch (e) {
-    //   print('send message error $e');
-    // }
+    _textEditingController.clear();
   }
 
   Widget buildAttachment() {
@@ -526,12 +520,6 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
               onPressed: getImageFromGallery,
               icon: Icon(MaterialCommunityIcons.getIconData('image')),
             ),
-            // IconButton(
-            //   iconSize: 33.0,
-            //   color: Colors.lightBlue,
-            //   onPressed: getImageFromGallery,
-            //   icon: Icon(MaterialCommunityIcons.getIconData('file')),
-            // ),
           ],
         )
       ],

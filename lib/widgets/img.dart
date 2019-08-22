@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:elk_chat/protocol/protobuf/koi.pb.dart';
+import 'package:elk_chat/widgets/hero_photoview.dart';
 import 'package:fixnum/fixnum.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:elk_chat/protocol/api/api.dart';
 
@@ -24,12 +26,14 @@ class Img extends StatefulWidget {
   final double height;
   final Int64 fileID;
   final String title;
+  final bool hasTap;
 
   Img(
       {Key key,
       this.type = 2,
       this.fileID,
       this.title,
+      this.hasTap = false,
       @required this.width,
       @required this.height})
       : super(key: key);
@@ -47,9 +51,7 @@ class _AvatarState extends State<Img> {
     if (widget.fileID == 0) {
       return;
     } else if (avatarCacher[widget.fileID] != null) {
-      setState(() {
-        imgSrc = avatarCacher[widget.fileID];
-      });
+      imgSrc = avatarCacher[widget.fileID];
       return;
     }
     _UtilityFileStatReq.fileID = widget.fileID;
@@ -77,12 +79,27 @@ class _AvatarState extends State<Img> {
         )));
     Widget child;
     if (imgSrc.isNotEmpty) {
-      child = CachedNetworkImage(
-          width: widget.width,
-          height: widget.height,
-          fit: BoxFit.cover,
-          imageUrl: imgSrc,
-          placeholder: (context, url) => placeholder);
+      var tag = "p_${imgSrc}";
+      child = GestureDetector(
+          onTap: widget.hasTap
+              ? () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => HeroPhotoViewWrapper(
+                          loadingChild: CupertinoActivityIndicator(),
+                          heroTag: tag,
+                          imageProvider: CachedNetworkImageProvider(imgSrc)),
+                    ),
+                  );
+                }
+              : null,
+          child: CachedNetworkImage(
+              width: widget.width,
+              height: widget.height,
+              fit: BoxFit.cover,
+              imageUrl: imgSrc,
+              placeholder: (context, url) => placeholder));
     } else {
       child = placeholder;
     }

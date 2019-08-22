@@ -25,7 +25,8 @@ changeLoginPwd(Map formData, WebsocketCallback cb) {
   // @Todo
 }
 
-/// 更改头像
-changeAvatar(Map formData, WebsocketCallback cb) {
-  // @Todo
+/// 更新资料 UpdateProfile
+updateProfile(UserUpdateProfileReq proto, WebsocketCallback cb,
+    [UserUpdateProfileResp resp]) {
+  return $WS.send(method: "UserUpdateProfileReq", protobuf: proto, cb: cb);
 }

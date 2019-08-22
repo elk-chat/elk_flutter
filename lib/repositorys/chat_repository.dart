@@ -161,9 +161,9 @@ class ChatRepository {
         }
       } catch (e) {
         print('chatID ${i.chatID} 获取最后一条消息失败 $e');
-        // Timer(Duration(seconds: 1), () {
-        //   fn(i);
-        // });
+        Timer(Duration(seconds: 1), () {
+          fn(i);
+        });
       }
     }
 
@@ -234,14 +234,16 @@ class ChatRepository {
     if (message.isNotEmpty) {
       _ChatMessage.message = message;
     }
-    if (contentType != ChatContentType.Text && fileID != null) {
+    if (contentType != ChatContentType.Text &&
+        contentType != ChatContentType.Geo &&
+        fileID != null) {
       _ChatMessage.fileID = fileID;
     }
     _ChatSendMessageReq.chatMessage = _ChatMessage;
 
     Completer _completer = Completer();
     sendChatMsg($WS.genRequestID(), _ChatSendMessageReq, (data) {
-      print('发送消息返回：$data');
+      print('发送��息返回：$data');
       if (data.hasError) {
         _completer.completeError(data.res);
       } else {

@@ -1,3 +1,4 @@
+import 'package:elk_chat/protocol/protobuf/koi.pb.dart';
 import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
 
@@ -22,4 +23,11 @@ class LoggedIn extends AuthEvent {
 class LoggedOut extends AuthEvent {
   @override
   String toString() => 'LoggedOut';
+}
+
+class UpdateUser extends AuthEvent {
+  final User user;
+  UpdateUser({@required this.user});
+  @override
+  String toString() => 'UpdateUser';
 }

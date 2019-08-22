@@ -6,8 +6,7 @@ import 'package:elk_chat/protocol/protobuf/koi.pb.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
-import 'msg_util.dart';
+import 'msg_widget.dart';
 
 class MsgBubble extends StatefulWidget {
   final StateUpdate stateUpdate;
@@ -97,8 +96,13 @@ class _MsgBubbleState extends State<MsgBubble> {
       // 发送消息：ChatContentType 文本/图片/文件/视频/音频/地理位置
       var msg = updMsg.updateMessageChatSendMessage.chatMessage;
 
-      return MsgUtil.getSendMsgWidget(msg.actionTime.toInt() * 1000, dateFormat,
-          widget.isSelf, stateRead >= widget.stateUpdate.state, msg);
+      return MsgWidget(
+          key: ValueKey(msg.actionTime),
+          dtime: msg.actionTime.toInt() * 1000,
+          dateFormat: dateFormat,
+          isSelf: widget.isSelf,
+          isRead: stateRead >= widget.stateUpdate.state,
+          msg: msg);
     }
     return Container(child: Text('未知消息类型 messageType： ${state.messageType}'));
   }

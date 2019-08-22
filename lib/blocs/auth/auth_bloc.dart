@@ -26,6 +26,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     }
 
+    if (event is UpdateUser) {
+      var account = (currentState as AuthAuthenticated).account;
+      account.user = event.user;
+      authRepository.persistAuthInfo(account);
+      yield AuthAuthenticated(account: account);
+    }
+
     if (event is LoggedIn) {
       // 为什么需要这个 loading 效果？
       yield AuthLoading();

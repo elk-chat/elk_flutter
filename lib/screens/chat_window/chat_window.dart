@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-
 import 'package:elk_chat/blocs/blocs.dart';
 import 'package:elk_chat/chat_hub/const.dart';
 import 'package:elk_chat/init_websocket.dart';
@@ -12,6 +11,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 // import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:elk_chat/repositorys/repositorys.dart';
@@ -48,7 +48,6 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
   final int PAGE_SIZE = 12;
   final DateFormat dateFormat = DateFormat('MM/dd HH:mm');
 
-  File imageFile;
   int pageIndex = 0;
   bool loading = true;
   bool hasReachedMax = false;
@@ -155,19 +154,17 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
       if (res.messageType == ChatMessageType.ReadState) return;
       // 有新消息
       if (mounted) {
-        // 去重
-        bool duplicates = false;
+        List<StateUpdate> new_msgs = [];
         for (var i in msgs) {
           if (i.state == res.state) {
-            duplicates = true;
-            print('重复消息 $res');
-            break;
+            print('重复消息，可能是编辑 $res');
+          } else {
+            new_msgs.add(i);
           }
         }
-        // 如果重复，去掉
-        if (duplicates) return;
+
         // 是否可以取后面的进行优化？
-        List<StateUpdate> msgList = [res]..addAll(msgs.toList());
+        List<StateUpdate> msgList = [res]..addAll(new_msgs);
         // 根据 messageID 排序，这里的 messageID 有可能是重复的
         msgList.sort((a, b) => b.messageID.compareTo(a.messageID));
         setState(() {
@@ -248,50 +245,41 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
     }
   }
 
+  // 从图库获取图片
   Future getImageFromGallery() async {
     try {
-      imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
-      var bytes = await imageFile.readAsBytes();
-      var _UtilityUploadReq = UtilityUploadReq();
-      _UtilityUploadReq.chatID = _chat.chatID;
-      _UtilityUploadReq.data = bytes;
-      _UtilityUploadReq.fileName =
-          DateTime.now().millisecondsSinceEpoch.toString();
-      uploadFile(_UtilityUploadReq, (data) {
-        if (data.hasError) {
-          showFlushBar('UtilityUploadReq error ${data.res}', context);
-          print('${data.res}');
-        } else {
-          print(data.res.file);
-        }
-      });
-      print('imageFile $imageFile');
-
-      print('file name ${imageFile.path.split('/').last}');
-
-      readFileFromPath(imageFile.path);
+      File imageFile = await ImagePicker.pickImage(
+          source: ImageSource.gallery, imageQuality: 60);
+      onSendFile(ChatContentType.Image, imageFile);
     } catch (e) {
-      print('image picker error $e');
+      var error = "图库选择图片出错 $e";
+      showError(error);
     }
   }
 
-  readFileFromPath(path) async {
-    try {
-      var file = await File(path);
-      var bytes = await file.readAsBytes();
-      print('readFileFromPath bytes length ${bytes.length}');
-    } catch (e) {
-      print('readFileFromPath error $e');
-    }
-  }
-
+  // 从相机获取图片
   Future getImageFromCamera() async {
     try {
-      imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
-      print('imageFile $imageFile');
+      File imageFile = await ImagePicker.pickImage(
+          source: ImageSource.camera, imageQuality: 60);
+      onSendFile(ChatContentType.Image, imageFile);
     } catch (e) {
-      print('image picker error $e');
+      var error = "相机拍摄图片出错 $e";
+      showError(error);
     }
+  }
+
+  showError(String error) {
+    print(error);
+
+    Fluttertoast.showToast(
+        msg: error,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIos: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 14.0);
   }
 
   onTyping() {
@@ -490,8 +478,27 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
       'messageType': ChatMessageType.SendMessage,
       'contentType': ChatContentType.Text,
       'message': message,
-      'actionTime': DateTime.now().millisecondsSinceEpoch
     };
+    addMsgToQueue(map);
+    _textEditingController.clear();
+  }
+
+  // 发送文件：图片/视频/文档等。。
+  onSendFile(int contentType, File file) {
+    if (file == null) return;
+    var map = {
+      'status': QueueMsgStatus.init,
+      'chatID': _chat.chatID,
+      'messageType': ChatMessageType.SendMessage,
+      'contentType': contentType,
+      'message': '',
+      'filePath': file.path,
+    };
+    file = null;
+    addMsgToQueue(map);
+  }
+
+  addMsgToQueue(Map map) {
     QueueMsg _queueMsgItem = QueueMsg.fromMap(map);
 
     var list = [_queueMsgItem];
@@ -499,7 +506,6 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
     setState(() {
       queue_msgs = list.toList();
     });
-    _textEditingController.clear();
   }
 
   Widget buildAttachment() {
@@ -520,6 +526,12 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
               onPressed: getImageFromGallery,
               icon: Icon(MaterialCommunityIcons.getIconData('image')),
             ),
+            // IconButton(
+            //   iconSize: 33.0,
+            //   color: Colors.cyan,
+            //   onPressed: getFile, // 选择文件
+            //   icon: Icon(MaterialCommunityIcons.getIconData('file')),
+            // ),
           ],
         )
       ],

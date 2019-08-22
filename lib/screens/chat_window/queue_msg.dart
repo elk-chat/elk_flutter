@@ -1,4 +1,5 @@
 // queue msg model
+import 'package:elk_chat/protocol/api/state.dart';
 import 'package:meta/meta.dart';
 
 /*
@@ -42,18 +43,21 @@ enum QueueMsgStatus { init, loading, error }
 class QueueMsg {
   QueueMsgStatus status;
   Int64 chatID;
+  Int64 fileID;
+  String filePath;
   int messageType;
   int contentType;
   String message;
   int actionTime;
-  QueueMsg({
-    @required this.status,
-    @required this.chatID,
-    @required this.messageType,
-    @required this.contentType,
-    @required this.message,
-    @required this.actionTime,
-  });
+  QueueMsg(
+      {@required this.status,
+      @required this.chatID,
+      @required this.messageType,
+      @required this.contentType,
+      @required this.message,
+      @required this.actionTime,
+      this.fileID,
+      this.filePath});
 
   QueueMsg.fromMap(Map<String, dynamic> map) {
     status = map['status'];
@@ -61,6 +65,12 @@ class QueueMsg {
     messageType = map['messageType'];
     contentType = map['contentType'];
     message = map['message'];
-    actionTime = map['actionTime'];
+    actionTime = DateTime.now().millisecondsSinceEpoch;
+
+    if (contentType != ChatContentType.Text &&
+        contentType != ChatContentType.Geo) {
+      fileID = map['fileID'];
+      filePath = map['filePath'];
+    }
   }
 }

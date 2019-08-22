@@ -56,6 +56,7 @@ class _EditProfileScreenState extends State<ProfileScreen> {
         MaterialPageRoute(
             builder: (BuildContext context) => ChatWindowScreen(
                   title: Text(widget.contact.userName),
+                  avatarFileID: widget.contact.avatarFileID,
                   chat: chat,
                   user: widget.contact,
                   chatRepository: widget.chatRepository,

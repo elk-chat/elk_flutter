@@ -173,6 +173,7 @@ class _ChatItemState extends State<ChatItem> {
             MaterialPageRoute(
                 builder: (BuildContext context) => ChatWindowScreen(
                       title: Text(chatInfo['title']),
+                      avatarFileID: chatInfo['avatarFileID'],
                       chat: widget.chat,
                       chatRepository: widget.chatRepository,
                       authState: widget.authState,

@@ -151,3 +151,9 @@ getChatMembers(Map formData, WebsocketCallback cb) {
 // onlineStateAck(Map formData, WebsocketCallback cb) {
 /// [@Todo]
 // }
+
+/// 更新群聊资料 updateChatProfile
+updateChatProfile(ChatUpdateProfileReq proto, WebsocketCallback cb,
+    [ChatUpdateProfileResp resp]) {
+  return $WS.send(method: "ChatUpdateProfileReq", protobuf: proto, cb: cb);
+}

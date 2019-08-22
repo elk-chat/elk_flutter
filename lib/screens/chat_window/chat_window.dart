@@ -6,6 +6,7 @@ import 'package:elk_chat/init_websocket.dart';
 import 'package:elk_chat/protocol/api/api.dart';
 import 'package:elk_chat/protocol/protobuf/koi.pb.dart';
 import 'package:elk_chat/widgets/flushbar.dart';
+import 'package:elk_chat/widgets/img.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 // import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:elk_chat/repositorys/repositorys.dart';
+import 'package:elk_chat/screens/chat_detail/chat_detail.dart';
+
 import 'package:intl/intl.dart';
 import 'msg_bubble.dart';
 import 'queue_msg.dart';
@@ -23,6 +26,7 @@ import 'queue_msg_bubble.dart';
 // 聊天窗口
 class ChatWindowScreen extends StatefulWidget {
   final title;
+  final Int64 avatarFileID;
   final Chat chat;
   final User user;
   final ChatRepository chatRepository;
@@ -33,6 +37,7 @@ class ChatWindowScreen extends StatefulWidget {
       @required this.title,
       @required this.chat,
       this.user,
+      @required this.avatarFileID,
       @required this.chatRepository,
       @required this.authState})
       : super(key: key);
@@ -48,6 +53,7 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
   final int PAGE_SIZE = 12;
   final DateFormat dateFormat = DateFormat('MM/dd HH:mm');
 
+  Int64 avatarFileID;
   int pageIndex = 0;
   bool loading = true;
   bool hasReachedMax = false;
@@ -80,6 +86,7 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
 
   @override
   void initState() {
+    avatarFileID = widget.avatarFileID;
     super.initState();
 
     _chatBloc = BlocProvider.of<ChatBloc>(context);
@@ -299,19 +306,30 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
         title: widget.title,
         centerTitle: true,
         actions: <Widget>[
-          // IconButton(
-          //   icon: Icon(
-          //     MaterialCommunityIcons.getIconData('dots-horizontal'),
-          //   ),
-          //   onPressed: () {
-          //     Navigator.push(
-          //         context,
-          //         MaterialPageRoute(
-          //             fullscreenDialog: true,
-          //             builder: (BuildContext context) =>
-          //                 NewChatScreen(title: '新聊天')));
-          //   },
-          // ),
+          IconButton(
+              onPressed: () {
+                if (_chat.chatType == ChatType.OneToOne) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              OneToOneChatDetailScreen(title: widget.title)));
+                } else if (_chat.chatType == ChatType.Group) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              GroupChatDetailScreen(title: widget.title)));
+                }
+              },
+              icon: Img(
+                key: Key('${avatarFileID}'),
+                width: 32,
+                height: 32,
+                type: _chat.chatType,
+                fileID: avatarFileID,
+                // title: widget.contact.userName,
+              ))
         ],
       ),
       body: SafeArea(

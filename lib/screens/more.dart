@@ -42,6 +42,7 @@ class _MoreScreenState extends State<MoreScreen>
   AuthBloc authBloc;
   ContactBloc contactBloc;
   ChatBloc chatBloc;
+  int avaterSize = 256;
 
   @override
   void initState() {
@@ -164,8 +165,8 @@ class _MoreScreenState extends State<MoreScreen>
       sourcePath: imageFile.path,
       ratioX: 1.0,
       ratioY: 1.0,
-      maxWidth: 512,
-      maxHeight: 512,
+      maxWidth: avaterSize,
+      maxHeight: avaterSize,
     );
 
     sendFile(croppedFile);
@@ -178,8 +179,8 @@ class _MoreScreenState extends State<MoreScreen>
     _UtilityUploadReq.data = bytes;
     _UtilityUploadReq.fileName = file.path.split('/').last;
     _UtilityUploadReq.contentType = ChatContentType.Image;
-    _UtilityUploadReq.width = 512;
-    _UtilityUploadReq.height = 512;
+    _UtilityUploadReq.width = avaterSize;
+    _UtilityUploadReq.height = avaterSize;
 
     uploadFile(_UtilityUploadReq, (data) {
       bytes = null;
@@ -198,6 +199,7 @@ class _MoreScreenState extends State<MoreScreen>
             showError('更新头像报错 ${data.res}');
           } else {
             print('头像已更新 $data');
+            setState(() {});
           }
         });
       }

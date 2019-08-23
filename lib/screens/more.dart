@@ -161,6 +161,7 @@ class _MoreScreenState extends State<MoreScreen>
   }
 
   Future<Null> _cropImage(File imageFile) async {
+    if (imageFile == null) return;
     File croppedFile = await ImageCropper.cropImage(
       sourcePath: imageFile.path,
       ratioX: 1.0,
@@ -168,7 +169,7 @@ class _MoreScreenState extends State<MoreScreen>
       maxWidth: avaterSize,
       maxHeight: avaterSize,
     );
-
+    if (croppedFile == null) return;
     sendFile(croppedFile);
   }
 

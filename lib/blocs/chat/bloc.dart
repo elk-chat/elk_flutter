@@ -66,6 +66,14 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       }
     }
 
+    if (event is DeleteChat) {
+      var chats = (currentState as ChatLoaded)
+          .chats
+          .where((i) => i.chatID != event.chat.chatID)
+          .toList();
+      yield ChatLoaded(chats: chats);
+    }
+
     if (event is ResortChatList) {
       var chats =
           resortChatByUpdateTime((currentState as ChatLoaded).chats.toList());

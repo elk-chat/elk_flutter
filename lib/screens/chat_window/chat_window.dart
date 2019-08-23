@@ -314,13 +314,20 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
                       context,
                       MaterialPageRoute(
                           builder: (BuildContext context) =>
-                              OneToOneChatDetailScreen(title: widget.title)));
+                              OneToOneChatDetailScreen(
+                                  title: '聊天详情',
+                                  avatarFileID: avatarFileID,
+                                  user: widget.user,
+                                  chat: widget.chat)));
                 } else if (_chat.chatType == ChatType.Group) {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (BuildContext context) =>
-                              GroupChatDetailScreen(title: widget.title)));
+                              GroupChatDetailScreen(
+                                  title: '聊天信息',
+                                  avatarFileID: avatarFileID,
+                                  chat: widget.chat)));
                 }
               },
               icon: Img(

@@ -40,7 +40,7 @@ sh shell/proto.sh
 
 #### 同步后端生成文件
 
-注意：保证该项目上级目录clone了 koi 仓库
+注意：保证该项目上级目录 clone 了 koi 仓库
 
 ```sh
 sh shell/sync_proto.sh
@@ -57,3 +57,8 @@ sh shell/l10n.sh
 ```sh
 sh shell/l10n_to_dart.sh
 ```
+
+## 问题记录
+
+- 安卓机选择图片会耗尽内存，闪退
+- 图片上传必须压缩，否则列表展示会耗尽内存闪退

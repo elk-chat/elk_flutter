@@ -16,9 +16,9 @@ class ContactWidget extends StatefulWidget {
       this.hasCheckbox = false,
       this.checked,
       this.onChange,
-      this.contact,
+      @required this.contact,
       this.onTap,
-      this.avatarSize})
+      @required this.avatarSize})
       : super(key: key);
 
   _ContactWidgetState createState() => _ContactWidgetState();

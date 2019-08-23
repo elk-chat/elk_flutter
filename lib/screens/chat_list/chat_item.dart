@@ -45,6 +45,7 @@ class _ChatItemState extends State<ChatItem> {
   Map chatInfo = {'title': '', 'avatarFileID': Int64(0)};
   List<dynamic> lastMessages = [];
 
+  User user;
   Function unSupscription;
 
   @override
@@ -52,6 +53,7 @@ class _ChatItemState extends State<ChatItem> {
     super.initState();
     // 获取未读，上层获取
 
+    user = User();
     var chatID = widget.chat.chatID;
     var lastMsgs = $CH.getLastMsg(chatID);
     setState(() {
@@ -95,6 +97,7 @@ class _ChatItemState extends State<ChatItem> {
             'avatarFileID': i.avatarFileID,
             'title': i.userName,
           };
+          user = i;
           break;
         }
       }
@@ -175,6 +178,7 @@ class _ChatItemState extends State<ChatItem> {
                       title: Text(chatInfo['title']),
                       avatarFileID: chatInfo['avatarFileID'],
                       chat: widget.chat,
+                      user: user,
                       chatRepository: widget.chatRepository,
                       authState: widget.authState,
                     )));

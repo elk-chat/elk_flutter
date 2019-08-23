@@ -119,6 +119,16 @@ readMsg(ChatReadMessageReq proto, WebsocketCallback cb) {
   return $WS.send(method: "ChatReadMessageReq", protobuf: proto, cb: cb);
 }
 
+/// 删除消息
+deleteMsg(ChatDeleteMessageReq proto, WebsocketCallback cb) {
+  return $WS.send(method: "ChatDeleteMessageReq", protobuf: proto, cb: cb);
+}
+
+/// 删除群聊成员
+deleteMember(ChatDeleteMemberReq proto, WebsocketCallback cb) {
+  return $WS.send(method: "ChatDeleteMessageReq", protobuf: proto, cb: cb);
+}
+
 /// 查看 Chat 中自己读到的 stateRead，已经合并到 ChatGetStateReadReq
 // getChatReadState(Map formData, WebsocketCallback cb) {
 //   return $WS.send(

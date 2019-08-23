@@ -489,6 +489,8 @@ const Chat$json = const {
     const {'1': 'Title', '3': 5, '4': 1, '5': 9, '10': 'Title'},
     const {'1': 'AvatarFileID', '3': 6, '4': 1, '5': 3, '10': 'AvatarFileID'},
     const {'1': 'Disabled', '3': 7, '4': 1, '5': 5, '10': 'Disabled'},
+    const {'1': 'CreatorID', '3': 8, '4': 1, '5': 3, '10': 'CreatorID'},
+    const {'1': 'PinState', '3': 9, '4': 1, '5': 4, '10': 'PinState'},
   ],
 };
 

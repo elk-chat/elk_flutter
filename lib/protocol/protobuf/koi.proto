@@ -329,6 +329,8 @@ message Chat {
   string Title = 5;
   int64 AvatarFileID = 6;
   int32 Disabled = 7;
+  int64 CreatorID = 8;
+  uint64 PinState = 9;
 }
 
 // 用户只能创建普通群

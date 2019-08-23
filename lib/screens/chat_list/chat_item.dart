@@ -1,6 +1,7 @@
 import 'package:elk_chat/init_websocket.dart';
 import 'package:elk_chat/chat_hub/const.dart';
 import 'package:elk_chat/protocol/api/proto_helper.dart';
+import 'package:elk_chat/protocol/api/state.dart';
 import 'package:elk_chat/screens/chat_list/unread_badge.dart';
 import 'package:elk_chat/screens/chat_window/queue_msg.dart';
 import 'package:elk_chat/screens/screens.dart';
@@ -132,7 +133,7 @@ class _ChatItemState extends State<ChatItem> {
   //   try {
   //     var chatID = widget.chat.chatID;
   //     // 获取最后一条消息
-  //     var res = await widget.chatRepository.getMsgHistory(0, 1, chatID, [1, 2]);
+  //     var res = await widget.chatRepository.getMsgHistory(0, 1, chatID, [1, 2, 4]);
   //     StateUpdatesCache[chatID] = res.stateUpdates;
   //     if (mounted) {
   //       setState(() {
@@ -145,21 +146,64 @@ class _ChatItemState extends State<ChatItem> {
   // }
 
   // 获取消息类型
-  String getMessageText(UpdateMessage message) {
+  String getMessageText(StateUpdate upd) {
+    var message = upd.updateMessage;
     var text = '';
+    var isAdminDid = widget.chat.creatorID == upd.senderID;
     if (message.hasUpdateMessageChatAddMember()) {
-      text = '${message.updateMessageChatAddMember.addedMemeberName} 加入群聊';
+      text =
+          '${message.updateMessageChatAddMember.addedMemeberName} ${isAdminDid ? '邀请进入群聊' : '加入群聊'}';
+    } else if (message.hasUpdateMessageChatSendMessage()) {
+      text =
+          '${message.updateMessageChatSendMessage.chatMessage.senderName}: ${getMessageByType(message.updateMessageChatSendMessage.chatMessage)}';
     } else if (message.hasUpdateMessageChatDeleteMember()) {
-      text = '${message.updateMessageChatAddMember.addedMemeberName} 退出群聊';
+      text =
+          '${message.updateMessageChatDeleteMember.deletedMemeberName} ${isAdminDid ? '被移出群聊' : '退出群聊'}';
     } else if (message.hasUpdateMessageChatDeleteMessage()) {
       text = '${message.updateMessageChatDeleteMessage.senderName} 删了一条消息';
     } else if (message.hasUpdateMessageChatReadMessage()) {
       text = '${message.updateMessageChatReadMessage.senderName} 已读';
-    } else if (message.hasUpdateMessageChatSendMessage()) {
-      text =
-          '${message.updateMessageChatSendMessage.chatMessage.senderName}: ${message.updateMessageChatSendMessage.chatMessage.message}';
     } else if (message.hasUpdateMessageChatSetTyping()) {
       text = '${message.updateMessageChatSetTyping.senderName} 正在输入..';
+    }
+    return text;
+  }
+
+  String getMessageByType(ChatMessage chatMessage) {
+    var text = '';
+    /*
+  static const int Other = 0;
+  static const int Text = 1;
+  static const int Image = 2;
+  static const int Audio = 3;
+  static const int Video = 4;
+  static const int Geo = 5;
+  static const int File = 5;
+    */
+    switch (chatMessage.contentType) {
+      case ChatContentType.Text:
+        text = chatMessage.message;
+        break;
+      case ChatContentType.Image:
+        text = '图片';
+        break;
+      case ChatContentType.Audio:
+        text = '音频';
+        break;
+      case ChatContentType.Video:
+        text = '视频';
+        break;
+      case ChatContentType.Geo:
+        text = '地理位置';
+        break;
+      case ChatContentType.File:
+        text = '文件';
+        break;
+      case ChatContentType.Other:
+        text = '其他';
+        break;
+      default:
+        text = '未知内容类型 ${chatMessage.contentType}';
     }
     return text;
   }
@@ -222,7 +266,7 @@ class _ChatItemState extends State<ChatItem> {
             : Text(
                 lastMsg is QueueMsg
                     ? '${$WS.user.userName}: ${lastMsg.message}'
-                    : getMessageText(lastMsg.updateMessage),
+                    : getMessageText(lastMsg),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 2,
                 softWrap: false,

@@ -1,7 +1,10 @@
+import 'dart:async';
+
 /// 聊天相关接口
 import '../network/websocket.dart';
 import 'package:elk_chat/init_websocket.dart';
 import '../protobuf/koi.pb.dart';
+import 'contact.dart';
 
 /// 获取聊天列表ID
 getChatList(ChatGetChatsReq pto, WebsocketCallback cb) {
@@ -126,7 +129,7 @@ deleteMsg(ChatDeleteMessageReq proto, WebsocketCallback cb) {
 
 /// 删除群聊成员
 deleteMember(ChatDeleteMemberReq proto, WebsocketCallback cb) {
-  return $WS.send(method: "ChatDeleteMessageReq", protobuf: proto, cb: cb);
+  return $WS.send(method: "ChatDeleteMemberReq", protobuf: proto, cb: cb);
 }
 
 /// 查看 Chat 中自己读到的 stateRead，已经合并到 ChatGetStateReadReq
@@ -150,11 +153,27 @@ getChatMemberIDs(ChatGetMembersReq proto, WebsocketCallback cb,
   return $WS.send(method: "ChatGetMembersReq", protobuf: proto, cb: cb);
 }
 
-/// 获取 Chat 中的联系人列表
-getChatMembers(Map formData, WebsocketCallback cb) {
-  /// [@Todo]
-  /// 首先获取联系人列表 ID
-  /// 再根据 ID 循环获取联系人信息
+Future<List<User>> getChatMembers(Chat chat) {
+  Completer _completer = Completer<List<User>>();
+  ChatGetMembersReq _ChatGetMembersReq = ChatGetMembersReq();
+
+  _ChatGetMembersReq.chatID = chat.chatID;
+  getChatMemberIDs(_ChatGetMembersReq, (data) async {
+    if (data.hasError) {
+      _completer.completeError(data.res);
+    } else {
+      UserGetFullUsersReq _UserGetFullUsersReq = UserGetFullUsersReq();
+      getFullUsers(data.res.members, _UserGetFullUsersReq, (data) {
+        if (data.hasError) {
+          _completer.completeError(data.res);
+        } else {
+          _completer.complete(data.res.users);
+        }
+      });
+    }
+  });
+
+  return _completer.future;
 }
 
 /// 告诉服务器，在线/下线

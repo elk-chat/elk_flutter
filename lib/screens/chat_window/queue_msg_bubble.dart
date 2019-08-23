@@ -12,6 +12,7 @@ import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'queue_msg.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 class QueueMsgBubble extends StatefulWidget {
   final ChatRepository chatRepository;
@@ -117,8 +118,7 @@ class _QueueMsgBubbleState extends State<QueueMsgBubble> {
       setState(() {});
       // _UtilityUploadReq.caption = 'caption';
     }
-    uploadFile(_UtilityUploadReq, (data) {
-      bytes = null;
+    uploadFile(_UtilityUploadReq, (data) async {
       _UtilityUploadReq.clear();
       if (data.hasError) {
         print('上传文件错误 ${data.res}');
@@ -126,6 +126,9 @@ class _QueueMsgBubbleState extends State<QueueMsgBubble> {
         // DfsFile;
         print('上传成功 ${data.res.file}');
         sendMsg('', data.res.file.fileID);
+        // 缓存图片
+        await DefaultCacheManager().putFile(data.res.file.uRL, bytes);
+        bytes = null;
       }
     });
   }

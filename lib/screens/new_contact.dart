@@ -104,7 +104,7 @@ class _NewContactScreenState extends State<NewContactScreen> {
           itemBuilder: (BuildContext context, int index) {
             return ContactWidget(
                 avatarSize: 48,
-                contact: _users[index],
+                user: _users[index],
                 onTap: () {
                   handleTap(_users[index]);
                 });

@@ -109,10 +109,10 @@ class _EditProfileScreenState extends State<ProfileScreen> {
             }
 
             return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 ContactWidget(
-                  contact: widget.contact,
+                  user: widget.contact,
                   avatarSize: 64,
                 ),
                 SizedBox(height: 10.0),

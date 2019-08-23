@@ -44,7 +44,7 @@ class _OneToOneChatDetailState extends State<OneToOneChatDetailScreen> {
         physics: const BouncingScrollPhysics(),
         children: <Widget>[
           ContactWidget(
-            contact: widget.user,
+            user: widget.user,
             avatarSize: 48,
           ),
           Padding(

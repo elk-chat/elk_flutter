@@ -2011,6 +2011,8 @@ class Chat extends $pb.GeneratedMessage {
     ..aOS(5, 'title')
     ..aInt64(6, 'avatarFileID')
     ..a<$core.int>(7, 'disabled', $pb.PbFieldType.O3)
+    ..aInt64(8, 'creatorID')
+    ..a<Int64>(9, 'pinState', $pb.PbFieldType.OU6, Int64.ZERO)
     ..hasRequiredFields = false
   ;
 
@@ -2062,6 +2064,16 @@ class Chat extends $pb.GeneratedMessage {
   set disabled($core.int v) { $_setSignedInt32(6, v); }
   $core.bool hasDisabled() => $_has(6);
   void clearDisabled() => clearField(7);
+
+  Int64 get creatorID => $_getI64(7);
+  set creatorID(Int64 v) { $_setInt64(7, v); }
+  $core.bool hasCreatorID() => $_has(7);
+  void clearCreatorID() => clearField(8);
+
+  Int64 get pinState => $_getI64(8);
+  set pinState(Int64 v) { $_setInt64(8, v); }
+  $core.bool hasPinState() => $_has(8);
+  void clearPinState() => clearField(9);
 }
 
 class ChatCreateReq extends $pb.GeneratedMessage {

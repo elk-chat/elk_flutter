@@ -153,7 +153,7 @@ class ChatRepository {
   Future getChatsLastMsg(List<Chat> chats) async {
     fn(i) async {
       try {
-        var res = await getMsgHistory(i.chatID, [1, 2], 0, 1);
+        var res = await getMsgHistory(i.chatID, [1, 2, 4], 0, 1);
         // 如果有最后一条消息，通知排序
         if (res.stateUpdates.length > 0) {
           $WS.emit(CHEvent.ON_CHAT_LAST_MSG, res.stateUpdates[0]);

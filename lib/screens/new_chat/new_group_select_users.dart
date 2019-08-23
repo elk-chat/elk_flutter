@@ -46,7 +46,6 @@ class _NewGroupChatState extends State<NewGroupChatSelectUsersScreen> {
                                     title: '群聊',
                                     members: selectUsers,
                                     chatRepository: widget.chatRepository,
-                                    authState: widget.authState,
                                   )));
                     }
                   : null,

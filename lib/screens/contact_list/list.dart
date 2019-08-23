@@ -81,7 +81,7 @@ class _ContactListState extends State<ContactList> {
                       ? checkedCache[contact.userID]
                       : false,
                   avatarSize: 42.0,
-                  contact: contact,
+                  user: contact,
                   onTap: () => widget.onTap(contact));
             },
             itemCount: contacts.length,

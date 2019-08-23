@@ -15,6 +15,7 @@ import 'package:elk_chat/widgets/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 // import 'package:flutter_icons/flutter_icons.dart';
 
 // 内置浏览器打开链接
@@ -76,7 +77,7 @@ class _MoreScreenState extends State<MoreScreen>
         children: <Widget>[
           ContactWidget(
             avatarSize: 74.0,
-            contact: userInfo.user,
+            user: userInfo.user,
             onTap: onChangeAvatar,
           ),
           SizedBox(height: 20),
@@ -183,14 +184,14 @@ class _MoreScreenState extends State<MoreScreen>
     _UtilityUploadReq.width = avaterSize;
     _UtilityUploadReq.height = avaterSize;
 
-    uploadFile(_UtilityUploadReq, (data) {
-      bytes = null;
+    uploadFile(_UtilityUploadReq, (data) async {
       _UtilityUploadReq.clear();
       if (data.hasError) {
         print('上传文件错误 ${data.res}');
       } else {
         // DfsFile;
         print('上传成功 ${data.res.file}');
+
         UserUpdateProfileReq _UserUpdateProfileReq = UserUpdateProfileReq();
         _UserUpdateProfileReq.avatarFileID = data.res.file.fileID;
         $WS.user.avatarFileID = data.res.file.fileID;
@@ -200,9 +201,13 @@ class _MoreScreenState extends State<MoreScreen>
             showError('更新头像报错 ${data.res}');
           } else {
             print('头像已更新 $data');
+
             setState(() {});
           }
         });
+        // 缓存图片
+        await DefaultCacheManager().putFile(data.res.file.uRL, bytes);
+        bytes = null;
       }
     });
   }

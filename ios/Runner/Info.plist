@@ -2,19 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSAppleMusicUsageDescription</key>
-	<string>App需要您的同意,才能访问媒体资料库</string>
-	<key>NSCameraUsageDescription</key>
-	<string>APP需要您的同意才能使用相机</string>
-	<key>NSContactsUsageDescription</key>
-	<string>App需要您的同意,才能访问通讯录</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>APP需要您的同意才能使用麦克风</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>App需要您的同意,才能访问图库</string>
-
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>CFBundleDisplayName</key>
+	<string>kchat</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -33,6 +24,16 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>App需要您的同意,才能访问媒体资料库</string>
+	<key>NSCameraUsageDescription</key>
+	<string>APP需要您的同意才能使用相机</string>
+	<key>NSContactsUsageDescription</key>
+	<string>App需要您的同意,才能访问通讯录</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>APP需要您的同意才能使用麦克风</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>App需要您的同意,才能访问图库</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

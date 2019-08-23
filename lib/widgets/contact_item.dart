@@ -3,7 +3,7 @@ import 'package:elk_chat/protocol/protobuf/koi.pb.dart';
 import 'widgets.dart';
 
 class ContactWidget extends StatefulWidget {
-  final User contact;
+  final User user;
   final Function onTap;
   final double avatarSize;
 
@@ -16,7 +16,7 @@ class ContactWidget extends StatefulWidget {
       this.hasCheckbox = false,
       this.checked,
       this.onChange,
-      @required this.contact,
+      @required this.user,
       this.onTap,
       @required this.avatarSize})
       : super(key: key);
@@ -47,7 +47,7 @@ class _ContactWidgetState extends State<ContactWidget> {
     setState(() {
       checked = value;
     });
-    widget.onChange(value, widget.contact);
+    widget.onChange(value, widget.user);
   }
 
   @override
@@ -67,17 +67,17 @@ class _ContactWidgetState extends State<ContactWidget> {
                 padding:
                     EdgeInsets.only(left: 12, right: widget.avatarSize / 4),
                 child: Img(
-                  key: Key('${widget.contact.avatarFileID}'),
+                  key: Key('${widget.user.avatarFileID}'),
                   width: widget.avatarSize,
                   height: widget.avatarSize,
-                  fileID: widget.contact.avatarFileID,
-                  title: widget.contact.userName,
+                  fileID: widget.user.avatarFileID,
+                  title: widget.user.userName,
                 )),
             Container(
                 padding:
                     EdgeInsets.symmetric(vertical: widget.avatarSize / (2)),
                 child: Text(
-                  widget.contact.userName,
+                  widget.user.userName,
                   style: TextStyle(
                       fontSize: widget.avatarSize / (2.5),
                       fontWeight: FontWeight.w400),

@@ -223,7 +223,7 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
       print('获取聊天记录 $pageIndex');
       var res = await widget.chatRepository.getMsgHistory(
         _chat.chatID,
-        [1, 2], // messageTypes
+        [1, 2, 4], // messageTypes
         null, //pageIndex
         PAGE_SIZE, // pageSize
 
@@ -325,6 +325,8 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
                       MaterialPageRoute(
                           builder: (BuildContext context) =>
                               GroupChatDetailScreen(
+                                  authState: widget.authState,
+                                  chatRepository: widget.chatRepository,
                                   title: '聊天信息',
                                   avatarFileID: avatarFileID,
                                   chat: widget.chat)));
@@ -392,6 +394,7 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
           var stateUpdate = msgs[index - queue_msgs.length];
           return MsgBubble(
             key: ValueKey(stateUpdate.messageID),
+            chat: widget.chat,
             dateFormat: dateFormat,
             getStateRead: () => _stateRead,
             setOwnStateRead: (stateRead) {

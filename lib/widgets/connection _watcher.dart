@@ -30,7 +30,7 @@ class _ConnectionWatcherState extends State<ConnectionWatcher> {
   Function resortChatListSubscription;
   Function addChatSubscription;
 
-  final int MAX_UPDATING = 2; // 聊天列表/联系人列表
+  final int MAX_UPDATING = 2; // 同步聊天列表/联系人列表
   int updateCount = 0;
   ChatBloc _chatBloc;
   ContactBloc _contactBloc;
@@ -168,7 +168,7 @@ class _ConnectionWatcherState extends State<ConnectionWatcher> {
     print('onStatusChange payload $payload');
     if (widget.authState is AuthAuthenticated) {
       if (payload.type == WSStatus.disconnected) {
-        print('连接断开，尝试重新连接');
+        print('连接断开，这里需要提示重新连接，或者自动连接，暂时未做');
         // $WS.checkWebsocketConnect();
       } else if (payload.type == WSStatus.connected ||
           payload.type == WSStatus.updating) {

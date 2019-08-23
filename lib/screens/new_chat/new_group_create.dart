@@ -12,16 +12,14 @@ import 'package:flutter_icons/flutter_icons.dart';
 class NewGroupChatCreateScreen extends StatefulWidget {
   final String title;
   final ChatRepository chatRepository;
-  final AuthAuthenticated authState;
   final List members;
 
-  NewGroupChatCreateScreen(
-      {Key key,
-      @required this.title,
-      @required this.members,
-      @required this.chatRepository,
-      @required this.authState})
-      : super(key: key);
+  NewGroupChatCreateScreen({
+    Key key,
+    @required this.title,
+    @required this.members,
+    @required this.chatRepository,
+  }) : super(key: key);
 
   _NewGroupChatState createState() => _NewGroupChatState();
 }
@@ -156,7 +154,7 @@ class _NewGroupChatState extends State<NewGroupChatCreateScreen> {
                     var contact = widget.members[index];
 
                     return ContactWidget(
-                        avatarSize: 40.0, contact: contact, onTap: null);
+                        avatarSize: 40.0, user: contact, onTap: null);
                   },
                   itemCount: widget.members.length,
                   separatorBuilder: (BuildContext context, int index) {

@@ -13,7 +13,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-// import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
+
 import 'package:image_picker/image_picker.dart';
 import 'package:elk_chat/repositorys/repositorys.dart';
 import 'package:elk_chat/screens/chat_detail/chat_detail.dart';
@@ -256,7 +257,7 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
   Future getImageFromGallery() async {
     try {
       File imageFile = await ImagePicker.pickImage(
-          source: ImageSource.gallery, imageQuality: 60);
+          source: ImageSource.gallery, imageQuality: 80);
       onSendFile(ChatContentType.Image, imageFile);
     } catch (e) {
       var error = "图库选择图片出错 $e";
@@ -268,7 +269,7 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
   Future getImageFromCamera() async {
     try {
       File imageFile = await ImagePicker.pickImage(
-          source: ImageSource.camera, imageQuality: 60);
+          source: ImageSource.camera, imageQuality: 80);
       onSendFile(ChatContentType.Image, imageFile);
     } catch (e) {
       var error = "相机拍摄图片出错 $e";
@@ -501,16 +502,33 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
     _textEditingController.clear();
   }
 
+  // 2. compress file and get file.
+  Future<File> compressAndGetFile(File file, String targetPath) async {
+    var result = await FlutterImageCompress.compressAndGetFile(
+      file.absolute.path,
+      targetPath,
+      // quality: 100,
+      minWidth: 960,
+      minHeight: 1280,
+    );
+
+    print(file.lengthSync());
+    print(result.lengthSync());
+
+    return result;
+  }
+
   // 发送文件：图片/视频/文档等。。
-  onSendFile(int contentType, File file) {
+  onSendFile(int contentType, File file) async {
     if (file == null) return;
+    var new_file = await compressAndGetFile(file, file.path);
     var map = {
       'status': QueueMsgStatus.init,
       'chatID': _chat.chatID,
       'messageType': ChatMessageType.SendMessage,
       'contentType': contentType,
       'message': '',
-      'filePath': file.path,
+      'filePath': new_file.path,
     };
     file = null;
     addMsgToQueue(map);

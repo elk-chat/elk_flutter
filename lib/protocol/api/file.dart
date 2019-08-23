@@ -7,7 +7,8 @@ import '../protobuf/koi.pb.dart';
 /// 上传文件
 uploadFile(UtilityUploadReq proto, WebsocketCallback cb,
     [UtilityUploadResp resp]) {
-  return $WS.send(method: "UtilityUploadReq", protobuf: proto, cb: cb);
+  return $WS.send(
+      method: "UtilityUploadReq", hasTimeout: false, protobuf: proto, cb: cb);
 }
 
 /// 获取文件信息

@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:elk_chat/protocol/protobuf/koi.pb.dart';
-import 'package:elk_chat/widgets/hero_photoview.dart';
+import 'package:elk_chat/widgets/image_viewer.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -79,18 +79,16 @@ class _AvatarState extends State<Img> {
         )));
     Widget child;
     if (imgSrc.isNotEmpty) {
-      var tag = "p_${imgSrc}";
       child = GestureDetector(
           onTap: widget.hasTap
               ? () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => HeroPhotoViewWrapper(
-                          loadingChild: CupertinoActivityIndicator(),
-                          heroTag: tag,
-                          imageProvider: CachedNetworkImageProvider(imgSrc)),
-                    ),
+                  showCupertinoDialog(
+                    context: context,
+                    builder: (context) {
+                      return ImageViewer(
+                        imageProviders: [CachedNetworkImageProvider(imgSrc)],
+                      );
+                    },
                   );
                 }
               : null,

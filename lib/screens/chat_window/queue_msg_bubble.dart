@@ -62,7 +62,6 @@ class _QueueMsgBubbleState extends State<QueueMsgBubble> {
 
   @override
   void dispose() {
-    bytes = null;
     super.dispose();
   }
 

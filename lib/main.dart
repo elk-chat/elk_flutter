@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:catcher/catcher_plugin.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app_config.dart';
@@ -89,19 +90,33 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
   @override
   void initState() {
     super.initState();
     log.info('init websocket');
     initWS(app_config.WSUrl, app_config.WSPingInterval, app_config.WSTimeout);
     log.info('init finish websocket');
+
+    retrieveLostData();
   }
 
   @override
   void dispose() {
     $WS.clear();
     super.dispose();
+  }
+
+  // 安卓里面，选择图片。拍摄图片可能会导致APP重启，通过这个方法恢复重启的数据
+  Future<void> retrieveLostData() async {
+    final LostDataResponse response = await ImagePicker.retrieveLostData();
+    if (response.isEmpty) {
+      return;
+    }
+
+    if (response.file != null) {
+      print(
+          'retrieveLostData type ${response.type}; code ${response.exception.code}; exception ${response.exception};');
+    }
   }
 
   @override

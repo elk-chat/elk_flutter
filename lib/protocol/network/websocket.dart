@@ -159,6 +159,7 @@ class WebSocket extends EventEmitter {
   /// 创建连接
   IOWebSocketChannel createWebsocket(
       {bool is_reconnected = false, String method}) {
+    lastHeartBeatTimer?.cancel();
     if (currentStatus != WSStatus.disconnected) {
       return channel;
     }
@@ -198,11 +199,12 @@ class WebSocket extends EventEmitter {
     lastHeartBeatTimer?.cancel();
     lastHeartBeatTimer = Timer(
         Duration(
-            milliseconds: 10000 +
+            milliseconds: 6000 +
                 (heartBeatMilliseconds == null ? 4000 : heartBeatMilliseconds)),
         () {
-      print('超时');
-      checkWebsocketConnect();
+      print('心跳超时，可能已经断开或网络非常慢');
+      currentStatus = WSStatus.disconnected;
+      createWebsocket();
     });
     if (heartBeatUnsubscription != null) {
       heartBeatUnsubscription();
@@ -522,7 +524,7 @@ class WebSocket extends EventEmitter {
         resMethod = response['Method'];
         Data = response['Data'];
         try {
-          // 如果没有错误，Data 就没有 code 这个属性，会报错
+          // 如果��有错误，Data 就没有 code 这个属性，会报错
           hasError = Data.code != '0';
         } catch (e) {
           //

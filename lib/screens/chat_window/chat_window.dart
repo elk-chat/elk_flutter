@@ -351,11 +351,11 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
                 }
               },
               icon: Img(
-                key: Key('${avatarFileID}'),
+                key: Key('${_chat.avatarFileID}'),
                 width: 32,
                 height: 32,
                 type: _chat.chatType,
-                fileID: avatarFileID,
+                fileID: _chat.avatarFileID,
                 // title: widget.contact.userName,
               ))
         ],

@@ -1,4 +1,3 @@
-import 'package:elk_chat/blocs/auth/auth_state.dart';
 import 'package:elk_chat/protocol/api/proto_helper.dart';
 import 'package:elk_chat/repositorys/chat_repository.dart';
 import 'package:flutter/material.dart';
@@ -11,13 +10,11 @@ import 'contact_detail.dart';
 // 添加新联系人
 class NewContactScreen extends StatefulWidget {
   final String title;
-  final AuthState authState;
   final ChatRepository chatRepository;
 
   NewContactScreen(
       {Key key,
       @required this.title,
-      @required this.authState,
       @required this.chatRepository})
       : super(key: key);
 
@@ -79,7 +76,6 @@ class _NewContactScreenState extends State<NewContactScreen> {
             builder: (BuildContext context) => ProfileScreen(
                   title: contact.userName,
                   contact: contact,
-                  authState: widget.authState,
                   chatRepository: widget.chatRepository,
                 )));
   }

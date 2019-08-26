@@ -1,4 +1,3 @@
-import 'package:elk_chat/blocs/auth/auth_state.dart';
 import 'package:elk_chat/blocs/chat/chat.dart';
 import 'package:elk_chat/init_websocket.dart';
 import 'package:elk_chat/protocol/api/chat.dart';
@@ -23,7 +22,6 @@ class GroupChatDetailScreen extends StatefulWidget {
   final Int64 avatarFileID;
   final Chat chat;
   final ChatRepository chatRepository;
-  final AuthState authState;
   final Function updateParentChat;
 
   GroupChatDetailScreen({
@@ -31,7 +29,6 @@ class GroupChatDetailScreen extends StatefulWidget {
     @required this.title,
     @required this.avatarFileID,
     @required this.chat,
-    @required this.authState,
     @required this.chatRepository,
     @required this.updateParentChat,
   }) : super(key: key);
@@ -126,7 +123,7 @@ class _GroupChatDetailState extends State<GroupChatDetailScreen> {
                   style: const TextStyle(fontSize: 15.0)),
               onPressed: text.isNotEmpty &&
                       !uploading &&
-                      $WS.user.userID == widget.chat.creatorID
+                      $CH.user.userID == widget.chat.creatorID
                   ? onDone
                   : null,
             ),
@@ -189,7 +186,7 @@ class _GroupChatDetailState extends State<GroupChatDetailScreen> {
                                   style: const TextStyle(fontSize: 15.0))
                             ],
                           ),
-                          onPressed: $WS.user.userID == widget.chat.creatorID
+                          onPressed: $CH.user.userID == widget.chat.creatorID
                               ? onAddMembers
                               : null,
                         ),
@@ -221,7 +218,7 @@ class _GroupChatDetailState extends State<GroupChatDetailScreen> {
                   // 暂时没有创建人 creatorID
                   // user.userID == widget.chat.creatorID
                   var isAdmin = user.userID == widget.chat.creatorID;
-                  var isSelf = user.userID == $WS.user.userID;
+                  var isSelf = user.userID == $CH.user.userID;
                   var _user = User();
                   _user.userName =
                       '${isSelf ? '${user.userName}（自己）' : user.userName} ${isAdmin ? '（管理员）' : ''}';
@@ -248,7 +245,6 @@ class _GroupChatDetailState extends State<GroupChatDetailScreen> {
         MaterialPageRoute(
           builder: (BuildContext context) => SelectUsersScreen(
             title: '选择成员',
-            authState: widget.authState,
           ),
         ));
     widget.chatRepository.addMembers(selectUsers, widget.chat.chatID);
@@ -263,7 +259,7 @@ class _GroupChatDetailState extends State<GroupChatDetailScreen> {
             title: Text(user.userName),
             // message: Text('描述'),
             actions: <Widget>[
-              widget.chat.creatorID == $WS.user.userID
+              widget.chat.creatorID == $CH.user.userID
                   ? CupertinoActionSheetAction(
                       child: Text('移出群聊',
                           style: TextStyle(fontSize: 16, color: Colors.red)),
@@ -281,7 +277,6 @@ class _GroupChatDetailState extends State<GroupChatDetailScreen> {
                           builder: (BuildContext context) => ProfileScreen(
                               title: user.userName,
                               contact: user,
-                              authState: widget.authState,
                               chatRepository: widget.chatRepository,
                               isAtContact: false)));
                 },

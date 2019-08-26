@@ -56,7 +56,6 @@ class _NewChatScreenState extends State<NewChatScreen> {
                         user: contact,
                         avatarFileID: contact.avatarFileID,
                         chatRepository: widget.chatRepository,
-                        authState: widget.authState,
                       )));
         },
         beforeWidget: Column(

@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:elk_chat/blocs/auth/auth_state.dart';
 import 'package:elk_chat/repositorys/chat_repository.dart';
 import 'package:elk_chat/widgets/flushbar.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,14 +18,12 @@ class ProfileScreen extends StatefulWidget {
   final User contact;
   final bool isAtContact;
   final ChatRepository chatRepository;
-  final AuthState authState;
 
   ProfileScreen(
       {Key key,
       @required this.title,
       @required this.contact,
       @required this.chatRepository,
-      @required this.authState,
       this.isAtContact = false})
       : super(key: key);
 
@@ -60,7 +57,6 @@ class _EditProfileScreenState extends State<ProfileScreen> {
                   chat: chat,
                   user: widget.contact,
                   chatRepository: widget.chatRepository,
-                  authState: widget.authState,
                 )));
   }
 

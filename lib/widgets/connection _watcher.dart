@@ -60,7 +60,7 @@ class _ConnectionWatcherState extends State<ConnectionWatcher> {
     logoutSupscription = $WS.on(LOGOUT, onLogout);
 
     contactListSubscription = $WS.on(UPDATE_CONTACT_LIST, (data) {
-      _contactBloc.dispatch(FetchContactList($WS.user.userID));
+      _contactBloc.dispatch(FetchContactList($CH.user.userID));
     });
 
     chatListSubscription = $WS.on(UPDATE_CHAT_LIST, (data) {
@@ -73,7 +73,7 @@ class _ConnectionWatcherState extends State<ConnectionWatcher> {
     });
 
     addChatSubscription = $WS.on(CHEvent.ADD_CHAT, (payload) {
-      if (payload.senderID == $WS.user.userID) return;
+      if (payload.senderID == $CH.user.userID) return;
       UpdateMessage updMsg = payload.updateMessage;
       Chat chat = Chat();
       chat.chatID = payload.chatID;

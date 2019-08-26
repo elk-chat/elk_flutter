@@ -3,6 +3,7 @@
 import 'dart:async';
 
 // import 'package:elk_chat/protocol/api/state.dart';
+import 'package:elk_chat/init_websocket.dart';
 import 'package:elk_chat/protocol/network/websocket.dart';
 import 'package:elk_chat/protocol/protobuf/koi.pb.dart';
 import 'package:elk_chat/protocol/api/chat.dart';
@@ -21,6 +22,11 @@ class ChatHub {
   //   },
   // ];
 
+  // 当前已经登录的 User
+  UserLoginResp _loginResp;
+  User get user => _loginResp.user;
+  UserLoginResp get loginResp => _loginResp;
+
   // 聊天未读数映射
   Map<Int64, Int64> unreadMap = {};
 
@@ -37,7 +43,6 @@ class ChatHub {
 
   ChatHub(WebSocket $WS) {
     this.$WS = $WS;
-
     // 服务端推送消息
     $WS.on(WS_RECEIVE_STATE_UPDATE, onReceiveMsg);
 
@@ -51,6 +56,10 @@ class ChatHub {
     // $WS.on(CHEvent.ADD_MSG_TO_QUEUE, onAddMsgQueue);
     // $WS.on(CHEvent.REMOVE_MSG_FROM_QUEUE, onAddMsgQueue);
     // $WS.on(CHEvent.SEND_MSG_ERROR, onSendMsgError);
+  }
+
+  setLoginResp(UserLoginResp loginResp) {
+    _loginResp = loginResp;
   }
 
   /*
@@ -109,7 +118,7 @@ class ChatHub {
   // StateUpdate transfromChatSendMessageReqToStateUpdate(
   //     ChatSendMessageReq _cmq) {
   //   StateUpdate _su = StateUpdate();
-  //   _su.senderID = $WS.user.userID;
+  //   _su.senderID = $CH.user.userID;
   //   _su.chatID = _cmq.chatID;
   //   _su.messageType = ChatMessageType.SendMessage;
   //   UpdateMessage _UpdateMessage = UpdateMessage();
@@ -127,7 +136,7 @@ class ChatHub {
   //       UpdateMessageChatSendMessage();
 
   //   _UpdateMessageChatSendMessage.chatID = _cmq.chatID;
-  //   _UpdateMessageChatSendMessage.senderName = $WS.user.userName;
+  //   _UpdateMessageChatSendMessage.senderName = $CH.user.userName;
   //   _UpdateMessageChatSendMessage.message = _cmq.message;
   //   _UpdateMessageChatSendMessage.contentType = _cmq.contentType;
   //   _UpdateMessageChatSendMessage.fileID = _cmq.fileID;
@@ -299,7 +308,7 @@ class ChatHub {
       eventName = CHEvent.SEND_MSG(res.chatID, res.messageID);
       // 未读+1，已读就在渲染里面加，如果未读，又渲染了的话 未读 -1
       // 如果是自己的推送消息���不管
-      if (res.senderID != $WS.user.userID) {
+      if (res.senderID != $CH.user.userID) {
         $WS.emit(CHEvent.INIT_CHAT_UNREAD_ALL,
             {'type': 'increase', 'chatID': res.chatID});
       } else {

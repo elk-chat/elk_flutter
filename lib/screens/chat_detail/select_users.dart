@@ -1,15 +1,13 @@
 // 发起群聊
 
-import 'package:elk_chat/blocs/blocs.dart';
 import 'package:elk_chat/screens/contact_list/list.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class SelectUsersScreen extends StatefulWidget {
   final String title;
-  final AuthAuthenticated authState;
 
-  SelectUsersScreen({Key key, @required this.title, @required this.authState})
+  SelectUsersScreen({Key key, @required this.title})
       : super(key: key);
 
   _NewGroupChatState createState() => _NewGroupChatState();

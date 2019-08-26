@@ -40,7 +40,7 @@ class RootScreen extends StatelessWidget {
             } else if (state is AuthUnauthenticated) {
               // 如果没有token信息。渲染登录页
               tmp =
-                  LoginScreen(authRepository: authRepository, authState: state);
+                  LoginScreen(authRepository: authRepository);
             } else {
               tmp = Scaffold(body: Center(child: CupertinoActivityIndicator()));
             }

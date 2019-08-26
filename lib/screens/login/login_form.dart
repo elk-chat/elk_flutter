@@ -1,3 +1,4 @@
+import 'package:elk_chat/init_websocket.dart';
 import 'package:elk_chat/widgets/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,9 +10,7 @@ import '../find_login_password.dart';
 import '../register.dart';
 
 class LoginForm extends StatefulWidget {
-  final AuthUnauthenticated authState;
-
-  LoginForm({Key key, @required this.authState}) : super(key: key);
+  LoginForm({Key key}) : super(key: key);
 
   _LoginFormState createState() => _LoginFormState();
 }
@@ -30,8 +29,8 @@ class _LoginFormState extends State<LoginForm> {
     _passwordFocusNode = FocusNode();
     _usernameFocusNode = FocusNode();
 
-    if (widget.authState.account != null) {
-      var userName = widget.authState.account.user.userName;
+    if ($CH.loginResp != null) {
+      var userName = $CH.user.userName;
       if (userName.isNotEmpty) {
         _usernameController.text = userName;
         setState(() {

@@ -58,7 +58,6 @@ class _ContactScreenState extends State<ContactScreen>
                       fullscreenDialog: true,
                       builder: (BuildContext context) => NewContactScreen(
                             title: '新联系人',
-                            authState: widget.authState,
                             chatRepository: widget.chatRepository,
                           )));
             },
@@ -72,7 +71,6 @@ class _ContactScreenState extends State<ContactScreen>
                 builder: (BuildContext context) => ProfileScreen(
                     title: contact.userName,
                     contact: contact,
-                    authState: widget.authState,
                     chatRepository: widget.chatRepository,
                     isAtContact: true)));
       }),

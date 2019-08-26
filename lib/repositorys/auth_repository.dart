@@ -18,11 +18,12 @@ class AuthRepository {
     Completer _completer = Completer();
 
     if (auth_info != null) {
-      var account = UserLoginResp.fromJson(auth_info);
-      if (account.token.isNotEmpty) {
-        $WS.setSSID(BigInt.from(10), account.user);
+      UserLoginResp loginResp = UserLoginResp.fromJson(auth_info);
+      if (loginResp.token.isNotEmpty) {
+        $WS.setSSID(loginResp);
+        $CH.setLoginResp(loginResp);
       }
-      _completer.complete(account);
+      _completer.complete(loginResp);
     } else {
       _completer.complete(UserLoginResp());
     }
@@ -54,7 +55,8 @@ class AuthRepository {
         _completer.completeError(data.res);
       } else {
         _completer.complete(data.res);
-        $WS.setSSID(data.res.sessionID, data.res.user);
+        $WS.setSSID(data.res);
+        $CH.setLoginResp(data.res);
         persistAuthInfo(data.res);
       }
     });

@@ -48,7 +48,7 @@ class _NewGroupChatState extends State<NewGroupChatCreateScreen> {
       if (avatarFileID != null) {
         res.chat.avatarFileID = avatarFileID;
       }
-      res.chat.creatorID = $WS.user.userID;
+      res.chat.creatorID = $CH.user.userID;
       _chatBloc.dispatch(AddChat(chat: res.chat));
       widget.chatRepository.addMembers(widget.members, res.chat.chatID);
       Navigator.popUntil(context, ModalRoute.withName('/'));

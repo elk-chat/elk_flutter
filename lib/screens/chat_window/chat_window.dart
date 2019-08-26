@@ -31,7 +31,6 @@ class ChatWindowScreen extends StatefulWidget {
   final Chat chat;
   final User user;
   final ChatRepository chatRepository;
-  final AuthAuthenticated authState;
 
   ChatWindowScreen(
       {Key key,
@@ -39,8 +38,7 @@ class ChatWindowScreen extends StatefulWidget {
       @required this.chat,
       this.user,
       @required this.avatarFileID,
-      @required this.chatRepository,
-      @required this.authState})
+      @required this.chatRepository})
       : super(key: key);
 
   @override
@@ -339,7 +337,6 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
                       MaterialPageRoute(
                           builder: (BuildContext context) =>
                               GroupChatDetailScreen(
-                                  authState: widget.authState,
                                   chatRepository: widget.chatRepository,
                                   title: '聊天信息',
                                   updateParentChat: (chat) {
@@ -424,9 +421,9 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
                   _stateRead.ownStateRead = stateRead;
                   print('stateReadAll $_stateRead');
                 },
-                userName: widget.authState.account.user.userName,
+                userName: $CH.user.userName,
                 isSelf: stateUpdate.senderID ==
-                    widget.authState.account.user.userID,
+                    $CH.user.userID,
                 stateUpdate: stateUpdate,
               );
             },

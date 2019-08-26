@@ -229,7 +229,6 @@ class _ChatItemState extends State<ChatItem> {
                       chat: widget.chat,
                       user: user,
                       chatRepository: widget.chatRepository,
-                      authState: widget.authState,
                     )));
       },
       leading: Img(
@@ -270,7 +269,7 @@ class _ChatItemState extends State<ChatItem> {
             ? null
             : Text(
                 lastMsg is QueueMsg
-                    ? '${$WS.user.userName}: ${lastMsg.message}'
+                    ? '${$CH.user.userName}: ${lastMsg.message}'
                     : getMessageText(lastMsg),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 2,

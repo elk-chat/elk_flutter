@@ -6,8 +6,7 @@ import 'login_form.dart';
 
 class LoginScreen extends StatelessWidget {
   final AuthRepository authRepository;
-  final AuthState authState;
-  LoginScreen({Key key, @required this.authRepository, @required this.authState}) : super(key: key);
+  LoginScreen({Key key, @required this.authRepository}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +26,7 @@ class LoginScreen extends StatelessWidget {
   Widget _buildPageContent(BuildContext context) {
     return Container(
       color: Colors.blue.shade100,
-      child: LoginForm(authState: authState),
+      child: LoginForm(),
     );
   }
 }

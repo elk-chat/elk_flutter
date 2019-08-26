@@ -194,8 +194,8 @@ class _MoreScreenState extends State<MoreScreen>
 
         UserUpdateProfileReq _UserUpdateProfileReq = UserUpdateProfileReq();
         _UserUpdateProfileReq.avatarFileID = data.res.file.fileID;
-        $WS.user.avatarFileID = data.res.file.fileID;
-        authBloc.dispatch(UpdateUser(user: $WS.user));
+        $CH.user.avatarFileID = data.res.file.fileID;
+        authBloc.dispatch(UpdateUser(user: $CH.user));
         updateProfile(_UserUpdateProfileReq, (data) {
           if (data.hasError) {
             showError('更新头像报错 ${data.res}');

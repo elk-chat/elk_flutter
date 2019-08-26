@@ -24,10 +24,11 @@ class _ImageViewerState extends State<ImageViewer>
   bool _isLocked = false;
 
   double _start;
+  double _last;
   AnimationController _offsetController;
   Animation<Offset> _offsetAnimation;
   Tween<Offset> _offsetTween;
-  bool _isDragging = false;
+  // bool _isDragging = false;
 
   AnimationController _opacityController;
   Animation<double> _opacityAnimation;
@@ -65,7 +66,9 @@ class _ImageViewerState extends State<ImageViewer>
   }
 
   void _onScaleStateChanged(PhotoViewScaleState scaleState) {
-    setState(() => _isLocked = scaleState != PhotoViewScaleState.initial);
+    setState(() {
+      _isLocked = scaleState != PhotoViewScaleState.initial;
+    });
   }
 
   void _onPageChanged(int index) {
@@ -76,14 +79,38 @@ class _ImageViewerState extends State<ImageViewer>
   void _onDragStart(DragStartDetails details) {
     _start = details.globalPosition.dy;
 
-    setState(() => _isDragging = true);
+    // setState(() => _isDragging = true);
+  }
+
+  void _onDrag(double dy) {
+    if (dy < 0) {
+      return;
+    }
+    _last = dy;
+    _offsetTween.begin = Offset.zero;
+    _offsetTween.end = Offset(0, dy);
+
+    _offsetController.duration = Duration.zero;
+    _offsetController.reset();
+    _offsetController.forward();
+
+    _opacityTween.begin = _opacityTween.end;
+    _opacityTween.end = mapValue(dy < 0 ? dy.abs() : dy, 0,
+        MediaQuery.of(context).size.height, 1.0, 0.0);
+    _opacityController.duration = Duration.zero;
+    _opacityController.reset();
+    _opacityController.forward();
   }
 
   void _onDragEnd(double velocity) {
+    if (_last == null) return;
     _start = null;
 
-    if (velocity > _kMaxDragSpeed ||
-        _offsetTween.end.dy >= MediaQuery.of(context).size.height / 2) {
+    if ((velocity < 0 ? velocity.abs() : velocity) > _kMaxDragSpeed ||
+        (_offsetTween.end.dy < 0
+                ? _offsetTween.end.dy.abs()
+                : _offsetTween.end.dy) >=
+            MediaQuery.of(context).size.height / 2) {
       Navigator.of(context).pop();
     } else {
       _opacityTween.begin = _opacityTween.end;
@@ -99,26 +126,7 @@ class _ImageViewerState extends State<ImageViewer>
       _offsetController.forward();
     }
 
-    setState(() => _isDragging = false);
-  }
-
-  void _onDrag(double dy) {
-    if (dy < 0) {
-      return;
-    }
-    _offsetTween.begin = Offset.zero;
-    _offsetTween.end = Offset(0, dy);
-
-    _offsetController.duration = Duration.zero;
-    _offsetController.reset();
-    _offsetController.forward();
-
-    _opacityTween.begin = _opacityTween.end;
-    _opacityTween.end =
-        mapValue(dy, 0, MediaQuery.of(context).size.height, 1.0, 0.0);
-    _opacityController.duration = Duration.zero;
-    _opacityController.reset();
-    _opacityController.forward();
+    // setState(() => _isDragging = false);
   }
 
   Widget _buildPage(_, int index) {
@@ -164,43 +172,7 @@ class _ImageViewerState extends State<ImageViewer>
       offset: _offsetAnimation,
       child: FadeTransition(
         opacity: _opacityAnimation,
-        child: CupertinoPageScaffold(
-          backgroundColor: CupertinoColors.black,
-          navigationBar: CupertinoNavigationBar(
-            automaticallyImplyLeading: false,
-            backgroundColor: kTranslucentBlackColor,
-            middle: widget.imageProviders.length > 1
-                ? AnimatedOpacity(
-                    duration: const Duration(milliseconds: 200),
-                    opacity: _isDragging ? 0.0 : 1.0,
-                    child: Text(
-                      '${_currentPageIndex + 1} of ${widget.imageProviders.length}',
-                      style: TextStyle(
-                        color: CupertinoColors.white,
-                      ),
-                    ),
-                  )
-                : null,
-            leading: AnimatedOpacity(
-              duration: const Duration(milliseconds: 200),
-              opacity: _isDragging ? 0.0 : 1.0,
-              child: CupertinoButton(
-                padding: const EdgeInsets.symmetric(vertical: 0.0),
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text(
-                  '关闭',
-                  style: TextStyle(
-                    color: CupertinoColors.white,
-                    fontSize: 17.0,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          child: SafeArea(
-            child: _wrapWithCloseGesture(child: pageView),
-          ),
-        ),
+        child: _wrapWithCloseGesture(child: pageView),
       ),
     );
   }
@@ -223,6 +195,11 @@ class _ZoomableImageState extends State<ZoomableImage> {
   final _controller = PhotoViewScaleStateController();
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   void dispose() {
     _controller.dispose();
     super.dispose();
@@ -241,12 +218,11 @@ class _ZoomableImageState extends State<ZoomableImage> {
       maxScale: 5.0,
       scaleStateController: _controller,
       scaleStateChangedCallback: (s) {
-        if (widget.onScaleStateChanged != null) {
-          widget.onScaleStateChanged(s);
+        if (widget.onScaleStateChanged == null ||
+            s == PhotoViewScaleState.covering) {
+          return;
         }
-        if (s == PhotoViewScaleState.originalSize) {
-          _controller.setInvisibly(PhotoViewScaleState.initial);
-        }
+        widget.onScaleStateChanged(s);
       },
     );
   }

@@ -2,25 +2,27 @@
 
 import 'dart:async';
 
-// import 'package:elk_chat/protocol/api/state.dart';
 import 'package:elk_chat/init_websocket.dart';
 import 'package:elk_chat/protocol/network/websocket.dart';
 import 'package:elk_chat/protocol/protobuf/koi.pb.dart';
-import 'package:elk_chat/protocol/api/chat.dart';
-import 'package:elk_chat/chat_hub/const.dart';
+import 'package:elk_chat/protocol/api_util/api_util.dart';
+import 'package:elk_chat/blocs/blocs.dart';
 import 'package:fixnum/fixnum.dart';
 
 class ChatHub {
-  WebSocket $WS;
-  // 聊天列表数据
-  // List _chats = [
-  //   {
-  //     'chat': {}, // 聊天信息
-  //     'members': [], // 聊天成员
-  //     'msgs': [], // 信息列表
-  //     'unread': 0, // 未读
-  //   },
-  // ];
+  // 通用
+  WebSocket _$WS;
+  WebSocket get $WS => _$WS;
+
+  // Api 改为 api 或许比较好理解
+  AuthApi _authApi;
+  AuthApi get authApi => _authApi;
+
+  ChatApi _chatApi;
+  ChatApi get chatApi => _chatApi;
+
+  ContactApi _contactApi;
+  ContactApi get contactApi => _contactApi;
 
   // 当前已经登录的 User
   UserLoginResp _loginResp;
@@ -41,8 +43,13 @@ class ChatHub {
   // 文件上传映射，选择文件，获取本地 path，开始上传，上传成功，移除
   Map<Int64, dynamic> uploadFileQueueMap = {};
 
-  ChatHub(WebSocket $WS) {
-    this.$WS = $WS;
+  ChatHub(WebSocket $WS, AuthApi authApi, ChatApi chatApi,
+      ContactApi contactApi) {
+    _$WS = $WS;
+    _authApi = authApi;
+    _chatApi = chatApi;
+    _contactApi = contactApi;
+
     // 服务端推送消息
     $WS.on(WS_RECEIVE_STATE_UPDATE, onReceiveMsg);
 
@@ -256,7 +263,7 @@ class ChatHub {
         ..aOS(2, 'senderName')
         ..aOS(3, 'deletedMemeberName')
 
-        updateMessageChatDeleteMember： 移除成员
+        updateMessageChatDeleteMember： 移除���员
 
 
         ..aInt64(1, 'chatID')

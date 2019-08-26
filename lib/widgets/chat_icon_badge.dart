@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:elk_chat/chat_hub/const.dart';
 import 'package:elk_chat/init_websocket.dart';
 import 'package:fixnum/fixnum.dart';
 

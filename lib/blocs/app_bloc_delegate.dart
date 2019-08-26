@@ -16,6 +16,6 @@ class AppBlocDelegate extends BlocDelegate {
   @override
   void onError(Bloc bloc, Object error, StackTrace stacktrace) {
     super.onError(bloc, error, stacktrace);
-    print('onError: $error');
+    print('AppBlocDelegate onError: $error');
   }
 }

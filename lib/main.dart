@@ -11,14 +11,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app_config.dart';
 import 'package:elk_chat/init_websocket.dart';
-import 'screens/app.dart';
+import 'pages/app.dart';
 import 'const.dart';
 import 'l10n.dart';
 // 捕捉错误
 import 'catch_error.dart';
 
 import 'blocs/app_bloc_delegate.dart';
-import 'package:elk_chat/repositorys/repositorys.dart';
 import 'package:elk_chat/blocs/blocs.dart';
 import 'package:logging/logging.dart';
 
@@ -47,14 +46,12 @@ void main() {
   Future start() async {
     log.info('main start');
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    final authRepository = AuthRepository(prefs: prefs);
-    final contactRepository = ContactRepository();
-    final chatRepository = ChatRepository();
+    final authApi = AuthApi(prefs: prefs);
+    final contactApi = ContactApi();
+    final chatApi = ChatApi();
 
-    var App = MyApp(
-        authRepository: authRepository,
-        chatRepository: chatRepository,
-        contactRepository: contactRepository);
+    var App =
+        MyApp(authApi: authApi, chatApi: chatApi, contactApi: contactApi);
 
     try {
       // 正式环境中 assert(1 == 2) 不会执行，所以不会报错
@@ -75,15 +72,15 @@ void main() {
 }
 
 class MyApp extends StatefulWidget {
-  final AuthRepository authRepository;
-  final ChatRepository chatRepository;
-  final ContactRepository contactRepository;
+  final AuthApi authApi;
+  final ChatApi chatApi;
+  final ContactApi contactApi;
 
   MyApp(
       {Key key,
-      @required this.authRepository,
-      @required this.chatRepository,
-      @required this.contactRepository})
+      @required this.authApi,
+      @required this.chatApi,
+      @required this.contactApi})
       : super(key: key);
 
   _MyAppState createState() => _MyAppState();
@@ -94,9 +91,18 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     log.info('init websocket');
-    initWS(app_config.WSUrl, app_config.WSPingInterval, app_config.WSTimeout);
-    log.info('init finish websocket');
+    initWS(
+      app_config.WSUrl,
+      app_config.WSPingInterval,
+      app_config.WSTimeout,
 
+      // repo 改为 api 或许比较好理解
+      widget.authApi,
+      widget.chatApi,
+      widget.contactApi,
+    );
+
+    // todo： 有些安卓机拍照后，应用内存不足会重启，下面这个方法可以获取重启前拍的照片
     retrieveLostData();
   }
 
@@ -106,7 +112,7 @@ class _MyAppState extends State<MyApp> {
     super.dispose();
   }
 
-  // 安卓里面，选择图片。拍摄图片可能会导致APP重启，通过这个方法恢复重启的数据
+  // 安卓里面，选择图片。拍摄图片可能会导致APP重启，通过这个方法获取重启前拍的照片
   Future<void> retrieveLostData() async {
     final LostDataResponse response = await ImagePicker.retrieveLostData();
     if (response.isEmpty) {
@@ -125,16 +131,15 @@ class _MyAppState extends State<MyApp> {
       providers: [
         // 验证 bloc
         BlocProvider<AuthBloc>(
-          builder: (context) => AuthBloc(authRepository: widget.authRepository)
-            ..dispatch(AppStarted()),
+          builder: (context) => AuthBloc()..dispatch(AppStarted()),
         ),
-        // 联系人 bloc
-        BlocProvider<ContactBloc>(
-          builder: (context) =>
-              ContactBloc(contactRepository: widget.contactRepository),
-        ),
+        // 聊天列表
         BlocProvider<ChatBloc>(
-          builder: (context) => ChatBloc(chatRepository: widget.chatRepository),
+          builder: (context) => ChatBloc(),
+        ),
+        // 联系人列表 bloc
+        BlocProvider<ContactBloc>(
+          builder: (context) => ContactBloc(),
         ),
       ],
       child: MaterialApp(
@@ -175,11 +180,8 @@ class _MyAppState extends State<MyApp> {
         ],
         initialRoute: '/',
         routes: {
-          // When navigating to the "/" route, build the FirstScreen widget.
-          '/': (context) => RootScreen(
-              authRepository: widget.authRepository,
-              chatRepository: widget.chatRepository,
-              contactRepository: widget.contactRepository),
+          // When navigating to the "/" route, build the FirstPage widget.
+          '/': (context) => RootPage(),
         },
       ),
     );

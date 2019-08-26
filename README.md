@@ -2,27 +2,24 @@
 
 ## [如何开始 Flutter](./Flutter.md)
 
-## 应用结构浅析
+## 项目结构
 
 ![a](./sketch.jpeg)
 
 通讯协议基于 `websocket` 和 `protobuf`;
-用户界面基于 `flutter`;
+用户界面基于 `flutter`，状态管理使用 [`flutter_bloc`](https://github.com/felangel/bloc/);
+聊天逻辑使用传统的订阅发布模式；
 
-可分为：
+应用三层结构，核心协议层，可分为：
 
-- 网络通讯层，websocket 连接/维护重连等；protocol/network
-- 数据结构层：protobuf 结构，如何编码/解码； protocol/protobuf
-- 业务接口层：业务逻辑的接口，供界面交互调用；protocol/api
-- 界面状态层：负责应用的数据保存和分发给界面；
-- 界面交互层：界面展示/用户交互；pages|widgets
+- 协议，在 `protocol` 文件夹, 这里面是供上层调用，么有什么业务逻辑
+- 业务逻辑，在 `blocs`|`chat_hub`文件夹，
+- 界面交互层：界面展示/用户交互；`pages`|`widgets` 文件夹
 
 ### Plans
 
-- [x] websocket
+- [x] protocol
 - [x] protobuf
-- [ ] api
-- [ ] state management flutter_bloc
 - [ ] chatkit
 - [ ] what else?
 

@@ -1,4 +1,5 @@
 //  联系人相关逻辑
-export 'event.dart';
-export 'state.dart';
-export 'bloc.dart';
+export 'chat_event.dart';
+export 'chat_state.dart';
+export 'chat_bloc.dart';
+export 'chat_api.dart';

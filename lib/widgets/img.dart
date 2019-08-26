@@ -4,7 +4,8 @@ import 'package:elk_chat/widgets/image_viewer.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:elk_chat/protocol/api/api.dart';
+import 'package:elk_chat/protocol/api_util/api_util.dart';
+
 
 // 缓存
 // todo 缓存到本地

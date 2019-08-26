@@ -1,20 +1,17 @@
 import 'dart:async';
 
+import 'package:elk_chat/init_websocket.dart';
 import 'package:meta/meta.dart';
 import 'package:bloc/bloc.dart';
-import 'package:elk_chat/repositorys/auth_repository.dart';
 import 'package:elk_chat/blocs/auth/auth.dart';
 import 'login.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  final AuthRepository authRepository;
   final AuthBloc authenticationBloc;
 
   LoginBloc({
-    @required this.authRepository,
     @required this.authenticationBloc,
-  })  : assert(authRepository != null),
-        assert(authenticationBloc != null);
+  }) : assert(authenticationBloc != null);
 
   @override
   LoginState get initialState => LoginInitial();
@@ -25,7 +22,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       yield LoginLoading();
 
       try {
-        final res = await authRepository.auth(
+        final res = await $CH.authApi.auth(
           userName: event.userName,
           password: event.password,
         );

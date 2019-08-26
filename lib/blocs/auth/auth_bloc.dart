@@ -1,15 +1,10 @@
 import 'dart:async';
 
-import 'package:meta/meta.dart';
+import 'package:elk_chat/init_websocket.dart';
 import 'package:bloc/bloc.dart';
-import 'package:elk_chat/repositorys/repositorys.dart';
 import 'auth.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  final AuthRepository authRepository;
-
-  AuthBloc({@required this.authRepository});
-
   @override
   AuthState get initialState => AuthUninitialized();
 
@@ -18,7 +13,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthEvent event,
   ) async* {
     if (event is AppStarted) {
-      var account = await authRepository.getAuthInfo();
+      var account = await $CH.authApi.getAuthInfo();
       if (account.token.isEmpty) {
         yield AuthUnauthenticated(account: account);
       } else {
@@ -29,7 +24,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     if (event is UpdateUser) {
       var account = (currentState as AuthAuthenticated).account;
       account.user = event.user;
-      authRepository.persistAuthInfo(account);
+      $CH.authApi.persistAuthInfo(account);
       yield AuthAuthenticated(account: account);
     }
 
@@ -40,7 +35,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
 
     if (event is LoggedOut) {
-      var account = await authRepository.deleteAuthInfo();
+      var account = await $CH.authApi.deleteAuthInfo();
       yield AuthUnauthenticated(account: account);
     }
   }

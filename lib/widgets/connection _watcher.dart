@@ -1,20 +1,16 @@
 import 'package:elk_chat/blocs/blocs.dart';
-import 'package:elk_chat/chat_hub/const.dart';
-import 'package:elk_chat/protocol/api/api.dart';
+import 'package:elk_chat/protocol/api_util/api_util.dart';
+
 import 'package:elk_chat/protocol/protobuf/koi.pb.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:elk_chat/repositorys/auth_repository.dart';
 import 'package:elk_chat/init_websocket.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// websocket 重连/消息同步
 class ConnectionWatcher extends StatefulWidget {
   final dynamic authState;
-  final AuthRepository authRepository;
-  ConnectionWatcher(
-      {Key key, @required this.authState, @required this.authRepository})
-      : super(key: key);
+  ConnectionWatcher({Key key, @required this.authState}) : super(key: key);
 
   _ConnectionWatcherState createState() => _ConnectionWatcherState();
 }
@@ -140,7 +136,7 @@ class _ConnectionWatcherState extends State<ConnectionWatcher> {
       isAuthing = true;
       try {
         print('正在登录...');
-        await widget.authRepository.handleLogin(widget.authState.account.token);
+        await $CH.authApi.handleLogin(widget.authState.account.token);
       } catch (e) {
         print('重新登录失败: $e');
       }

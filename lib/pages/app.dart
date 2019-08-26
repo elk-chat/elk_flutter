@@ -6,8 +6,10 @@ import 'package:elk_chat/widgets/widgets.dart';
 import 'pages.dart';
 import 'tabs.dart';
 
-class RootPage extends StatelessWidget {
-  RootPage({Key key}) : super(key: key);
+class App extends StatelessWidget {
+  static const routePath = '/app';
+
+  App({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

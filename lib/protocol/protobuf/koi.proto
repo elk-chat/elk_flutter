@@ -87,29 +87,33 @@ message UpdateMessageChatPinMessage {
   uint64 PinState = 2;
 }
 
+message InitConnectionReq {
+}
+
+message InitConnectionResp {
+}
+
 // request and response
-message AuthPQReq { // 服务端每次为连接随机生成大质数
+message AuthPGReq { // 服务端每次为连接随机生成大质数
 }
 
-message AuthPQResp {
+message AuthPGResp {
+  bytes P = 1;
+  bytes G = 2;
 }
 
-message AuthKeyReq {
+message AuthKeyExchangeReq {
+  bytes E = 1;
 }
 
-message AuthKeyResp {
+message AuthKeyExchangeResp {
+  bytes F = 1;
 }
 
 message HeartbeatReq {
 }
 
 message HeartbeatResp {
-}
-
-message InitConnectionReq {
-}
-
-message InitConnectionResp {
 }
 
 message RequestVerificationCodeReq {

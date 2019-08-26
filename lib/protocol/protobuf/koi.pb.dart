@@ -536,84 +536,148 @@ class UpdateMessageChatPinMessage extends $pb.GeneratedMessage {
   void clearPinState() => clearField(2);
 }
 
-class AuthPQReq extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo('AuthPQReq', package: const $pb.PackageName('kproto'))
+class InitConnectionReq extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('InitConnectionReq', package: const $pb.PackageName('kproto'))
     ..hasRequiredFields = false
   ;
 
-  AuthPQReq._() : super();
-  factory AuthPQReq() => create();
-  factory AuthPQReq.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory AuthPQReq.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
-  AuthPQReq clone() => AuthPQReq()..mergeFromMessage(this);
-  AuthPQReq copyWith(void Function(AuthPQReq) updates) => super.copyWith((message) => updates(message as AuthPQReq));
+  InitConnectionReq._() : super();
+  factory InitConnectionReq() => create();
+  factory InitConnectionReq.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory InitConnectionReq.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  InitConnectionReq clone() => InitConnectionReq()..mergeFromMessage(this);
+  InitConnectionReq copyWith(void Function(InitConnectionReq) updates) => super.copyWith((message) => updates(message as InitConnectionReq));
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
-  static AuthPQReq create() => AuthPQReq._();
-  AuthPQReq createEmptyInstance() => create();
-  static $pb.PbList<AuthPQReq> createRepeated() => $pb.PbList<AuthPQReq>();
-  static AuthPQReq getDefault() => _defaultInstance ??= create()..freeze();
-  static AuthPQReq _defaultInstance;
+  static InitConnectionReq create() => InitConnectionReq._();
+  InitConnectionReq createEmptyInstance() => create();
+  static $pb.PbList<InitConnectionReq> createRepeated() => $pb.PbList<InitConnectionReq>();
+  static InitConnectionReq getDefault() => _defaultInstance ??= create()..freeze();
+  static InitConnectionReq _defaultInstance;
 }
 
-class AuthPQResp extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo('AuthPQResp', package: const $pb.PackageName('kproto'))
+class InitConnectionResp extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('InitConnectionResp', package: const $pb.PackageName('kproto'))
     ..hasRequiredFields = false
   ;
 
-  AuthPQResp._() : super();
-  factory AuthPQResp() => create();
-  factory AuthPQResp.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory AuthPQResp.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
-  AuthPQResp clone() => AuthPQResp()..mergeFromMessage(this);
-  AuthPQResp copyWith(void Function(AuthPQResp) updates) => super.copyWith((message) => updates(message as AuthPQResp));
+  InitConnectionResp._() : super();
+  factory InitConnectionResp() => create();
+  factory InitConnectionResp.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory InitConnectionResp.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  InitConnectionResp clone() => InitConnectionResp()..mergeFromMessage(this);
+  InitConnectionResp copyWith(void Function(InitConnectionResp) updates) => super.copyWith((message) => updates(message as InitConnectionResp));
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
-  static AuthPQResp create() => AuthPQResp._();
-  AuthPQResp createEmptyInstance() => create();
-  static $pb.PbList<AuthPQResp> createRepeated() => $pb.PbList<AuthPQResp>();
-  static AuthPQResp getDefault() => _defaultInstance ??= create()..freeze();
-  static AuthPQResp _defaultInstance;
+  static InitConnectionResp create() => InitConnectionResp._();
+  InitConnectionResp createEmptyInstance() => create();
+  static $pb.PbList<InitConnectionResp> createRepeated() => $pb.PbList<InitConnectionResp>();
+  static InitConnectionResp getDefault() => _defaultInstance ??= create()..freeze();
+  static InitConnectionResp _defaultInstance;
 }
 
-class AuthKeyReq extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo('AuthKeyReq', package: const $pb.PackageName('kproto'))
+class AuthPGReq extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('AuthPGReq', package: const $pb.PackageName('kproto'))
     ..hasRequiredFields = false
   ;
 
-  AuthKeyReq._() : super();
-  factory AuthKeyReq() => create();
-  factory AuthKeyReq.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory AuthKeyReq.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
-  AuthKeyReq clone() => AuthKeyReq()..mergeFromMessage(this);
-  AuthKeyReq copyWith(void Function(AuthKeyReq) updates) => super.copyWith((message) => updates(message as AuthKeyReq));
+  AuthPGReq._() : super();
+  factory AuthPGReq() => create();
+  factory AuthPGReq.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory AuthPGReq.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  AuthPGReq clone() => AuthPGReq()..mergeFromMessage(this);
+  AuthPGReq copyWith(void Function(AuthPGReq) updates) => super.copyWith((message) => updates(message as AuthPGReq));
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
-  static AuthKeyReq create() => AuthKeyReq._();
-  AuthKeyReq createEmptyInstance() => create();
-  static $pb.PbList<AuthKeyReq> createRepeated() => $pb.PbList<AuthKeyReq>();
-  static AuthKeyReq getDefault() => _defaultInstance ??= create()..freeze();
-  static AuthKeyReq _defaultInstance;
+  static AuthPGReq create() => AuthPGReq._();
+  AuthPGReq createEmptyInstance() => create();
+  static $pb.PbList<AuthPGReq> createRepeated() => $pb.PbList<AuthPGReq>();
+  static AuthPGReq getDefault() => _defaultInstance ??= create()..freeze();
+  static AuthPGReq _defaultInstance;
 }
 
-class AuthKeyResp extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo('AuthKeyResp', package: const $pb.PackageName('kproto'))
+class AuthPGResp extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('AuthPGResp', package: const $pb.PackageName('kproto'))
+    ..a<$core.List<$core.int>>(1, 'p', $pb.PbFieldType.OY)
+    ..a<$core.List<$core.int>>(2, 'g', $pb.PbFieldType.OY)
     ..hasRequiredFields = false
   ;
 
-  AuthKeyResp._() : super();
-  factory AuthKeyResp() => create();
-  factory AuthKeyResp.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory AuthKeyResp.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
-  AuthKeyResp clone() => AuthKeyResp()..mergeFromMessage(this);
-  AuthKeyResp copyWith(void Function(AuthKeyResp) updates) => super.copyWith((message) => updates(message as AuthKeyResp));
+  AuthPGResp._() : super();
+  factory AuthPGResp() => create();
+  factory AuthPGResp.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory AuthPGResp.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  AuthPGResp clone() => AuthPGResp()..mergeFromMessage(this);
+  AuthPGResp copyWith(void Function(AuthPGResp) updates) => super.copyWith((message) => updates(message as AuthPGResp));
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
-  static AuthKeyResp create() => AuthKeyResp._();
-  AuthKeyResp createEmptyInstance() => create();
-  static $pb.PbList<AuthKeyResp> createRepeated() => $pb.PbList<AuthKeyResp>();
-  static AuthKeyResp getDefault() => _defaultInstance ??= create()..freeze();
-  static AuthKeyResp _defaultInstance;
+  static AuthPGResp create() => AuthPGResp._();
+  AuthPGResp createEmptyInstance() => create();
+  static $pb.PbList<AuthPGResp> createRepeated() => $pb.PbList<AuthPGResp>();
+  static AuthPGResp getDefault() => _defaultInstance ??= create()..freeze();
+  static AuthPGResp _defaultInstance;
+
+  $core.List<$core.int> get p => $_getN(0);
+  set p($core.List<$core.int> v) { $_setBytes(0, v); }
+  $core.bool hasP() => $_has(0);
+  void clearP() => clearField(1);
+
+  $core.List<$core.int> get g => $_getN(1);
+  set g($core.List<$core.int> v) { $_setBytes(1, v); }
+  $core.bool hasG() => $_has(1);
+  void clearG() => clearField(2);
+}
+
+class AuthKeyExchangeReq extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('AuthKeyExchangeReq', package: const $pb.PackageName('kproto'))
+    ..a<$core.List<$core.int>>(1, 'e', $pb.PbFieldType.OY)
+    ..hasRequiredFields = false
+  ;
+
+  AuthKeyExchangeReq._() : super();
+  factory AuthKeyExchangeReq() => create();
+  factory AuthKeyExchangeReq.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory AuthKeyExchangeReq.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  AuthKeyExchangeReq clone() => AuthKeyExchangeReq()..mergeFromMessage(this);
+  AuthKeyExchangeReq copyWith(void Function(AuthKeyExchangeReq) updates) => super.copyWith((message) => updates(message as AuthKeyExchangeReq));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static AuthKeyExchangeReq create() => AuthKeyExchangeReq._();
+  AuthKeyExchangeReq createEmptyInstance() => create();
+  static $pb.PbList<AuthKeyExchangeReq> createRepeated() => $pb.PbList<AuthKeyExchangeReq>();
+  static AuthKeyExchangeReq getDefault() => _defaultInstance ??= create()..freeze();
+  static AuthKeyExchangeReq _defaultInstance;
+
+  $core.List<$core.int> get e => $_getN(0);
+  set e($core.List<$core.int> v) { $_setBytes(0, v); }
+  $core.bool hasE() => $_has(0);
+  void clearE() => clearField(1);
+}
+
+class AuthKeyExchangeResp extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('AuthKeyExchangeResp', package: const $pb.PackageName('kproto'))
+    ..a<$core.List<$core.int>>(1, 'f', $pb.PbFieldType.OY)
+    ..hasRequiredFields = false
+  ;
+
+  AuthKeyExchangeResp._() : super();
+  factory AuthKeyExchangeResp() => create();
+  factory AuthKeyExchangeResp.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory AuthKeyExchangeResp.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  AuthKeyExchangeResp clone() => AuthKeyExchangeResp()..mergeFromMessage(this);
+  AuthKeyExchangeResp copyWith(void Function(AuthKeyExchangeResp) updates) => super.copyWith((message) => updates(message as AuthKeyExchangeResp));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static AuthKeyExchangeResp create() => AuthKeyExchangeResp._();
+  AuthKeyExchangeResp createEmptyInstance() => create();
+  static $pb.PbList<AuthKeyExchangeResp> createRepeated() => $pb.PbList<AuthKeyExchangeResp>();
+  static AuthKeyExchangeResp getDefault() => _defaultInstance ??= create()..freeze();
+  static AuthKeyExchangeResp _defaultInstance;
+
+  $core.List<$core.int> get f => $_getN(0);
+  set f($core.List<$core.int> v) { $_setBytes(0, v); }
+  $core.bool hasF() => $_has(0);
+  void clearF() => clearField(1);
 }
 
 class HeartbeatReq extends $pb.GeneratedMessage {
@@ -654,46 +718,6 @@ class HeartbeatResp extends $pb.GeneratedMessage {
   static $pb.PbList<HeartbeatResp> createRepeated() => $pb.PbList<HeartbeatResp>();
   static HeartbeatResp getDefault() => _defaultInstance ??= create()..freeze();
   static HeartbeatResp _defaultInstance;
-}
-
-class InitConnectionReq extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo('InitConnectionReq', package: const $pb.PackageName('kproto'))
-    ..hasRequiredFields = false
-  ;
-
-  InitConnectionReq._() : super();
-  factory InitConnectionReq() => create();
-  factory InitConnectionReq.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory InitConnectionReq.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
-  InitConnectionReq clone() => InitConnectionReq()..mergeFromMessage(this);
-  InitConnectionReq copyWith(void Function(InitConnectionReq) updates) => super.copyWith((message) => updates(message as InitConnectionReq));
-  $pb.BuilderInfo get info_ => _i;
-  @$core.pragma('dart2js:noInline')
-  static InitConnectionReq create() => InitConnectionReq._();
-  InitConnectionReq createEmptyInstance() => create();
-  static $pb.PbList<InitConnectionReq> createRepeated() => $pb.PbList<InitConnectionReq>();
-  static InitConnectionReq getDefault() => _defaultInstance ??= create()..freeze();
-  static InitConnectionReq _defaultInstance;
-}
-
-class InitConnectionResp extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo('InitConnectionResp', package: const $pb.PackageName('kproto'))
-    ..hasRequiredFields = false
-  ;
-
-  InitConnectionResp._() : super();
-  factory InitConnectionResp() => create();
-  factory InitConnectionResp.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory InitConnectionResp.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
-  InitConnectionResp clone() => InitConnectionResp()..mergeFromMessage(this);
-  InitConnectionResp copyWith(void Function(InitConnectionResp) updates) => super.copyWith((message) => updates(message as InitConnectionResp));
-  $pb.BuilderInfo get info_ => _i;
-  @$core.pragma('dart2js:noInline')
-  static InitConnectionResp create() => InitConnectionResp._();
-  InitConnectionResp createEmptyInstance() => create();
-  static $pb.PbList<InitConnectionResp> createRepeated() => $pb.PbList<InitConnectionResp>();
-  static InitConnectionResp getDefault() => _defaultInstance ??= create()..freeze();
-  static InitConnectionResp _defaultInstance;
 }
 
 class RequestVerificationCodeReq extends $pb.GeneratedMessage {

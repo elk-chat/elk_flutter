@@ -29,7 +29,7 @@ class _TabsPageState extends State<TabsPage> {
             icon: MaterialIcons.getIconData('chat-bubble-outline')),
         activeIcon: ChatUnreadBadge(
             size: _iconSize, icon: MaterialIcons.getIconData('chat-bubble')),
-        title: Container(height: 0.0),
+        title: Text('消息'),
       ),
       BottomNavigationBarItem(
         icon: IconBadge(
@@ -40,7 +40,7 @@ class _TabsPageState extends State<TabsPage> {
           MaterialCommunityIcons.getIconData('account-box'),
           size: _iconSize,
         ),
-        title: Container(height: 0.0),
+        title: Text('通讯录'),
       ),
       BottomNavigationBarItem(
         icon: IconBadge(
@@ -51,7 +51,7 @@ class _TabsPageState extends State<TabsPage> {
           MaterialCommunityIcons.getIconData('settings'),
           size: _iconSize,
         ),
-        title: Container(height: 0.0),
+        title: Text('我的'),
       ),
     ];
     final List<Widget> tabBodies = [

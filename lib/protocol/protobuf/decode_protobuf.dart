@@ -56,30 +56,30 @@ decodeProto = (buffer) => proto.UpdateMessageChatSetTyping.fromBuffer(buffer);
 } else if (sig == SigMapper['SIG_UPDATE_MESSAGE_CHAT_PIN_MESSAGE']) {
 decodeMethod ='SIG_UPDATE_MESSAGE_CHAT_PIN_MESSAGE';
 decodeProto = (buffer) => proto.UpdateMessageChatPinMessage.fromBuffer(buffer);
-} else if (sig == SigMapper['SIG_AUTH_P_Q_REQ']) {
-decodeMethod ='SIG_AUTH_P_Q_REQ';
-decodeProto = (buffer) => proto.AuthPQReq.fromBuffer(buffer);
-} else if (sig == SigMapper['SIG_AUTH_P_Q_RESP']) {
-decodeMethod ='SIG_AUTH_P_Q_RESP';
-decodeProto = (buffer) => proto.AuthPQResp.fromBuffer(buffer);
-} else if (sig == SigMapper['SIG_AUTH_KEY_REQ']) {
-decodeMethod ='SIG_AUTH_KEY_REQ';
-decodeProto = (buffer) => proto.AuthKeyReq.fromBuffer(buffer);
-} else if (sig == SigMapper['SIG_AUTH_KEY_RESP']) {
-decodeMethod ='SIG_AUTH_KEY_RESP';
-decodeProto = (buffer) => proto.AuthKeyResp.fromBuffer(buffer);
-} else if (sig == SigMapper['SIG_HEARTBEAT_REQ']) {
-decodeMethod ='SIG_HEARTBEAT_REQ';
-decodeProto = (buffer) => proto.HeartbeatReq.fromBuffer(buffer);
-} else if (sig == SigMapper['SIG_HEARTBEAT_RESP']) {
-decodeMethod ='SIG_HEARTBEAT_RESP';
-decodeProto = (buffer) => proto.HeartbeatResp.fromBuffer(buffer);
 } else if (sig == SigMapper['SIG_INIT_CONNECTION_REQ']) {
 decodeMethod ='SIG_INIT_CONNECTION_REQ';
 decodeProto = (buffer) => proto.InitConnectionReq.fromBuffer(buffer);
 } else if (sig == SigMapper['SIG_INIT_CONNECTION_RESP']) {
 decodeMethod ='SIG_INIT_CONNECTION_RESP';
 decodeProto = (buffer) => proto.InitConnectionResp.fromBuffer(buffer);
+} else if (sig == SigMapper['SIG_AUTH_P_G_REQ']) {
+decodeMethod ='SIG_AUTH_P_G_REQ';
+decodeProto = (buffer) => proto.AuthPGReq.fromBuffer(buffer);
+} else if (sig == SigMapper['SIG_AUTH_P_G_RESP']) {
+decodeMethod ='SIG_AUTH_P_G_RESP';
+decodeProto = (buffer) => proto.AuthPGResp.fromBuffer(buffer);
+} else if (sig == SigMapper['SIG_AUTH_KEY_EXCHANGE_REQ']) {
+decodeMethod ='SIG_AUTH_KEY_EXCHANGE_REQ';
+decodeProto = (buffer) => proto.AuthKeyExchangeReq.fromBuffer(buffer);
+} else if (sig == SigMapper['SIG_AUTH_KEY_EXCHANGE_RESP']) {
+decodeMethod ='SIG_AUTH_KEY_EXCHANGE_RESP';
+decodeProto = (buffer) => proto.AuthKeyExchangeResp.fromBuffer(buffer);
+} else if (sig == SigMapper['SIG_HEARTBEAT_REQ']) {
+decodeMethod ='SIG_HEARTBEAT_REQ';
+decodeProto = (buffer) => proto.HeartbeatReq.fromBuffer(buffer);
+} else if (sig == SigMapper['SIG_HEARTBEAT_RESP']) {
+decodeMethod ='SIG_HEARTBEAT_RESP';
+decodeProto = (buffer) => proto.HeartbeatResp.fromBuffer(buffer);
 } else if (sig == SigMapper['SIG_REQUEST_VERIFICATION_CODE_REQ']) {
 decodeMethod ='SIG_REQUEST_VERIFICATION_CODE_REQ';
 decodeProto = (buffer) => proto.RequestVerificationCodeReq.fromBuffer(buffer);

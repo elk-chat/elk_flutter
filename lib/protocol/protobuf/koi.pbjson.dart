@@ -128,20 +128,38 @@ const UpdateMessageChatPinMessage$json = const {
   ],
 };
 
-const AuthPQReq$json = const {
-  '1': 'AuthPQReq',
+const InitConnectionReq$json = const {
+  '1': 'InitConnectionReq',
 };
 
-const AuthPQResp$json = const {
-  '1': 'AuthPQResp',
+const InitConnectionResp$json = const {
+  '1': 'InitConnectionResp',
 };
 
-const AuthKeyReq$json = const {
-  '1': 'AuthKeyReq',
+const AuthPGReq$json = const {
+  '1': 'AuthPGReq',
 };
 
-const AuthKeyResp$json = const {
-  '1': 'AuthKeyResp',
+const AuthPGResp$json = const {
+  '1': 'AuthPGResp',
+  '2': const [
+    const {'1': 'P', '3': 1, '4': 1, '5': 12, '10': 'P'},
+    const {'1': 'G', '3': 2, '4': 1, '5': 12, '10': 'G'},
+  ],
+};
+
+const AuthKeyExchangeReq$json = const {
+  '1': 'AuthKeyExchangeReq',
+  '2': const [
+    const {'1': 'E', '3': 1, '4': 1, '5': 12, '10': 'E'},
+  ],
+};
+
+const AuthKeyExchangeResp$json = const {
+  '1': 'AuthKeyExchangeResp',
+  '2': const [
+    const {'1': 'F', '3': 1, '4': 1, '5': 12, '10': 'F'},
+  ],
 };
 
 const HeartbeatReq$json = const {
@@ -150,14 +168,6 @@ const HeartbeatReq$json = const {
 
 const HeartbeatResp$json = const {
   '1': 'HeartbeatResp',
-};
-
-const InitConnectionReq$json = const {
-  '1': 'InitConnectionReq',
-};
-
-const InitConnectionResp$json = const {
-  '1': 'InitConnectionResp',
 };
 
 const RequestVerificationCodeReq$json = const {

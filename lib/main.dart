@@ -178,10 +178,11 @@ class _MyAppState extends State<MyApp> {
           //     scriptCode: 'Hant',
           //     countryCode: 'HK'), // 'zh_Hant_HK'
         ],
-        initialRoute: '/',
+        initialRoute: '/home',
         routes: {
+          '/': (context) => Text('233'),
           // When navigating to the "/" route, build the FirstPage widget.
-          '/': (context) => RootPage(),
+          '/home': (context) => App(),
         },
       ),
     );

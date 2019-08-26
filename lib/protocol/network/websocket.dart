@@ -61,6 +61,8 @@ class WebSocket extends EventEmitter {
   int random = Random().nextInt(100000);
   String timestamp = '${DateTime.now().millisecondsSinceEpoch}';
 
+  InitConnectionReq _InitConnectionReq = InitConnectionReq();
+
   HeartbeatReq _HeartbeatReq = HeartbeatReq();
 
   /// 心跳包定时句柄
@@ -174,10 +176,33 @@ class WebSocket extends EventEmitter {
     if (method != 'HEARTBEAT_REQ') {
       this.heartBeat();
     }
+    // this.initConnection();
     return channel;
   }
 
-  /// 登录后，定时发送心跳包，也用来检测网络是否连接上
+  // 初始化连接，在发所有请求之前，必须先发这个
+  void initConnection([Function cb]) {
+    print('init connection');
+    if (cb != null) {
+      authCallback = () {
+        _executeLoginedQueues();
+        cb();
+      };
+    }
+    send(
+        method: 'InitConnectionReq',
+        protobuf: _InitConnectionReq,
+        hasTimeout: false,
+        queue: false,
+        cb: (data) {
+          print('init connection back data: $data');
+          if (!data.hasError) {
+            this.heartBeat();
+          }
+        });
+  }
+
+  /// 登录后，定时发送心跳包
   void heartBeat([Function cb]) {
     heartBeatCount++;
     final stopwatch = Stopwatch()..start();
@@ -271,6 +296,9 @@ class WebSocket extends EventEmitter {
   void setSSID(UserLoginResp loginResp) {
     isLogined = true;
     setHeaderSSID(loginResp.sessionID);
+    // initConnection(() {
+    //   emitUpdating();
+    // });
     heartBeat(() {
       emitUpdating();
     });
@@ -316,7 +344,6 @@ class WebSocket extends EventEmitter {
   Function send(
       {String method,
       dynamic protobuf,
-      Map data,
       WebsocketCallback cb,
       // requestID: 通过  $WS.getRequestID() 生成，参数可选
       BigInt requestID,
@@ -340,9 +367,6 @@ class WebSocket extends EventEmitter {
     String _queueID = '${method}_${queueID}';
     Uint8List dataBuf;
 
-    if (data != null) {
-      mergeProtobufField(data, protobuf);
-    }
     Timer timeoutTimer;
     Function disconnectedFn;
 

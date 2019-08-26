@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:elk_chat/init_websocket.dart';
 import 'package:elk_chat/chat_hub/const.dart';
 import 'package:elk_chat/protocol/api/proto_helper.dart';
@@ -48,6 +50,7 @@ class _ChatItemState extends State<ChatItem> {
 
   User user;
   Function unSupscription;
+  Timer getMembersTimer;
 
   @override
   void initState() {
@@ -84,6 +87,7 @@ class _ChatItemState extends State<ChatItem> {
   @override
   void dispose() {
     unSupscription();
+    getMembersTimer?.cancel();
     super.dispose();
   }
 
@@ -124,6 +128,7 @@ class _ChatItemState extends State<ChatItem> {
         });
       }
     } catch (e) {
+      getMembersTimer = Timer(Duration(seconds: 2), getMembers());
       print('${widget.chat.chatID} getMembers error $e');
     }
   }

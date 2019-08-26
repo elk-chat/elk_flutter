@@ -235,6 +235,7 @@ class ChatRepository {
   }
 
   Future addMembers(List<dynamic> members, Int64 chatID) async {
+    if (members == null) return;
     _ChatAddMemberReq.chatID = chatID;
     members.forEach((i) {
       _ChatAddMemberReq.userID = i.userID;

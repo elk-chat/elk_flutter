@@ -189,7 +189,9 @@ class _GroupChatDetailState extends State<GroupChatDetailScreen> {
                                   style: const TextStyle(fontSize: 15.0))
                             ],
                           ),
-                          onPressed: onAddMembers,
+                          onPressed: $WS.user.userID == widget.chat.creatorID
+                              ? onAddMembers
+                              : null,
                         ),
                         SizedBox(
                           height: 12,

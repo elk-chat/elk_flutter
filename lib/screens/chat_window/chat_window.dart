@@ -306,128 +306,131 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
   unFocus([data]) {
     // 触摸收起键盘
     FocusScope.of(context).requestFocus(_unFocusNode);
+    if (showAttachment) {
+      setState(() {
+        showAttachment = false;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-        behavior: HitTestBehavior.translucent,
-        onTap: unFocus,
-        onVerticalDragDown: unFocus,
-        child: Scaffold(
-          appBar: AppBar(
-            title: _chat.chatType == ChatType.Group
-                ? Text(_chat.title)
-                : widget.title,
-            centerTitle: true,
-            actions: <Widget>[
-              IconButton(
-                  onPressed: () {
-                    if (_chat.chatType == ChatType.OneToOne) {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  OneToOneChatDetailScreen(
-                                      title: '聊天详情',
-                                      avatarFileID: avatarFileID,
-                                      user: widget.user,
-                                      chat: widget.chat)));
-                    } else if (_chat.chatType == ChatType.Group) {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  GroupChatDetailScreen(
-                                      authState: widget.authState,
-                                      chatRepository: widget.chatRepository,
-                                      title: '聊天信息',
-                                      updateParentChat: (chat) {
-                                        _chat = chat;
-                                        setState(() {});
-                                      },
-                                      avatarFileID: _chat.avatarFileID,
-                                      chat: _chat)));
-                    }
-                  },
-                  icon: Img(
-                    key: Key('${avatarFileID}'),
-                    width: 32,
-                    height: 32,
-                    type: _chat.chatType,
-                    fileID: avatarFileID,
-                    // title: widget.contact.userName,
-                  ))
-            ],
-          ),
-          body: SafeArea(
-              child: Stack(
+    return Scaffold(
+      appBar: AppBar(
+        title:
+            _chat.chatType == ChatType.Group ? Text(_chat.title) : widget.title,
+        centerTitle: true,
+        actions: <Widget>[
+          IconButton(
+              onPressed: () {
+                if (_chat.chatType == ChatType.OneToOne) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              OneToOneChatDetailScreen(
+                                  title: '聊天详情',
+                                  avatarFileID: avatarFileID,
+                                  user: widget.user,
+                                  chat: widget.chat)));
+                } else if (_chat.chatType == ChatType.Group) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              GroupChatDetailScreen(
+                                  authState: widget.authState,
+                                  chatRepository: widget.chatRepository,
+                                  title: '聊天信息',
+                                  updateParentChat: (chat) {
+                                    _chat = chat;
+                                    setState(() {});
+                                  },
+                                  avatarFileID: _chat.avatarFileID,
+                                  chat: _chat)));
+                }
+              },
+              icon: Img(
+                key: Key('${avatarFileID}'),
+                width: 32,
+                height: 32,
+                type: _chat.chatType,
+                fileID: avatarFileID,
+                // title: widget.contact.userName,
+              ))
+        ],
+      ),
+      body: SafeArea(
+          child: Stack(
+        children: <Widget>[
+          Column(
             children: <Widget>[
-              Column(
-                children: <Widget>[
-                  buildMessageList(),
-                  buildInput(),
-                  // (showSticker ? buildSticker() : Container()),
-                  (showAttachment ? buildAttachment() : Container()),
-                ],
-              )
+              buildMessageList(),
+              buildInput(),
+              // (showSticker ? buildSticker() : Container()),
+              (showAttachment ? buildAttachment() : Container()),
             ],
-          )),
-        ));
+          )
+        ],
+      )),
+    );
   }
 
   Widget buildMessageList() {
     int msgsLength = msgs.length + queue_msgs.length;
     int allMsgsLength = msgsLength + (loading ? 1 : 0);
     return Flexible(
-      child: ListView.builder(
-        physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.all(10.0),
-        itemCount: allMsgsLength,
-        reverse: true,
-        controller: _scrollController,
-        itemBuilder: (context, index) {
-          if (loading && index == msgsLength) {
-            return CupertinoActivityIndicator(
-              radius: 10,
-            );
-          }
-          // 如果是已经加载的消息
-          if (index < queue_msgs.length) {
-            var queueMsg = queue_msgs[index];
-            return QueueMsgBubble(
-                key: ValueKey(queueMsg.actionTime),
-                chatRepository: widget.chatRepository,
-                queueMsg: queueMsg,
+      child: GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onTap: unFocus,
+          child: ListView.builder(
+            physics: const BouncingScrollPhysics(),
+            padding: const EdgeInsets.all(10.0),
+            itemCount: allMsgsLength,
+            reverse: true,
+            controller: _scrollController,
+            itemBuilder: (context, index) {
+              if (loading && index == msgsLength) {
+                return CupertinoActivityIndicator(
+                  radius: 10,
+                );
+              }
+              // 如果是已经加载的消息
+              if (index < queue_msgs.length) {
+                var queueMsg = queue_msgs[index];
+                return QueueMsgBubble(
+                    key: ValueKey(queueMsg.actionTime),
+                    chatRepository: widget.chatRepository,
+                    queueMsg: queueMsg,
+                    dateFormat: dateFormat,
+                    remove: () {
+                      setState(() {
+                        queue_msgs = queue_msgs
+                            .where((i) => i.actionTime != queueMsg.actionTime)
+                            .toList();
+                      });
+                    });
+              }
+
+              var stateUpdate = msgs[index - queue_msgs.length];
+              return MsgBubble(
+                key: ValueKey(stateUpdate.messageID),
+                chat: widget.chat,
                 dateFormat: dateFormat,
-                remove: () {
-                  setState(() {
-                    queue_msgs = queue_msgs
-                        .where((i) => i.actionTime != queueMsg.actionTime)
-                        .toList();
-                  });
-                });
-          }
+                getStateRead: () => _stateRead,
+                setOwnStateRead: (stateRead) {
+                  print('stateRead $stateRead');
 
-          var stateUpdate = msgs[index - queue_msgs.length];
-          return MsgBubble(
-            key: ValueKey(stateUpdate.messageID),
-            chat: widget.chat,
-            dateFormat: dateFormat,
-            getStateRead: () => _stateRead,
-            setOwnStateRead: (stateRead) {
-              print('stateRead $stateRead');
-
-              _stateRead.ownStateRead = stateRead;
-              print('stateReadAll $_stateRead');
+                  _stateRead.ownStateRead = stateRead;
+                  print('stateReadAll $_stateRead');
+                },
+                userName: widget.authState.account.user.userName,
+                isSelf: stateUpdate.senderID ==
+                    widget.authState.account.user.userID,
+                stateUpdate: stateUpdate,
+              );
             },
-            userName: widget.authState.account.user.userName,
-            isSelf:
-                stateUpdate.senderID == widget.authState.account.user.userID,
-            stateUpdate: stateUpdate,
-          );
-        },
-      ),
+          )),
     );
   }
 

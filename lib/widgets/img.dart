@@ -48,7 +48,7 @@ class _AvatarState extends State<Img> {
   @override
   void initState() {
     super.initState();
-    if (widget.fileID == 0) {
+    if (widget.fileID == 0 || widget.fileID == null) {
       return;
     } else if (avatarCacher[widget.fileID] != null) {
       imgSrc = avatarCacher[widget.fileID];

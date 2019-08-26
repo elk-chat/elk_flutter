@@ -14,6 +14,7 @@ class ChatRepository {
       UserGetChatUserSuperscriptReq(); // 未读数
   ChatGetStateReadReq _ChatGetStateReadReq = ChatGetStateReadReq(); // 已读状态
   ChatCreateReq _ChatCreateReq = ChatCreateReq(); // 创建聊天
+  ChatUpdateProfileReq _ChatUpdateProfileReq = ChatUpdateProfileReq(); // 更新群聊信息
   ChatAddMemberReq _ChatAddMemberReq = ChatAddMemberReq(); // 添加聊天成员
   // ChatSendMessageReq _ChatSendMessageReq = ChatSendMessageReq(); // 发送消息
   ChatSyncChatStateMessagesReq _ChatSyncChatStateMessagesReq =
@@ -201,11 +202,29 @@ class ChatRepository {
     });
   }
 
-  Future create(String title) async {
+  Future create(String title, [Int64 avatarFileID]) async {
     Completer _completer = Completer();
     _ChatCreateReq.title = title;
     createGroupChat(_ChatCreateReq, (data) {
       print('创建聊天返回聊天对象 $data');
+      if (data.hasError) {
+        _completer.completeError(data.res);
+      } else {
+        _completer.complete(data.res);
+        if (avatarFileID != null) {
+          updateProfile(data.res.chat.chatID, title, avatarFileID);
+        }
+      }
+    });
+    return _completer.future;
+  }
+
+  Future updateProfile(Int64 chatID, String title, Int64 avatarFileID) async {
+    Completer _completer = Completer();
+    _ChatUpdateProfileReq.title = title;
+    _ChatUpdateProfileReq.chatID = chatID;
+    _ChatUpdateProfileReq.avatarFileID = avatarFileID;
+    updateChatProfile(_ChatUpdateProfileReq, (data) {
       if (data.hasError) {
         _completer.completeError(data.res);
       } else {

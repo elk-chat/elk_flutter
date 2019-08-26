@@ -94,7 +94,8 @@ class _MsgBubbleState extends State<MsgBubble> {
                   style: TextStyle(color: Colors.blue)),
           Text(
               isAdminDid
-                  ? ' 被${updMsg.updateMessageChatAddMember.senderName}邀请入群'
+                  // ? ' 被${updMsg.updateMessageChatAddMember.senderName}邀请入群'
+                  ? ' 进入群聊'
                   : ' 加入群聊',
               style: TextStyle(color: Colors.black38)),
         ],

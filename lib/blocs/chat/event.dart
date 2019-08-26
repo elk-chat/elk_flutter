@@ -31,6 +31,14 @@ class AddChat extends ChatEvent {
   String toString() => 'AddChat';
 }
 
+class UpdateChat extends ChatEvent {
+  final Chat chat;
+  UpdateChat({@required this.chat});
+
+  @override
+  String toString() => 'UpdateChat';
+}
+
 class DeleteChat extends ChatEvent {
   final Chat chat;
   DeleteChat({@required this.chat});

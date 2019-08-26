@@ -65,6 +65,21 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         }
       }
     }
+    if (event is UpdateChat) {
+      if (currentState is ChatLoaded) {
+        var chats = (currentState as ChatLoaded).chats.toList();
+        List<Chat> _chats = [];
+        // 判断有没有在聊天中
+        for (var i in chats) {
+          if (i.chatID == event.chat.chatID) {
+            _chats.add(event.chat);
+          } else {
+            _chats.add(i);
+          }
+        }
+        yield ChatLoaded(chats: _chats);
+      }
+    }
 
     if (event is DeleteChat) {
       var chats = (currentState as ChatLoaded)

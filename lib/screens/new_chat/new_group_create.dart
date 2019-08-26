@@ -1,5 +1,6 @@
 // 发起群聊
 
+import 'package:elk_chat/init_websocket.dart';
 import 'package:elk_chat/widgets/widgets.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:elk_chat/blocs/blocs.dart';
 import 'package:elk_chat/repositorys/repositorys.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_icons/flutter_icons.dart';
+import 'group_info_edit.dart';
 
 class NewGroupChatCreateScreen extends StatefulWidget {
   final String title;
@@ -28,6 +29,9 @@ class _NewGroupChatState extends State<NewGroupChatCreateScreen> {
   TextEditingController _controller = TextEditingController();
   String text = '';
   ChatBloc _chatBloc;
+  int avaterSize = 256;
+  bool uploading = false;
+  Int64 avatarFileID;
 
   @override
   void initState() {
@@ -37,10 +41,14 @@ class _NewGroupChatState extends State<NewGroupChatCreateScreen> {
 
   handleCreateChat() async {
     try {
-      var res = await widget.chatRepository.create(text);
+      var res = await widget.chatRepository.create(text, avatarFileID);
       // res.chat.title = widget.title;
       // res.chat.avatarFileID = widget.avatarFileID;
       print('res.chat ${res.chat}');
+      if (avatarFileID != null) {
+        res.chat.avatarFileID = avatarFileID;
+      }
+      res.chat.creatorID = $WS.user.userID;
       _chatBloc.dispatch(AddChat(chat: res.chat));
       widget.chatRepository.addMembers(widget.members, res.chat.chatID);
       Navigator.popUntil(context, ModalRoute.withName('/'));
@@ -58,7 +66,8 @@ class _NewGroupChatState extends State<NewGroupChatCreateScreen> {
           actions: <Widget>[
             CupertinoButton(
               child: Text('创建', style: const TextStyle(fontSize: 15.0)),
-              onPressed: text.isNotEmpty ? handleCreateChat : null,
+              onPressed:
+                  text.isNotEmpty && !uploading ? handleCreateChat : null,
             ),
           ],
         ),
@@ -67,79 +76,33 @@ class _NewGroupChatState extends State<NewGroupChatCreateScreen> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Container(
-                    child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        Container(
-                            padding: EdgeInsets.symmetric(horizontal: 12.0),
-                            child: Img(
-                                type: 1,
-                                fileID: Int64(0),
-                                width: 64.0,
-                                height: 64.0)),
-                        Container(
-                            child: Flexible(
-                                child: TextField(
-                          autofocus: true,
-                          controller: _controller,
-                          onChanged: (value) {
-                            setState(() {
-                              text = value.trim();
-                            });
-                          },
-                          textInputAction: TextInputAction.go,
-                          // style: TextStyle(color: Colors.blue),
-                          decoration: InputDecoration(
-                              hintText: "群名称",
-                              border: InputBorder.none,
-                              suffixIcon: IconButton(
-                                  icon: Icon(
-                                    MaterialCommunityIcons.getIconData(
-                                        'close-circle'),
-                                    color: Colors.black38,
-                                    size: 18,
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      text = '';
-                                    });
-                                    WidgetsBinding.instance
-                                        .addPostFrameCallback(
-                                            (_) => _controller.clear());
-                                  })),
-                        ))),
-                      ],
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(left: 90.0),
-                      decoration: BoxDecoration(
-                        border: Border(
-                            top: const BorderSide(
-                                color: Colors.black12, width: 0.5)),
-                      ),
-                    ),
-                    Container(
-                        child: CupertinoButton(
-                      padding: EdgeInsets.symmetric(
-                          vertical: 16.0, horizontal: 12.0),
-                      child:
-                          Text('设置封面', style: const TextStyle(fontSize: 15.0)),
-                      onPressed: () {
-                        //
-                      },
-                    )),
-                    Container(
-                      decoration: BoxDecoration(
-                        border: Border(
-                            top: const BorderSide(
-                                color: Colors.black12, width: 0.5)),
-                      ),
-                    )
-                  ],
-                )),
+                GroupInfoEdit(
+                  avatarFileID: avatarFileID,
+                  controller: _controller,
+                  uploading: uploading,
+                  // onChangeAvatar: onChangeAvatar,
+                  context: context,
+                  setText: (value) {
+                    setState(() {
+                      text = value;
+                    });
+                  },
+                  setUploading: () {
+                    if (mounted) {
+                      setState(() {
+                        uploading = true;
+                      });
+                    }
+                  },
+                  setFinish: (_avatarFileID) {
+                    if (mounted) {
+                      setState(() {
+                        avatarFileID = _avatarFileID;
+                        uploading = false;
+                      });
+                    }
+                  },
+                ),
                 Container(
                     width: double.infinity,
                     child: Text('成员 (${widget.members.length})',

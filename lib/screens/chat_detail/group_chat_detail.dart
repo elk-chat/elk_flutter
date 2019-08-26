@@ -5,7 +5,9 @@ import 'package:elk_chat/protocol/api/chat.dart';
 import 'package:elk_chat/protocol/api/state.dart';
 import 'package:elk_chat/protocol/protobuf/koi.pb.dart';
 import 'package:elk_chat/repositorys/chat_repository.dart';
+import 'package:elk_chat/screens/chat_detail/select_users.dart';
 import 'package:elk_chat/screens/contact_detail.dart';
+import 'package:elk_chat/screens/new_chat/group_info_edit.dart';
 import 'package:elk_chat/widgets/widgets.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/cupertino.dart';
@@ -22,6 +24,7 @@ class GroupChatDetailScreen extends StatefulWidget {
   final Chat chat;
   final ChatRepository chatRepository;
   final AuthState authState;
+  final Function updateParentChat;
 
   GroupChatDetailScreen({
     Key key,
@@ -30,6 +33,7 @@ class GroupChatDetailScreen extends StatefulWidget {
     @required this.chat,
     @required this.authState,
     @required this.chatRepository,
+    @required this.updateParentChat,
   }) : super(key: key);
 
   @override
@@ -42,6 +46,12 @@ class _GroupChatDetailState extends State<GroupChatDetailScreen> {
   bool isEdit;
   List<User> _members;
 
+  TextEditingController _controller;
+  String text;
+  int avaterSize = 256;
+  bool uploading = false;
+  Int64 avatarFileID;
+
   @override
   void initState() {
     super.initState();
@@ -50,7 +60,9 @@ class _GroupChatDetailState extends State<GroupChatDetailScreen> {
     _members = [];
 
     _chatBloc = BlocProvider.of<ChatBloc>(context);
-
+    text = widget.chat.title;
+    _controller = TextEditingController(text: widget.chat.title);
+    avatarFileID = widget.chat.avatarFileID;
     _getMembers();
   }
 
@@ -80,23 +92,43 @@ class _GroupChatDetailState extends State<GroupChatDetailScreen> {
         fontSize: 14.0);
   }
 
+  onDone() async {
+    bool hasUpdate =
+        widget.chat.avatarFileID != avatarFileID || widget.chat.title != text;
+    if (isEdit && hasUpdate) {
+      try {
+        await widget.chatRepository
+            .updateProfile(widget.chat.chatID, text, avatarFileID);
+        Chat chat = widget.chat.clone();
+        chat.avatarFileID = avatarFileID;
+        chat.title = text;
+        widget.updateParentChat(chat);
+        _chatBloc.dispatch(UpdateChat(chat: chat));
+      } catch (e) {
+        showError(e);
+      }
+    }
+    setState(() {
+      isEdit = !isEdit;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    print(widget.chat);
     return Scaffold(
         appBar: AppBar(
-          title: Text(widget.title),
+          title: Text(text),
           centerTitle: true,
           actions: <Widget>[
             CupertinoButton(
               // color: Colors.greenAccent,
               child: Text(isEdit ? '完成' : '编辑',
                   style: const TextStyle(fontSize: 15.0)),
-              onPressed: () {
-                setState(() {
-                  isEdit = !isEdit;
-                });
-              },
+              onPressed: text.isNotEmpty &&
+                      !uploading &&
+                      $WS.user.userID == widget.chat.creatorID
+                  ? onDone
+                  : null,
             ),
           ],
         ),
@@ -109,15 +141,42 @@ class _GroupChatDetailState extends State<GroupChatDetailScreen> {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
-                        ListTile(
-                            leading: Container(
-                                child: Img(
-                                    fileID: widget.chat.avatarFileID,
-                                    title: widget.chat.title,
-                                    width: 48.0,
-                                    height: 48.0,
-                                    type: ChatType.Group)),
-                            title: Text(widget.chat.title)),
+                        isEdit
+                            ? GroupInfoEdit(
+                                avatarFileID: avatarFileID,
+                                controller: _controller,
+                                uploading: uploading,
+                                context: context,
+                                setText: (value) {
+                                  setState(() {
+                                    text = value;
+                                  });
+                                },
+                                setUploading: () {
+                                  if (mounted) {
+                                    setState(() {
+                                      uploading = true;
+                                    });
+                                  }
+                                },
+                                setFinish: (_avatarFileID) {
+                                  if (mounted) {
+                                    setState(() {
+                                      avatarFileID = _avatarFileID;
+                                      uploading = false;
+                                    });
+                                  }
+                                },
+                              )
+                            : (ListTile(
+                                leading: Container(
+                                    child: Img(
+                                        fileID: avatarFileID,
+                                        title: text,
+                                        width: 48.0,
+                                        height: 48.0,
+                                        type: ChatType.Group)),
+                                title: Text(text))),
                         SizedBox(
                           height: 12,
                         ),
@@ -126,11 +185,11 @@ class _GroupChatDetailState extends State<GroupChatDetailScreen> {
                           child: Row(
                             children: <Widget>[
                               Icon(Icons.add),
-                              Text('邀请入群',
+                              Text('添加成员',
                                   style: const TextStyle(fontSize: 15.0))
                             ],
                           ),
-                          onPressed: () {},
+                          onPressed: onAddMembers,
                         ),
                         SizedBox(
                           height: 12,
@@ -179,6 +238,19 @@ class _GroupChatDetailState extends State<GroupChatDetailScreen> {
                               onConfirmDeleteMember(user);
                             });
                 })));
+  }
+
+  onAddMembers() async {
+    var selectUsers = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) => SelectUsersScreen(
+            title: '选择成员',
+            authState: widget.authState,
+          ),
+        ));
+    widget.chatRepository.addMembers(selectUsers, widget.chat.chatID);
+    Navigator.pop(context);
   }
 
   // 是否移除群成员（只要管理员可以）

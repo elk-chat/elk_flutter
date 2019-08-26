@@ -305,9 +305,13 @@ class WebSocket extends EventEmitter {
   }
 
   void closeChannel() {
-    setHeaderSSID(BigInt.from(10));
-    streamListener?.cancel();
-    channel.sink?.close(status.goingAway);
+    try {
+      setHeaderSSID(BigInt.from(10));
+      streamListener?.cancel();
+      channel.sink?.close(status.goingAway);
+    } catch (e) {
+      print('close Channel error $e');
+    }
   }
 
   BigInt genRequestID() {
@@ -497,6 +501,7 @@ class WebSocket extends EventEmitter {
   String getEventName(rid) {
     return 'e-$rid';
   }
+
 
   /// 监听消息并处理
   void _onData(data) {

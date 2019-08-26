@@ -51,6 +51,7 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
   final _scrollController = ScrollController();
   final _textEditingController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
+  FocusNode _unFocusNode;
   final int PAGE_SIZE = 12;
   final DateFormat dateFormat = DateFormat('MM/dd HH:mm');
 
@@ -90,6 +91,7 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
     avatarFileID = widget.avatarFileID;
     super.initState();
 
+    _unFocusNode = FocusNode();
     _chatBloc = BlocProvider.of<ChatBloc>(context);
 
     _chat = widget.chat;
@@ -108,6 +110,7 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
     _scrollController.dispose();
     _textEditingController.dispose();
     _focusNode.dispose();
+    _unFocusNode.dispose();
 
     if (unSupscription != null) unSupscription();
     if (readSubscription != null) readSubscription();
@@ -300,62 +303,77 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
     }
   }
 
+  unFocus([data]) {
+    // 触摸收起键盘
+    FocusScope.of(context).requestFocus(_unFocusNode);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: widget.title,
-        centerTitle: true,
-        actions: <Widget>[
-          IconButton(
-              onPressed: () {
-                if (_chat.chatType == ChatType.OneToOne) {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              OneToOneChatDetailScreen(
-                                  title: '聊天详情',
-                                  avatarFileID: avatarFileID,
-                                  user: widget.user,
-                                  chat: widget.chat)));
-                } else if (_chat.chatType == ChatType.Group) {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              GroupChatDetailScreen(
-                                  authState: widget.authState,
-                                  chatRepository: widget.chatRepository,
-                                  title: '聊天信息',
-                                  avatarFileID: avatarFileID,
-                                  chat: widget.chat)));
-                }
-              },
-              icon: Img(
-                key: Key('${avatarFileID}'),
-                width: 32,
-                height: 32,
-                type: _chat.chatType,
-                fileID: avatarFileID,
-                // title: widget.contact.userName,
-              ))
-        ],
-      ),
-      body: SafeArea(
-          child: Stack(
-        children: <Widget>[
-          Column(
-            children: <Widget>[
-              buildMessageList(),
-              buildInput(),
-              // (showSticker ? buildSticker() : Container()),
-              (showAttachment ? buildAttachment() : Container()),
+    return GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: unFocus,
+        onVerticalDragDown: unFocus,
+        child: Scaffold(
+          appBar: AppBar(
+            title: _chat.chatType == ChatType.Group
+                ? Text(_chat.title)
+                : widget.title,
+            centerTitle: true,
+            actions: <Widget>[
+              IconButton(
+                  onPressed: () {
+                    if (_chat.chatType == ChatType.OneToOne) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  OneToOneChatDetailScreen(
+                                      title: '聊天详情',
+                                      avatarFileID: avatarFileID,
+                                      user: widget.user,
+                                      chat: widget.chat)));
+                    } else if (_chat.chatType == ChatType.Group) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  GroupChatDetailScreen(
+                                      authState: widget.authState,
+                                      chatRepository: widget.chatRepository,
+                                      title: '聊天信息',
+                                      updateParentChat: (chat) {
+                                        _chat = chat;
+                                        setState(() {});
+                                      },
+                                      avatarFileID: _chat.avatarFileID,
+                                      chat: _chat)));
+                    }
+                  },
+                  icon: Img(
+                    key: Key('${avatarFileID}'),
+                    width: 32,
+                    height: 32,
+                    type: _chat.chatType,
+                    fileID: avatarFileID,
+                    // title: widget.contact.userName,
+                  ))
             ],
-          )
-        ],
-      )),
-    );
+          ),
+          body: SafeArea(
+              child: Stack(
+            children: <Widget>[
+              Column(
+                children: <Widget>[
+                  buildMessageList(),
+                  buildInput(),
+                  // (showSticker ? buildSticker() : Container()),
+                  (showAttachment ? buildAttachment() : Container()),
+                ],
+              )
+            ],
+          )),
+        ));
   }
 
   Widget buildMessageList() {

@@ -124,7 +124,7 @@ class _ChatItemState extends State<ChatItem> {
         });
       }
     } catch (e) {
-      print('${widget.chat.chatID} error $e');
+      print('${widget.chat.chatID} getMembers error $e');
     }
   }
 
@@ -152,7 +152,7 @@ class _ChatItemState extends State<ChatItem> {
     var isAdminDid = widget.chat.creatorID == upd.senderID;
     if (message.hasUpdateMessageChatAddMember()) {
       text =
-          '${message.updateMessageChatAddMember.addedMemeberName} ${isAdminDid ? '邀请进入群聊' : '加入群聊'}';
+          '${message.updateMessageChatAddMember.addedMemeberName} ${isAdminDid ? '进入群聊' : '加入群聊'}';
     } else if (message.hasUpdateMessageChatSendMessage()) {
       text =
           '${message.updateMessageChatSendMessage.chatMessage.senderName}: ${getMessageByType(message.updateMessageChatSendMessage.chatMessage)}';

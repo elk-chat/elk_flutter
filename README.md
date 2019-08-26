@@ -67,3 +67,4 @@ sh shell/l10n_to_dart.sh
 - bloc
 - Awesome Flutter Snippets
 - flutter
+  

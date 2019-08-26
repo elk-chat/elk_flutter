@@ -433,6 +433,8 @@ message ChatSendMessageReq {
 }
 
 message ChatSendMessageResp {
+  uint64 MessageID = 1;
+  uint64 State = 2;
 }
 
 message ChatDeleteMessageReq {

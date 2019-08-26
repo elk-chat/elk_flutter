@@ -50,8 +50,7 @@ void main() {
     final contactApi = ContactApi();
     final chatApi = ChatApi();
 
-    var App =
-        MyApp(authApi: authApi, chatApi: chatApi, contactApi: contactApi);
+    var App = MyApp(authApi: authApi, chatApi: chatApi, contactApi: contactApi);
 
     try {
       // 正式环境中 assert(1 == 2) 不会执行，所以不会报错
@@ -178,11 +177,10 @@ class _MyAppState extends State<MyApp> {
           //     scriptCode: 'Hant',
           //     countryCode: 'HK'), // 'zh_Hant_HK'
         ],
-        initialRoute: '/home',
+        initialRoute: '/',
         routes: {
-          '/': (context) => Text('233'),
           // When navigating to the "/" route, build the FirstPage widget.
-          '/home': (context) => App(),
+          '/': (context) => App(),
         },
       ),
     );

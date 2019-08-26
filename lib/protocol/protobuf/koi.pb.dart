@@ -2665,6 +2665,8 @@ class ChatSendMessageReq extends $pb.GeneratedMessage {
 
 class ChatSendMessageResp extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('ChatSendMessageResp', package: const $pb.PackageName('kproto'))
+    ..a<Int64>(1, 'messageID', $pb.PbFieldType.OU6, Int64.ZERO)
+    ..a<Int64>(2, 'state', $pb.PbFieldType.OU6, Int64.ZERO)
     ..hasRequiredFields = false
   ;
 
@@ -2681,6 +2683,16 @@ class ChatSendMessageResp extends $pb.GeneratedMessage {
   static $pb.PbList<ChatSendMessageResp> createRepeated() => $pb.PbList<ChatSendMessageResp>();
   static ChatSendMessageResp getDefault() => _defaultInstance ??= create()..freeze();
   static ChatSendMessageResp _defaultInstance;
+
+  Int64 get messageID => $_getI64(0);
+  set messageID(Int64 v) { $_setInt64(0, v); }
+  $core.bool hasMessageID() => $_has(0);
+  void clearMessageID() => clearField(1);
+
+  Int64 get state => $_getI64(1);
+  set state(Int64 v) { $_setInt64(1, v); }
+  $core.bool hasState() => $_has(1);
+  void clearState() => clearField(2);
 }
 
 class ChatDeleteMessageReq extends $pb.GeneratedMessage {

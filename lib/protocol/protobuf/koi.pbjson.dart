@@ -644,6 +644,10 @@ const ChatSendMessageReq$json = const {
 
 const ChatSendMessageResp$json = const {
   '1': 'ChatSendMessageResp',
+  '2': const [
+    const {'1': 'MessageID', '3': 1, '4': 1, '5': 4, '10': 'MessageID'},
+    const {'1': 'State', '3': 2, '4': 1, '5': 4, '10': 'State'},
+  ],
 };
 
 const ChatDeleteMessageReq$json = const {

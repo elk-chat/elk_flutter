@@ -59,3 +59,11 @@ sh shell/l10n_to_dart.sh
 
 - 安卓机选择图片会耗尽内存，闪退
 - 图片上传必须压缩，否则列表展示会耗尽内存闪退
+- flutter 很多自己的插件比较简单，无法满足需求，而且社区的有很多也没有
+
+## vscode 插件
+
+- dart
+- bloc
+- Awesome Flutter Snippets
+- flutter

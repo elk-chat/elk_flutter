@@ -320,7 +320,7 @@ class _ChatWindowPageState extends State<ChatWindowPage> {
                 if (_chat.chatType == ChatType.OneToOne) {
                   Navigator.push(
                       context,
-                      MaterialPageRoute(
+                      CupertinoPageRoute(
                           builder: (BuildContext context) =>
                               OneToOneChatDetailPage(
                                   title: '聊天详情',
@@ -330,7 +330,7 @@ class _ChatWindowPageState extends State<ChatWindowPage> {
                 } else if (_chat.chatType == ChatType.Group) {
                   Navigator.push(
                       context,
-                      MaterialPageRoute(
+                      CupertinoPageRoute(
                           builder: (BuildContext context) =>
                               GroupChatDetailPage(
                                   title: '聊天信息',

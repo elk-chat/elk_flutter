@@ -34,7 +34,7 @@ class _NewGroupChatState extends State<NewGroupChatSelectUsersPage> {
                   ? () {
                       Navigator.push(
                           context,
-                          MaterialPageRoute(
+                          CupertinoPageRoute(
                               builder: (BuildContext context) =>
                                   NewGroupChatCreatePage(
                                     title: '群聊',

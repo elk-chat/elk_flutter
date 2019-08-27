@@ -6,6 +6,7 @@ import 'package:elk_chat/pages/chat_list/unread_badge.dart';
 import 'package:elk_chat/pages/chat_page/queue_msg.dart';
 import 'package:elk_chat/pages/pages.dart';
 import 'package:fixnum/fixnum.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:elk_chat/protocol/protobuf/koi.pb.dart';
 import 'package:elk_chat/widgets/widgets.dart';
@@ -212,7 +213,7 @@ class _ChatItemState extends State<ChatItem> {
       onTap: () {
         Navigator.push(
             context,
-            MaterialPageRoute(
+            CupertinoPageRoute(
                 builder: (BuildContext context) => ChatWindowPage(
                       title: Text(chatInfo['title']),
                       avatarFileID: chatInfo['avatarFileID'],

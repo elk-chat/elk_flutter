@@ -238,7 +238,7 @@ class _GroupChatDetailState extends State<GroupChatDetailPage> {
   onAddMembers() async {
     var selectUsers = await Navigator.push(
         context,
-        MaterialPageRoute(
+        CupertinoPageRoute(
           builder: (BuildContext context) => SelectUsersPage(
             title: '选择成员',
           ),
@@ -269,7 +269,7 @@ class _GroupChatDetailState extends State<GroupChatDetailPage> {
                 onPressed: () {
                   Navigator.push(
                       context,
-                      MaterialPageRoute(
+                      CupertinoPageRoute(
                           builder: (BuildContext context) => ProfilePage(
                               title: user.userName,
                               contact: user,

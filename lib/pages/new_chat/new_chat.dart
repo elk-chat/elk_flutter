@@ -1,6 +1,7 @@
 import 'package:elk_chat/protocol/api_util/api_util.dart';
 import 'package:elk_chat/protocol/protobuf/koi.pb.dart';
 import 'package:elk_chat/pages/chat_page/chat_page.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:elk_chat/pages/contact_list/list.dart';
 import 'new_group_select_users.dart';
@@ -43,7 +44,7 @@ class _NewChatPageState extends State<NewChatPage> {
           Navigator.popUntil(context, ModalRoute.withName('/'));
           Navigator.push(
               context,
-              MaterialPageRoute(
+              CupertinoPageRoute(
                   builder: (BuildContext context) => ChatWindowPage(
                         title: Text(contact.userName),
                         chat: chat,
@@ -58,7 +59,7 @@ class _NewChatPageState extends State<NewChatPage> {
                 onTap: () {
                   Navigator.push(
                       context,
-                      MaterialPageRoute(
+                      CupertinoPageRoute(
                           builder: (BuildContext context) =>
                               NewGroupChatSelectUsersPage(
                                 title: '群聊',

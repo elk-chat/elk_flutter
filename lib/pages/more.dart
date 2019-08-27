@@ -98,7 +98,7 @@ class _MorePageState extends State<MorePage>
   goToProfile() {
     Navigator.push(
         context,
-        MaterialPageRoute(
+        CupertinoPageRoute(
             builder: (BuildContext context) => EditProfilePage(title: '个人信息')));
   }
 

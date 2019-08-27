@@ -210,8 +210,7 @@ class _LoginFormState extends State<LoginForm> {
                                     HapticFeedback.mediumImpact();
                                     Navigator.push(
                                         context,
-                                        MaterialPageRoute(
-                                            fullscreenDialog: true,
+                                        CupertinoPageRoute(
                                             builder: (BuildContext context) =>
                                                 FindLoginPwdPage()));
                                   },
@@ -258,10 +257,9 @@ class _LoginFormState extends State<LoginForm> {
                       onPressed: () async {
                         var result = await Navigator.push(
                             context,
-                            MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    RegisterPage(),
-                                fullscreenDialog: true));
+                            CupertinoPageRoute(
+                              builder: (BuildContext context) => RegisterPage(),
+                            ));
                         if (result != null) {
                           _usernameController.text = result['userName'];
                           _passwordController.text = result['password'];

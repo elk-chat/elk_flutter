@@ -113,14 +113,16 @@ class _MyAppState extends State<MyApp> {
 
   // 安卓里面，选择图片。拍摄图片可能会导致APP重启，通过这个方法获取重启前拍的照片
   Future<void> retrieveLostData() async {
-    final LostDataResponse response = await ImagePicker.retrieveLostData();
-    if (response.isEmpty) {
-      return;
-    }
+    if (Platform.isAndroid) {
+      final LostDataResponse response = await ImagePicker.retrieveLostData();
+      if (response.isEmpty) {
+        return;
+      }
 
-    if (response.file != null) {
-      print(
-          'retrieveLostData type ${response.type}; code ${response.exception.code}; exception ${response.exception};');
+      if (response.file != null) {
+        print(
+            'retrieveLostData type ${response.type}; code ${response.exception.code}; exception ${response.exception};');
+      }
     }
   }
 

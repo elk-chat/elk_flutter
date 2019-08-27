@@ -45,8 +45,7 @@ class _ChatPageState extends State<ChatListPage>
             onPressed: () {
               Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      fullscreenDialog: true,
+                  CupertinoPageRoute(
                       builder: (BuildContext context) => NewChatPage(
                             title: '新聊天',
                           )));

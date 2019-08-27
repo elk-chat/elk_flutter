@@ -70,7 +70,7 @@ class _NewContactPageState extends State<NewContactPage> {
     // Navigator.of(context).popUntil(ModalRoute.withName('/my-target-screen'));
     Navigator.push(
         context,
-        MaterialPageRoute(
+        CupertinoPageRoute(
             builder: (BuildContext context) => ProfilePage(
                   title: contact.userName,
                   contact: contact,

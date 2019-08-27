@@ -47,7 +47,7 @@ class _EditProfilePageState extends State<ProfilePage> {
     Navigator.popUntil(context, ModalRoute.withName('/'));
     Navigator.push(
         context,
-        MaterialPageRoute(
+        CupertinoPageRoute(
             builder: (BuildContext context) => ChatWindowPage(
                   title: Text(widget.contact.userName),
                   avatarFileID: widget.contact.avatarFileID,

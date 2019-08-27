@@ -43,8 +43,7 @@ class _ContactPageState extends State<ContactPage>
             onPressed: () {
               Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      fullscreenDialog: true,
+                  CupertinoPageRoute(
                       builder: (BuildContext context) => NewContactPage(
                             title: '新联系人',
                           )));
@@ -55,7 +54,7 @@ class _ContactPageState extends State<ContactPage>
       body: ContactList(onTap: (contact) {
         Navigator.push(
             context,
-            MaterialPageRoute(
+            CupertinoPageRoute(
                 builder: (BuildContext context) => ProfilePage(
                     title: contact.userName,
                     contact: contact,

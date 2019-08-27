@@ -5,11 +5,8 @@ import 'package:fixnum/fixnum.dart';
 
 class ChatUnreadBadge extends StatefulWidget {
   final IconData icon;
-  final double size;
-  final Color color;
 
-  ChatUnreadBadge({Key key, @required this.icon, this.size, this.color})
-      : super(key: key);
+  ChatUnreadBadge({Key key, @required this.icon}) : super(key: key);
 
   _UnreadBadgeState createState() => _UnreadBadgeState();
 }
@@ -43,14 +40,12 @@ class _UnreadBadgeState extends State<ChatUnreadBadge> {
     var children = <Widget>[
       Icon(
         widget.icon,
-        size: widget.size,
-        color: widget?.color,
       )
     ];
     if (count > 0) {
       children.add(Positioned(
-        right: -0.0,
-        top: -0.0,
+        right: 0.0,
+        top: 2.0,
         child: Container(
           padding: EdgeInsets.all(2),
           decoration: BoxDecoration(

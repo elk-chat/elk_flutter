@@ -65,6 +65,26 @@ class _ImageViewerState extends State<ImageViewer>
     super.dispose();
   }
 
+  @override
+  Widget build(BuildContext context) {
+    final pageView = PageView.builder(
+      itemBuilder: _buildPage,
+      physics: _isLocked || widget.imageProviders.length <= 1
+          ? const NeverScrollableScrollPhysics()
+          : null,
+      controller: _pageController,
+      onPageChanged: _onPageChanged,
+    );
+
+    return OffsetTransition(
+      offset: _offsetAnimation,
+      child: FadeTransition(
+        opacity: _opacityAnimation,
+        child: _wrapWithCloseGesture(child: pageView),
+      ),
+    );
+  }
+
   void _onScaleStateChanged(PhotoViewScaleState scaleState) {
     setState(() {
       _isLocked = scaleState != PhotoViewScaleState.initial;
@@ -154,26 +174,6 @@ class _ImageViewerState extends State<ImageViewer>
               _onDragEnd(details.velocity.pixelsPerSecond.dy);
             },
       child: child,
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final pageView = PageView.builder(
-      itemBuilder: _buildPage,
-      physics: _isLocked || widget.imageProviders.length <= 1
-          ? const NeverScrollableScrollPhysics()
-          : null,
-      controller: _pageController,
-      onPageChanged: _onPageChanged,
-    );
-
-    return OffsetTransition(
-      offset: _offsetAnimation,
-      child: FadeTransition(
-        opacity: _opacityAnimation,
-        child: _wrapWithCloseGesture(child: pageView),
-      ),
     );
   }
 }

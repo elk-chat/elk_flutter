@@ -7,8 +7,6 @@ import 'pages.dart';
 import 'tabs.dart';
 
 class App extends StatelessWidget {
-  static const routePath = '/app';
-
   App({Key key}) : super(key: key);
 
   @override

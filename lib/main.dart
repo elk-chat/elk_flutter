@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:elk_chat/styles.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -25,18 +27,10 @@ bool isDark = false;
 Logger log = Logger('main');
 // 入口函数
 void main() {
-  // 设置状态栏主题
-  // SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
-  // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-  //   statusBarColor: isDark ? Constants.darkPrimary : Constants.lightPrimary,
-  //   // statusBarColor: isDark ? Constants.darkPrimary : Colors.blue.shade100,
-  //   statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
-  // ));
-
   // 全局监听 bloc
   BlocSupervisor.delegate = AppBlocDelegate();
-  // todo 日志文件写到文件或者数据库中，方便调试
-  // todo 重要的异常一定前台提示：比如，连接断开/正在连接/操作异常/数据异常
+  // TODO(redbrogdon): 日志文件写到文件或者数据库中，方便调试
+  // TODO(redbrogdon): 重要的异常一定前台提示：比如，连接断开/正在连接/操作异常/数据异常
   // log
   Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen((LogRecord rec) {
@@ -101,7 +95,7 @@ class _MyAppState extends State<MyApp> {
       widget.contactApi,
     );
 
-    // todo： 有些安卓机拍照后，应用内存不足会重启，下面这个方法可以获取重启前拍的照片
+    // TODO(redbrogdon): 有些安卓机拍照后，应用内存不足会重启，下面这个方法可以获取重启前拍的照片
     retrieveLostData();
   }
 
@@ -109,21 +103,6 @@ class _MyAppState extends State<MyApp> {
   void dispose() {
     $WS.clear();
     super.dispose();
-  }
-
-  // 安卓里面，选择图片。拍摄图片可能会导致APP重启，通过这个方法获取重启前拍的照片
-  Future<void> retrieveLostData() async {
-    if (Platform.isAndroid) {
-      final LostDataResponse response = await ImagePicker.retrieveLostData();
-      if (response.isEmpty) {
-        return;
-      }
-
-      if (response.file != null) {
-        print(
-            'retrieveLostData type ${response.type}; code ${response.exception.code}; exception ${response.exception};');
-      }
-    }
   }
 
   @override
@@ -143,11 +122,10 @@ class _MyAppState extends State<MyApp> {
           builder: (context) => ContactBloc(),
         ),
       ],
-      child: MaterialApp(
+      child: CupertinoApp(
         debugShowCheckedModeBanner: false,
         title: Constants.appName,
-        // 主题
-        theme: isDark ? Constants.darkTheme : Constants.lightTheme,
+        color: Styles.appBackground,
         navigatorKey: Catcher.navigatorKey,
         // 国际化
         onGenerateTitle: (BuildContext context) => L10n.of(context).appTitle,
@@ -179,12 +157,23 @@ class _MyAppState extends State<MyApp> {
           //     scriptCode: 'Hant',
           //     countryCode: 'HK'), // 'zh_Hant_HK'
         ],
-        initialRoute: '/',
-        routes: {
-          // When navigating to the "/" route, build the FirstPage widget.
-          '/': (context) => App(),
-        },
+        home: App(),
       ),
     );
+  }
+
+  // 安卓里面，选择图片。拍摄图片可能会导致APP重启，通过这个方法获取重启前拍的照片
+  Future<void> retrieveLostData() async {
+    if (Platform.isAndroid) {
+      final LostDataResponse response = await ImagePicker.retrieveLostData();
+      if (response.isEmpty) {
+        return;
+      }
+
+      if (response.file != null) {
+        print(
+            'retrieveLostData type ${response.type}; code ${response.exception.code}; exception ${response.exception};');
+      }
+    }
   }
 }

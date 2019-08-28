@@ -111,18 +111,20 @@ class ContentWidgetByType extends StatelessWidget {
           textAlign: TextAlign.right
         );
     }
-    return Column(children: <Widget>[
-      tmp,
-      Container(
-        child: Text(
-          dateFormat.format(DateTime.fromMillisecondsSinceEpoch(dtime)),
-          style: TextStyle(
-            color: Colors.black38,
-            fontSize: 12.0
+    return Column(
+      children: <Widget>[
+        tmp,
+        Container(
+          child: Text(
+            dateFormat.format(DateTime.fromMillisecondsSinceEpoch(dtime)),
+            textAlign: TextAlign.left,
+            style: TextStyle(
+              color: Colors.black38,
+              fontSize: 12.0
+            ),
           ),
-          textAlign: TextAlign.right
-        ),
-      )
-    ];
+        )
+      ]
+    );
   }
 }

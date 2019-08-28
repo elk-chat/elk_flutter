@@ -33,27 +33,48 @@ class _ChatPageState extends State<ChatListPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Scaffold(
-      appBar: AppBar(
-        title: widget.title,
-        centerTitle: true,
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(
+    return CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(
+        middle: widget.title,
+        leading: Text(''),
+        // centerTitle: true,
+        trailing: Container(
+          child: GestureDetector(
+            child: Icon(
               MaterialCommunityIcons.getIconData('playlist-plus'),
             ),
-            onPressed: () {
+            onTap: () {
               Navigator.push(
-                  context,
-                  CupertinoPageRoute(
-                      builder: (BuildContext context) => NewChatPage(
-                            title: '新聊天',
-                          )));
+                context,
+                CupertinoPageRoute(
+                  builder: (BuildContext context) => NewChatPage(
+                    title: '新聊天',
+                  )
+                )
+              );
             },
-          ),
-        ],
+          )
+            // <Widget>[
+            // GestureDetector(
+            //   child: Text('asd'),
+            // )
+            // IconButton(
+            //   icon: Icon(
+            //     MaterialCommunityIcons.getIconData('playlist-plus'),
+            //   ),
+            //   onPressed: () {
+            //     Navigator.push(
+            //         context,
+            //         CupertinoPageRoute(
+            //             builder: (BuildContext context) => NewChatPage(
+            //                   title: '新聊天',
+            //                 )));
+            //   },
+            // ),
+          // ],
+        )
       ),
-      body: BlocBuilder<ChatBloc, ChatState>(
+      child: BlocBuilder<ChatBloc, ChatState>(
         bloc: _chatBloc,
         builder: (context, state) {
           if (state is ChatLoaded) {

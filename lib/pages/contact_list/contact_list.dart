@@ -1,3 +1,4 @@
+import 'package:elk_chat/widgets/c_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:elk_chat/pages/contact_detail.dart';
@@ -31,27 +32,27 @@ class _ContactPageState extends State<ContactPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Scaffold(
-      appBar: AppBar(
-        title: widget.title,
-        centerTitle: true,
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              Icons.add,
-            ),
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  CupertinoPageRoute(
-                      builder: (BuildContext context) => NewContactPage(
-                            title: '新联系人',
-                          )));
-            },
+    return CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(
+        middle: widget.title,
+        // centerTitle: true,
+        trailing: CupertinoIconButton(
+          icon: Icon(
+            Icons.add,
           ),
-        ],
+          onTap: () {
+            Navigator.push(
+              context,
+              CupertinoPageRoute(
+                builder: (BuildContext context) => NewContactPage(
+                  title: '新联系人',
+                )
+              )
+            );
+          },
+        )
       ),
-      body: ContactList(onTap: (contact) {
+      child: ContactList(onTap: (contact) {
         Navigator.push(
             context,
             CupertinoPageRoute(

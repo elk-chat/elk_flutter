@@ -29,23 +29,30 @@ class MsgWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Bubble(
-          alignment: Alignment.center,
-          color: Color.fromRGBO(212, 234, 244, 1.0),
-          child: Text(
-              dateFormat.format(DateTime.fromMillisecondsSinceEpoch(dtime)),
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 11.0)),
-        ),
-        isSelf
-            ? Bubble(
-                margin: const BubbleEdges.only(top: 10),
-                alignment: Alignment.topRight,
-                nip: BubbleNip.rightTop,
-                color: Color.fromRGBO(225, 255, 199, 1.0),
-                child: ContentWidgetByType(
-                    isRead: isRead, msg: msg, status: status))
-            : Column(
+        // Bubble(
+        //   alignment: Alignment.center,
+        //   color: Color.fromRGBO(212, 234, 244, 1.0),
+        //   child: Text(
+        //     dateFormat.format(DateTime.fromMillisecondsSinceEpoch(dtime)),
+        //     textAlign: TextAlign.center,
+        //     style: TextStyle(fontSize: 11.0)
+        //   ),
+        // ),
+        Padding(
+          padding: EdgeInsets.all(10.0),
+          child: 
+            isSelf
+              ? Bubble(
+                  margin: const BubbleEdges.only(top: 10),
+                  alignment: Alignment.topRight,
+                  nip: BubbleNip.rightTop,
+                  color: Color.fromRGBO(225, 255, 199, 1.0),
+                  child: ContentWidgetByType(
+                    isRead: isRead, msg: msg, status: status,
+                    dateFormat: dateFormat
+                  )
+                )
+              : Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Container(child: Text(msg.senderName)),
@@ -54,10 +61,13 @@ class MsgWidget extends StatelessWidget {
                     alignment: Alignment.topLeft,
                     nip: BubbleNip.leftTop,
                     child: ContentWidgetByType(
-                        isRead: null, msg: msg, status: null),
+                      isRead: null, msg: msg, status: null,
+                      dateFormat: dateFormat
+                    ),
                   )
                 ],
-              ),
+              )
+            )
       ],
     );
   }
@@ -67,17 +77,24 @@ class ContentWidgetByType extends StatelessWidget {
   final dynamic msg;
   final dynamic isRead;
   final QueueMsgStatus status;
-  const ContentWidgetByType({Key key, this.msg, this.isRead, this.status})
+  final DateFormat dateFormat;
+
+  const ContentWidgetByType({
+    Key key, this.msg, this.isRead, this.status,
+    this.dateFormat
+  })
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     Widget tmp;
+    var dtime = msg.actionTime.toInt() * 1000;
     switch (msg.contentType) {
       case ChatContentType.Text:
         tmp = Text(
-            '${msg.message}  ${isRead == null ? '' : isRead ? '已读' : '未读'} ${status != null ? status == QueueMsgStatus.loading ? '正在发送' : '发送失败' : ''}',
-            textAlign: TextAlign.right);
+          '${msg.message}  ${isRead == null ? '' : isRead ? '已读' : '未读'} ${status != null ? status == QueueMsgStatus.loading ? '正在发送' : '发送失败' : ''}',
+          // textAlign: TextAlign.left
+        );
         break;
       case ChatContentType.Image:
         tmp = Img(
@@ -89,9 +106,23 @@ class ContentWidgetByType extends StatelessWidget {
         );
         break;
       default:
-        tmp = Text('unprocess type ${msg.contentType}',
-            textAlign: TextAlign.right);
+        tmp = Text(
+          'unprocess type ${msg.contentType}',
+          textAlign: TextAlign.right
+        );
     }
-    return tmp;
+    return Column(children: <Widget>[
+      tmp,
+      Container(
+        child: Text(
+          dateFormat.format(DateTime.fromMillisecondsSinceEpoch(dtime)),
+          style: TextStyle(
+            color: Colors.black38,
+            fontSize: 12.0
+          ),
+          textAlign: TextAlign.right
+        ),
+      )
+    ];
   }
 }

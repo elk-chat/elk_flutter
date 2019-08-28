@@ -211,81 +211,87 @@ class _ChatItemState extends State<ChatItem> {
     var lastMsg =
         lastMessages.length == 0 ? null : lastMessages[lastMessages.length - 1];
     return GestureDetector(
+      behavior: HitTestBehavior.translucent,
       onTap: () {
         Navigator.push(
-            context,
-            CupertinoPageRoute(
-                builder: (BuildContext context) => ChatWindowPage(
-                      title: Text(chatInfo['title']),
-                      avatarFileID: chatInfo['avatarFileID'],
-                      chat: widget.chat,
-                      user: user,
-                    )));
+          context,
+          CupertinoPageRoute(
+            builder: (BuildContext context) => ChatWindowPage(
+              title: Text(chatInfo['title']),
+              avatarFileID: chatInfo['avatarFileID'],
+              chat: widget.chat,
+              user: user,
+            )
+          )
+        );
       },
-      child: Row(
-        children: <Widget>[
-          Img(
-              key: ValueKey(chatInfo['avatarFileID']),
-              type: chat.chatType,
-              fileID: chatInfo['avatarFileID'],
-              title: chatInfo['title'],
-              width: 48.0,
-              height: 48.0),
-          SizedBox(width: 8),
-          Flexible(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text(
-                      chatInfo['title'],
-                      style: const TextStyle(
-                          fontWeight: FontWeight.w600, fontSize: 16.0),
-                    ),
-                    Row(
-                      children: <Widget>[
-                        UnreadBadge(
-                          chatID: widget.chat.chatID,
-                        ),
-                        SizedBox(width: 8.0),
-                        Text(
-                          dateFormat.format(DateTime.fromMillisecondsSinceEpoch(
-                              (lastMsg == null
-                                          ? chat.updatedAt
-                                          : lastMsg.actionTime)
-                                      .toInt() *
-                                  1000)),
-                          style: const TextStyle(
-                              color: Colors.grey, fontSize: 14.0),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-                Container(
-                  padding: const EdgeInsets.only(top: 6.0),
-                  // 最好一条消息，不同类型
-                  child: lastMessages.length == 0
-                      ? null
-                      : Text(
-                          lastMsg is QueueMsg
-                              ? '${$CH.user.userName}: ${lastMsg.message}'
-                              : getMessageText(lastMsg),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 2,
-                          softWrap: false,
-                          style: const TextStyle(
-                              color: Colors.black45, fontSize: 14.0),
-                        ),
-                )
-              ],
+      child: Padding(
+        padding: EdgeInsets.all(10.0),
+        child: Row(
+          children: <Widget>[
+            Img(
+                key: ValueKey(chatInfo['avatarFileID']),
+                type: chat.chatType,
+                fileID: chatInfo['avatarFileID'],
+                title: chatInfo['title'],
+                width: 48.0,
+                height: 48.0),
+            SizedBox(width: 8),
+            Flexible(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(
+                        chatInfo['title'],
+                        style: const TextStyle(
+                            fontWeight: FontWeight.w600, fontSize: 16.0),
+                      ),
+                      Row(
+                        children: <Widget>[
+                          UnreadBadge(
+                            chatID: widget.chat.chatID,
+                          ),
+                          SizedBox(width: 8.0),
+                          Text(
+                            dateFormat.format(DateTime.fromMillisecondsSinceEpoch(
+                                (lastMsg == null
+                                            ? chat.updatedAt
+                                            : lastMsg.actionTime)
+                                        .toInt() *
+                                    1000)),
+                            style: const TextStyle(
+                                color: Colors.grey, fontSize: 14.0),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                  Container(
+                    padding: const EdgeInsets.only(top: 6.0),
+                    // 最好一条消息，不同类型
+                    child: lastMessages.length == 0
+                        ? null
+                        : Text(
+                            lastMsg is QueueMsg
+                                ? '${$CH.user.userName}: ${lastMsg.message}'
+                                : getMessageText(lastMsg),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                            softWrap: false,
+                            style: const TextStyle(
+                                color: Colors.black45, fontSize: 14.0),
+                          ),
+                  )
+                ],
+              ),
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
+      )
     );
   }
 }

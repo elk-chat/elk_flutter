@@ -4,6 +4,7 @@ import 'package:elk_chat/blocs/blocs.dart';
 import 'package:elk_chat/init_websocket.dart';
 import 'package:elk_chat/protocol/api_util/api_util.dart';
 import 'package:elk_chat/protocol/protobuf/koi.pb.dart';
+import 'package:elk_chat/widgets/c_icon_button.dart';
 import 'package:elk_chat/widgets/flushbar.dart';
 import 'package:elk_chat/widgets/img.dart';
 import 'package:fixnum/fixnum.dart';
@@ -309,62 +310,60 @@ class _ChatWindowPageState extends State<ChatWindowPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title:
-            _chat.chatType == ChatType.Group ? Text(_chat.title) : widget.title,
-        centerTitle: true,
-        actions: <Widget>[
-          IconButton(
-              onPressed: () {
-                if (_chat.chatType == ChatType.OneToOne) {
-                  Navigator.push(
-                      context,
-                      CupertinoPageRoute(
-                          builder: (BuildContext context) =>
-                              OneToOneChatDetailPage(
-                                  title: '聊天详情',
-                                  avatarFileID: avatarFileID,
-                                  user: widget.user,
-                                  chat: widget.chat)));
-                } else if (_chat.chatType == ChatType.Group) {
-                  Navigator.push(
-                      context,
-                      CupertinoPageRoute(
-                          builder: (BuildContext context) =>
-                              GroupChatDetailPage(
-                                  title: '聊天信息',
-                                  updateParentChat: (chat) {
-                                    _chat = chat;
-                                    setState(() {});
-                                  },
-                                  avatarFileID: _chat.avatarFileID,
-                                  chat: _chat)));
-                }
-              },
-              icon: Img(
-                key: Key('${_chat.avatarFileID}'),
-                width: 32,
-                height: 32,
-                type: _chat.chatType,
-                fileID: _chat.avatarFileID,
-                // title: widget.contact.userName,
-              ))
-        ],
-      ),
-      body: SafeArea(
-          child: Stack(
-        children: <Widget>[
-          Column(
-            children: <Widget>[
-              buildMessageList(),
-              buildInput(),
-              // (showSticker ? buildSticker() : Container()),
-              (showAttachment ? buildAttachment() : Container()),
-            ],
+    return CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(
+        middle: _chat.chatType == ChatType.Group ? Text(_chat.title) : widget.title,
+        trailing: CupertinoIconButton(
+          onTap: () {
+            if (_chat.chatType == ChatType.OneToOne) {
+              Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                      builder: (BuildContext context) =>
+                          OneToOneChatDetailPage(
+                              title: '聊天详情',
+                              avatarFileID: avatarFileID,
+                              user: widget.user,
+                              chat: widget.chat)));
+            } else if (_chat.chatType == ChatType.Group) {
+              Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                      builder: (BuildContext context) =>
+                          GroupChatDetailPage(
+                              title: '聊天信息',
+                              updateParentChat: (chat) {
+                                _chat = chat;
+                                setState(() {});
+                              },
+                              avatarFileID: _chat.avatarFileID,
+                              chat: _chat)));
+            }
+          },
+          icon: Img(
+            key: Key('${_chat.avatarFileID}'),
+            width: 32,
+            height: 32,
+            type: _chat.chatType,
+            fileID: _chat.avatarFileID,
+            // title: widget.contact.userName,
           )
-        ],
-      )),
+        )
+      ),
+      child: SafeArea(
+        child: Stack(
+          children: <Widget>[
+            Column(
+              children: <Widget>[
+                buildMessageList(),
+                buildInput(),
+                // (showSticker ? buildSticker() : Container()),
+                (showAttachment ? buildAttachment() : Container()),
+              ],
+            )
+          ],
+        )
+      ),
     );
   }
 
@@ -373,129 +372,136 @@ class _ChatWindowPageState extends State<ChatWindowPage> {
     int allMsgsLength = msgsLength + (loading ? 1 : 0);
     return Flexible(
       child: GestureDetector(
-          behavior: HitTestBehavior.translucent,
-          onTap: unFocus,
-          child: ListView.builder(
-            physics: const BouncingScrollPhysics(),
-            padding: const EdgeInsets.all(10.0),
-            itemCount: allMsgsLength,
-            reverse: true,
-            controller: _scrollController,
-            itemBuilder: (context, index) {
-              if (loading && index == msgsLength) {
-                return CupertinoActivityIndicator(
-                  radius: 10,
-                );
-              }
-              // 如果是已经加载的消息
-              if (index < queue_msgs.length) {
-                var queueMsg = queue_msgs[index];
-                return QueueMsgBubble(
-                    key: ValueKey(queueMsg.actionTime),
-                    queueMsg: queueMsg,
-                    dateFormat: dateFormat,
-                    remove: () {
-                      setState(() {
-                        queue_msgs = queue_msgs
-                            .where((i) => i.actionTime != queueMsg.actionTime)
-                            .toList();
-                      });
-                    });
-              }
-
-              var stateUpdate = msgs[index - queue_msgs.length];
-              return MsgBubble(
-                key: ValueKey(stateUpdate.messageID),
-                chat: widget.chat,
-                dateFormat: dateFormat,
-                getStateRead: () => _stateRead,
-                setOwnStateRead: (stateRead) {
-                  print('stateRead $stateRead');
-
-                  _stateRead.ownStateRead = stateRead;
-                  print('stateReadAll $_stateRead');
-                },
-                userName: $CH.user.userName,
-                isSelf: stateUpdate.senderID == $CH.user.userID,
-                stateUpdate: stateUpdate,
+        behavior: HitTestBehavior.translucent,
+        onTap: unFocus,
+        child: ListView.builder(
+          physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.all(10.0),
+          itemCount: allMsgsLength,
+          reverse: true,
+          controller: _scrollController,
+          itemBuilder: (context, index) {
+            if (loading && index == msgsLength) {
+              return CupertinoActivityIndicator(
+                radius: 10,
               );
-            },
-          )),
+            }
+            // 如果是已经加载的消息
+            if (index < queue_msgs.length) {
+              var queueMsg = queue_msgs[index];
+              return QueueMsgBubble(
+                key: ValueKey(queueMsg.actionTime),
+                queueMsg: queueMsg,
+                dateFormat: dateFormat,
+                remove: () {
+                  setState(() {
+                    queue_msgs = queue_msgs
+                      .where((i) => i.actionTime != queueMsg.actionTime)
+                      .toList();
+                  });
+                }
+              );
+            }
+
+            var stateUpdate = msgs[index - queue_msgs.length];
+            return MsgBubble(
+              key: ValueKey(stateUpdate.messageID),
+              chat: widget.chat,
+              dateFormat: dateFormat,
+              getStateRead: () => _stateRead,
+              setOwnStateRead: (stateRead) {
+                print('stateRead $stateRead');
+
+                _stateRead.ownStateRead = stateRead;
+                print('stateReadAll $_stateRead');
+              },
+              userName: $CH.user.userName,
+              isSelf: stateUpdate.senderID == $CH.user.userID,
+              stateUpdate: stateUpdate,
+            );
+          },
+        )
+      ),
     );
   }
 
   Widget buildInput() {
     return GestureDetector(
-        onTap: focusInput,
-        child: Container(
-          child: Row(
-            children: <Widget>[
-              // Button send image
-              Material(
-                child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: 1.0),
-                  child: IconButton(
-                    icon: Icon(MaterialCommunityIcons.getIconData(
-                        showAttachment ? 'chevron-down-circle' : 'attachment')),
-                    onPressed: () {
-                      _focusNode.unfocus();
-                      setState(() {
-                        showSticker = false;
-                        showAttachment = !showAttachment;
-                      });
-                    },
-                    color: Colors.black45,
+      onTap: focusInput,
+      child: Container(
+        child: Row(
+          children: <Widget>[
+            // Button send image
+            Material(
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 1.0),
+                child: IconButton(
+                  icon: Icon(MaterialCommunityIcons.getIconData(
+                    showAttachment ? 'chevron-down-circle' : 'attachment')
                   ),
+                  onPressed: () {
+                    _focusNode.unfocus();
+                    setState(() {
+                      showSticker = false;
+                      showAttachment = !showAttachment;
+                    });
+                  },
+                  color: Colors.black45,
                 ),
-                color: Colors.white10,
               ),
+              color: Colors.white10,
+            ),
 
-              // Edit text
-              Flexible(
-                child: ConstrainedBox(
-                    constraints: new BoxConstraints(
-                      maxHeight: 100.0,
-                    ),
-                    child: CupertinoTextField(
-                      padding: const EdgeInsets.all(0.0),
-                      // style: TextStyle(color: Colors.black87),
-                      keyboardType: TextInputType.multiline,
-                      maxLines: null,
-                      controller: _textEditingController,
-                      focusNode: _focusNode,
-                      onChanged: (value) {
-                        // 正在输入
-                        onTyping();
-                      },
-                      placeholder: '输入',
-                      decoration: BoxDecoration(color: Colors.transparent),
-                      scrollPhysics: const BouncingScrollPhysics(),
-                    )),
-              ),
-              // Button send message
-              Material(
-                child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: 1.0),
-                  child: IconButton(
-                    icon: Icon(MaterialCommunityIcons.getIconData('send')),
-                    onPressed: () {
-                      onSendMessage(
-                          _textEditingController.text, ChatContentType.Text);
-                    },
-                    color: Colors.black45,
-                  ),
+            // Edit text
+            Flexible(
+              child: ConstrainedBox(
+                constraints: new BoxConstraints(
+                  maxHeight: 100.0,
                 ),
-                color: Colors.white10,
+                child: CupertinoTextField(
+                  padding: const EdgeInsets.all(0.0),
+                  // style: TextStyle(color: Colors.black87),
+                  keyboardType: TextInputType.multiline,
+                  maxLines: null,
+                  controller: _textEditingController,
+                  focusNode: _focusNode,
+                  onChanged: (value) {
+                    // 正在输入
+                    onTyping();
+                  },
+                  placeholder: '输入',
+                  decoration: BoxDecoration(color: Colors.transparent),
+                  scrollPhysics: const BouncingScrollPhysics(),
+                )
               ),
-            ],
-          ),
-          width: double.infinity,
-          // height: 50.0,
-          decoration: BoxDecoration(
-              // color: Color(0xffeeeeee),
-              border: Border(
-                  top: const BorderSide(color: Colors.black26, width: 0.5))),
-        ));
+            ),
+            // Button send message
+            Material(
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 1.0),
+                child: IconButton(
+                  icon: Icon(MaterialCommunityIcons.getIconData('send')),
+                  onPressed: () {
+                    onSendMessage(
+                        _textEditingController.text, ChatContentType.Text);
+                  },
+                  color: Colors.black45,
+                ),
+              ),
+              color: Colors.white10,
+            ),
+          ],
+        ),
+        width: double.infinity,
+        // height: 50.0,
+        decoration: BoxDecoration(
+          // color: Color(0xffeeeeee),
+          border: Border(
+            top: const BorderSide(color: Colors.black26, width: 0.5)
+          )
+        ),
+      )
+    );
   }
 
   focusInput() {

@@ -630,7 +630,7 @@ class AuthPGResp extends $pb.GeneratedMessage {
 
 class AuthKeyExchangeReq extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('AuthKeyExchangeReq', package: const $pb.PackageName('kproto'))
-    ..a<$core.List<$core.int>>(1, 'e', $pb.PbFieldType.OY)
+    ..a<$core.List<$core.int>>(1, 'clientNonce', $pb.PbFieldType.OY)
     ..hasRequiredFields = false
   ;
 
@@ -648,15 +648,16 @@ class AuthKeyExchangeReq extends $pb.GeneratedMessage {
   static AuthKeyExchangeReq getDefault() => _defaultInstance ??= create()..freeze();
   static AuthKeyExchangeReq _defaultInstance;
 
-  $core.List<$core.int> get e => $_getN(0);
-  set e($core.List<$core.int> v) { $_setBytes(0, v); }
-  $core.bool hasE() => $_has(0);
-  void clearE() => clearField(1);
+  $core.List<$core.int> get clientNonce => $_getN(0);
+  set clientNonce($core.List<$core.int> v) { $_setBytes(0, v); }
+  $core.bool hasClientNonce() => $_has(0);
+  void clearClientNonce() => clearField(1);
 }
 
 class AuthKeyExchangeResp extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('AuthKeyExchangeResp', package: const $pb.PackageName('kproto'))
-    ..a<$core.List<$core.int>>(1, 'f', $pb.PbFieldType.OY)
+    ..a<$core.List<$core.int>>(1, 'serverNonce', $pb.PbFieldType.OY)
+    ..a<Int64>(2, 'authKeyID', $pb.PbFieldType.OU6, Int64.ZERO)
     ..hasRequiredFields = false
   ;
 
@@ -674,10 +675,15 @@ class AuthKeyExchangeResp extends $pb.GeneratedMessage {
   static AuthKeyExchangeResp getDefault() => _defaultInstance ??= create()..freeze();
   static AuthKeyExchangeResp _defaultInstance;
 
-  $core.List<$core.int> get f => $_getN(0);
-  set f($core.List<$core.int> v) { $_setBytes(0, v); }
-  $core.bool hasF() => $_has(0);
-  void clearF() => clearField(1);
+  $core.List<$core.int> get serverNonce => $_getN(0);
+  set serverNonce($core.List<$core.int> v) { $_setBytes(0, v); }
+  $core.bool hasServerNonce() => $_has(0);
+  void clearServerNonce() => clearField(1);
+
+  Int64 get authKeyID => $_getI64(1);
+  set authKeyID(Int64 v) { $_setInt64(1, v); }
+  $core.bool hasAuthKeyID() => $_has(1);
+  void clearAuthKeyID() => clearField(2);
 }
 
 class HeartbeatReq extends $pb.GeneratedMessage {

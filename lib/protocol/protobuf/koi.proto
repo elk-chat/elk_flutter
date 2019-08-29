@@ -103,11 +103,12 @@ message AuthPGResp {
 }
 
 message AuthKeyExchangeReq {
-  bytes E = 1;
+  bytes ClientNonce = 1;
 }
 
 message AuthKeyExchangeResp {
-  bytes F = 1;
+  bytes ServerNonce = 1;
+  uint64 AuthKeyID = 2;
 }
 
 message HeartbeatReq {

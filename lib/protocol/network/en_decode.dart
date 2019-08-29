@@ -6,10 +6,10 @@ var COMMON_HEADER = {
   "Len": 0,
   "Sig": 0,
   "ApplicationID": 1,
-  "AuthKeyID": BigInt.from(10),
-  "SessionID": BigInt.from(10),
-  "RequestID": BigInt.from(10),
-  "ResponseID": BigInt.from(10)
+  "AuthKeyID": BigInt.from(0),
+  "SessionID": BigInt.from(0),
+  "RequestID": BigInt.from(0),
+  "ResponseID": BigInt.from(0)
 };
 
 /// 字节长度

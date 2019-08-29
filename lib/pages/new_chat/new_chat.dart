@@ -27,6 +27,9 @@ class _NewChatPageState extends State<NewChatPage> {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
+        heroTag: 'NewChat',
+        transitionBetweenRoutes: false,
+        // heroTag: 'NewChat',
         middle: Text(widget.title),
         // actions: <Widget>[
         //   IconButton(
@@ -70,16 +73,18 @@ class _NewChatPageState extends State<NewChatPage> {
                   );
               },
               leading: Icon(Icons.group),
-              title: Text('发起群聊')),
+              title: Text('发起群聊')
+            ),
             SizedBox(
               height: 10.0,
             ),
             Container(
-                child: Text('联系人',
-                    style: TextStyle(fontSize: 13, color: Colors.black54)),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
-                color: const Color(0xffeeeeee))
+              child: Text('联系人',
+                  style: TextStyle(fontSize: 13, color: Colors.black54)),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
+              color: const Color(0xffeeeeee)
+            )
           ],
         ),
       ),

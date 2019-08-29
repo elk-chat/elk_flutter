@@ -1,15 +1,18 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class ListItem extends StatelessWidget {
-  final onTap;
-  final title;
-  final leading;
+  final GestureTapCallback onTap;
+  final Widget title;
+  final Widget leading;
+  final Widget trailing;
   
   const ListItem({
     Key key,
-    @required this.onTap,
+    this.onTap,
     @required this.title,
-    @required this.leading,
+    this.leading,
+    this.trailing,
   }) : super(key: key);
 
   @override
@@ -18,9 +21,20 @@ class ListItem extends StatelessWidget {
       onTap: onTap,
       behavior: HitTestBehavior.translucent,
       child: Container(
+        padding: EdgeInsets.all(10.0),
+        decoration: BoxDecoration(
+          border: Border(
+            top: BorderSide(
+              color: Colors.black12,
+              width: 1.0,
+            )
+          )
+        ),
         child: Row(
           children: <Widget>[
-            title
+            // leading,
+            title,
+            // trailing,
           ],
         ),
       ),

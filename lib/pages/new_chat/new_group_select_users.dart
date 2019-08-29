@@ -22,30 +22,33 @@ class _NewGroupChatState extends State<NewGroupChatSelectUsersPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text('${widget.title}'),
-          centerTitle: true,
-          actions: <Widget>[
-            CupertinoButton(
-              child: Text('下一步 (${selectUsers.length})',
-                  style: const TextStyle(fontSize: 15.0)),
-              onPressed: selectUsers.length > 0
-                  ? () {
-                      Navigator.push(
-                          context,
-                          CupertinoPageRoute(
-                              builder: (BuildContext context) =>
-                                  NewGroupChatCreatePage(
-                                    title: '群聊',
-                                    members: selectUsers,
-                                  )));
-                    }
-                  : null,
-            ),
-          ],
+    return CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(
+        middle: Text('${widget.title}'),
+        heroTag: 'NewGroupChatSelectUsersPage',
+        transitionBetweenRoutes: false,
+        trailing: CupertinoButton(
+          padding: EdgeInsets.zero,
+          child: Text('完成 (${selectUsers.length})',
+              // style: const TextStyle(fontSize: 15.0)
+          ),
+          onPressed: selectUsers.length > 0
+            ? () {
+              Navigator.push(
+                context,
+                CupertinoPageRoute(
+                  builder: (BuildContext context) =>
+                    NewGroupChatCreatePage(
+                      title: '群聊',
+                      members: selectUsers,
+                    )
+                  )
+                );
+              }
+            : null,
+          ),
         ),
-        body: Stack(
+        child: Stack(
           children: <Widget>[
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -57,12 +60,13 @@ class _NewGroupChatState extends State<NewGroupChatSelectUsersPage> {
                 //         child: Text('$selectUsersText'))
                 //     : SizedBox(),
                 Container(
-                    width: double.infinity,
-                    child: Text('选择联系人',
-                        style: TextStyle(fontSize: 13, color: Colors.black54)),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12.0, vertical: 6.0),
-                    color: const Color(0xffeeeeee)),
+                  width: double.infinity,
+                  child: Text('选择联系人',
+                      style: TextStyle(fontSize: 13, color: Colors.black54)),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 12.0, vertical: 6.0),
+                  color: const Color(0xffeeeeee)
+                ),
                 // Container(
                 //     padding: const EdgeInsets.symmetric(horizontal: 12.0),
                 //     child: Row(
@@ -82,28 +86,30 @@ class _NewGroupChatState extends State<NewGroupChatSelectUsersPage> {
                 //       ],
                 //     )),
                 Flexible(
-                    child: ContactList(
-                        onChange: (value, user) {
-                          var newSelectUsers = selectUsers.toList();
+                  child: ContactList(
+                    onChange: (value, user) {
+                      var newSelectUsers = selectUsers.toList();
 
-                          if (!value) {
-                            bool filter(i) {
-                              return i.userID == user.userID;
-                            }
+                      if (!value) {
+                        bool filter(i) {
+                          return i.userID == user.userID;
+                        }
 
-                            newSelectUsers.removeWhere(filter);
-                          } else {
-                            newSelectUsers.add(user);
-                          }
+                        newSelectUsers.removeWhere(filter);
+                      } else {
+                        newSelectUsers.add(user);
+                      }
 
-                          setState(() {
-                            selectUsers = newSelectUsers;
-                            selectUsersText = newSelectUsers.map((i) {
-                              return i.userName;
-                            }).join(', ');
-                          });
-                        },
-                        hasCheckbox: true)),
+                      setState(() {
+                        selectUsers = newSelectUsers;
+                        selectUsersText = newSelectUsers.map((i) {
+                          return i.userName;
+                        }).join(', ');
+                      });
+                    },
+                    hasCheckbox: true
+                  )
+                ),
               ],
             )
           ],

@@ -1,4 +1,5 @@
 import 'package:elk_chat/blocs/blocs.dart';
+import 'package:elk_chat/pages/new_chat/new_group_select_users.dart';
 import 'package:elk_chat/protocol/util/util.dart';
 import 'package:elk_chat/widgets/widgets.dart';
 import 'package:flutter/cupertino.dart';
@@ -17,8 +18,7 @@ class ChatListPage extends StatefulWidget {
   _ChatPageState createState() => _ChatPageState();
 }
 
-class _ChatPageState extends State<ChatListPage>
-    with AutomaticKeepAliveClientMixin<ChatListPage> {
+class _ChatPageState extends State<ChatListPage> {
   final _scrollController = ScrollController();
   ChatBloc _chatBloc;
   Function unsubscription;
@@ -32,10 +32,12 @@ class _ChatPageState extends State<ChatListPage>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
+      navigationBar: new CupertinoNavigationBar(
+        heroTag: 'ChatList',
+        transitionBetweenRoutes: false,
         middle: widget.title,
+        // heroTag: 'ChatList',
         leading: Text(''),
         // centerTitle: true,
         trailing: Container(
@@ -44,34 +46,15 @@ class _ChatPageState extends State<ChatListPage>
               MaterialCommunityIcons.getIconData('playlist-plus'),
             ),
             onTap: () {
-              Navigator.push(
-                context,
+              Navigator.of(context).push(
                 CupertinoPageRoute(
-                  builder: (BuildContext context) => NewChatPage(
-                    title: '新聊天',
+                  builder: (BuildContext context) => NewGroupChatSelectUsersPage(
+                    title: '新建群聊',
                   )
                 )
               );
             },
           )
-            // <Widget>[
-            // GestureDetector(
-            //   child: Text('asd'),
-            // )
-            // IconButton(
-            //   icon: Icon(
-            //     MaterialCommunityIcons.getIconData('playlist-plus'),
-            //   ),
-            //   onPressed: () {
-            //     Navigator.push(
-            //         context,
-            //         CupertinoPageRoute(
-            //             builder: (BuildContext context) => NewChatPage(
-            //                   title: '新聊天',
-            //                 )));
-            //   },
-            // ),
-          // ],
         )
       ),
       child: BlocBuilder<ChatBloc, ChatState>(

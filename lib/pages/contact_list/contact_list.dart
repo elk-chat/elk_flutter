@@ -14,8 +14,7 @@ class ContactPage extends StatefulWidget {
   _ContactPageState createState() => _ContactPageState();
 }
 
-class _ContactPageState extends State<ContactPage>
-    with AutomaticKeepAliveClientMixin<ContactPage> {
+class _ContactPageState extends State<ContactPage> {
   final _scrollController = ScrollController();
 
   @override
@@ -31,9 +30,10 @@ class _ContactPageState extends State<ContactPage>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
+        heroTag: 'ContactList',
+        transitionBetweenRoutes: false,
         middle: widget.title,
         // centerTitle: true,
         trailing: CupertinoIconButton(
@@ -52,18 +52,7 @@ class _ContactPageState extends State<ContactPage>
           },
         )
       ),
-      child: ContactList(onTap: (contact) {
-        Navigator.push(
-            context,
-            CupertinoPageRoute(
-                builder: (BuildContext context) => ProfilePage(
-                    title: contact.userName,
-                    contact: contact,
-                    isAtContact: true)));
-      }),
+      child: ContactList(),
     );
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }

@@ -312,6 +312,7 @@ class _ChatWindowPageState extends State<ChatWindowPage> {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
+        // heroTag: 'ChatWindow',
         middle: _chat.chatType == ChatType.Group ? Text(_chat.title) : widget.title,
         trailing: CupertinoIconButton(
           onTap: () {

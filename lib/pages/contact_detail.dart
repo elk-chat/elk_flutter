@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:elk_chat/widgets/flushbar.dart';
+import 'package:elk_chat/widgets/list_item.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:elk_chat/protocol/api_util/api_util.dart';
@@ -46,14 +47,16 @@ class _EditProfilePageState extends State<ProfilePage> {
     chat.chatType = ChatType.OneToOne;
     Navigator.popUntil(context, ModalRoute.withName('/'));
     Navigator.push(
-        context,
-        CupertinoPageRoute(
-            builder: (BuildContext context) => ChatWindowPage(
-                  title: Text(widget.contact.userName),
-                  avatarFileID: widget.contact.avatarFileID,
-                  chat: chat,
-                  user: widget.contact,
-                )));
+      context,
+      CupertinoPageRoute(
+        builder: (BuildContext context) => ChatWindowPage(
+          title: Text(widget.contact.userName),
+          avatarFileID: widget.contact.avatarFileID,
+          chat: chat,
+          user: widget.contact,
+        )
+      )
+    );
   }
 
   handleSaveContact() {
@@ -79,12 +82,14 @@ class _EditProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(''),
-        centerTitle: true,
+    return CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(
+        transitionBetweenRoutes: false,
+        heroTag: 'ContactDefail',
+        // middle: Text('123'),
       ),
-      body: BlocBuilder<ContactBloc, ContactState>(
+      child: Container(
+        child: BlocBuilder<ContactBloc, ContactState>(
           bloc: _contactBloc,
           builder: (context, state) {
             _isAtContact = widget.isAtContact;
@@ -100,38 +105,42 @@ class _EditProfilePageState extends State<ProfilePage> {
               }
             }
 
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                ContactWidget(
-                  user: widget.contact,
-                  avatarSize: 64,
-                ),
-                SizedBox(height: 10.0),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 12.0, vertical: 10.0),
-                  child: CupertinoButton(
-                      padding: const EdgeInsets.all(12.0),
-                      onPressed: onChat,
-                      color: Colors.blue,
-                      child: Text('发消息')),
-                ),
-                _isAtContact
+            return Container(
+              child: Row(
+                // crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  // Column(
+                  //   children: <Widget>[
+                      
+                  //   ],
+                  // )
+                  ContactWidget(
+                    user: widget.contact,
+                    avatarSize: 64,
+                  ),
+                  SizedBox(height: 10.0),
+                  ListItem(
+                    title: Text('发消息'),
+                    onTap: onChat,
+                  ),
+                  _isAtContact
                     ? Container()
-                    : Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12.0, vertical: 6.0),
-                        child: CupertinoButton(
-                            padding: const EdgeInsets.all(12.0),
-                            onPressed: loading ? null : handleSaveContact,
-                            color: Colors.blue,
-                            disabledColor: Colors.blue.shade100,
-                            child: Text(loading ? '正在保存...' : '保存到通讯录')),
+                    : ListItem(
+                        title: Text(loading ? '正在保存...' : '保存到通讯录'),
+                        onTap: loading ? null : handleSaveContact,
+                        // CupertinoButton(
+                        //     padding: const EdgeInsets.all(12.0),
+                        //     onPressed: loading ? null : handleSaveContact,
+                        //     color: Colors.blue,
+                        //     disabledColor: Colors.blue.shade100,
+                        //     child: Text(loading ? '正在保存...' : '保存到通讯录')),
                       ),
-              ],
+                ],
+              )
             );
-          }),
+          }
+        ),
+      )
     );
   }
 

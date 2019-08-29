@@ -173,10 +173,10 @@ class WebSocket extends EventEmitter {
         onError: _onError, onDone: _onDone, cancelOnError: false);
     reconnectCount++;
     log.info('ws:create websocket $reconnectCount');
-    if (method != 'HEARTBEAT_REQ') {
-      this.heartBeat();
-    }
-    // this.initConnection();
+    // if (method != 'HEARTBEAT_REQ') {
+    //   this.heartBeat();
+    // }
+    this.initConnection();
     return channel;
   }
 
@@ -190,16 +190,16 @@ class WebSocket extends EventEmitter {
       };
     }
     send(
-        method: 'InitConnectionReq',
-        protobuf: _InitConnectionReq,
-        hasTimeout: false,
-        queue: false,
-        cb: (data) {
-          print('init connection back data: $data');
-          if (!data.hasError) {
-            this.heartBeat();
-          }
-        });
+      method: 'InitConnectionReq',
+      protobuf: _InitConnectionReq,
+      hasTimeout: false,
+      queue: false,
+      cb: (data) {
+        print('init connection back data: $data');
+        if (!data.hasError) {
+          this.heartBeat();
+        }
+      });
   }
 
   /// 登录后，定时发送心跳包
@@ -296,12 +296,12 @@ class WebSocket extends EventEmitter {
   void setSSID(UserLoginResp loginResp) {
     isLogined = true;
     setHeaderSSID(loginResp.sessionID);
-    // initConnection(() {
-    //   emitUpdating();
-    // });
-    heartBeat(() {
+    initConnection(() {
       emitUpdating();
     });
+    // heartBeat(() {
+    //   emitUpdating();
+    // });
   }
 
   /// 清空
@@ -326,7 +326,7 @@ class WebSocket extends EventEmitter {
 
   void closeChannel() {
     try {
-      setHeaderSSID(BigInt.from(10));
+      setHeaderSSID(BigInt.from(0));
       streamListener?.cancel();
       channel.sink?.close(status.goingAway);
     } catch (e) {

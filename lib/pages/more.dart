@@ -38,8 +38,7 @@ class MorePage extends StatefulWidget {
   _MorePageState createState() => _MorePageState();
 }
 
-class _MorePageState extends State<MorePage>
-    with AutomaticKeepAliveClientMixin<MorePage> {
+class _MorePageState extends State<MorePage> {
   AuthBloc authBloc;
   ContactBloc contactBloc;
   ChatBloc chatBloc;
@@ -56,41 +55,35 @@ class _MorePageState extends State<MorePage>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
+    // super.build(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: widget.title,
-        centerTitle: true,
-        // actions: <Widget>[
-        //   IconButton(
-        //     icon: Icon(
-        //       MaterialCommunityIcons.getIconData('square-edit-outline'),
-        //       size: 22,
-        //     ),
-        //     onPressed: goToProfile,
-        //   ),
-        // ],
-      ),
-      body: Column(
-        children: <Widget>[
-          ContactWidget(
-            avatarSize: 74.0,
-            user: $CH.user,
-            onTap: onChangeAvatar,
-          ),
-          SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.only(left: 12.0, right: 12.0),
-            child: ConstrainedBox(
+    return CupertinoPageScaffold(
+      // navigationBar: CupertinoNavigationBar(
+      //   middle: widget.title,
+      // ),
+      child: Container(
+        child: Column(
+          children: <Widget>[
+            SizedBox(height: 80),
+            ContactWidget(
+              avatarSize: 74.0,
+              user: $CH.user,
+              onTap: onChangeAvatar,
+            ),
+            SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.only(left: 12.0, right: 12.0),
+              child: ConstrainedBox(
                 constraints: const BoxConstraints(minWidth: double.infinity),
                 child: CupertinoButton(
-                    color: Colors.red,
-                    onPressed: onLogout,
-                    child:
-                        Text('退出登录', style: TextStyle(color: Colors.white)))),
-          ),
-        ],
+                  color: Colors.red,
+                  onPressed: onLogout,
+                  child: Text('退出登录', style: TextStyle(color: Colors.white))
+                )
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -214,13 +207,14 @@ class _MorePageState extends State<MorePage>
     print(error);
 
     Fluttertoast.showToast(
-        msg: error,
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        timeInSecForIos: 1,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: 14.0);
+      msg: error,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.CENTER,
+      timeInSecForIos: 1,
+      backgroundColor: Colors.red,
+      textColor: Colors.white,
+      fontSize: 14.0
+    );
   }
 
   onLogout() {
@@ -265,6 +259,4 @@ class _MorePageState extends State<MorePage>
     super.dispose();
   }
 
-  @override
-  bool get wantKeepAlive => true;
 }

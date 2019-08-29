@@ -54,37 +54,38 @@ class _ContactWidgetState extends State<ContactWidget> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: widget.hasCheckbox
-        ? () {
-            onChange(!checked);
-          }
-        : widget.onTap,
-      child: Row(
-        children: <Widget>[
-          widget.hasCheckbox
-            ? Checkbox(value: checked, onChanged: onChange)
-            : Container(),
-          Container(
-            padding:
-                EdgeInsets.only(left: 12, right: widget.avatarSize / 4),
-            child: Img(
-              key: Key('${widget.user.avatarFileID}'),
-              width: widget.avatarSize,
-              height: widget.avatarSize,
-              fileID: widget.user.avatarFileID,
-              title: widget.user.userName,
+      ? () {
+          onChange(!checked);
+        }
+      : widget.onTap,
+      child: Material(
+        child: Row(
+          children: <Widget>[
+            widget.hasCheckbox
+              ? Checkbox(value: checked, onChanged: onChange)
+              : Container(),
+            Container(
+              padding: EdgeInsets.only(left: 12, right: widget.avatarSize / 4),
+              child: Img(
+                key: Key('${widget.user.avatarFileID}'),
+                width: widget.avatarSize,
+                height: widget.avatarSize,
+                fileID: widget.user.avatarFileID,
+                title: widget.user.userName,
+              )
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(vertical: widget.avatarSize / (2)),
+              child: Text(
+                widget.user.userName,
+                style: TextStyle(
+                  fontSize: widget.avatarSize / (2.5),
+                  fontWeight: FontWeight.w400
+                ),
+              )
             )
-          ),
-          Container(
-            padding: EdgeInsets.symmetric(vertical: widget.avatarSize / (2)),
-            child: Text(
-              widget.user.userName,
-              style: TextStyle(
-                fontSize: widget.avatarSize / (2.5),
-                fontWeight: FontWeight.w400
-              ),
-            )
-          )
-        ],
+          ],
+        ),
       )
     );
   }

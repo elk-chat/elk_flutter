@@ -5,6 +5,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../contact_detail.dart';
+
 class ContactList extends StatefulWidget {
   final Widget beforeWidget;
   final Function onTap;
@@ -82,7 +84,20 @@ class _ContactListState extends State<ContactList> {
                       : false,
                   avatarSize: 42.0,
                   user: contact,
-                  onTap: () => widget.onTap(contact));
+                  onTap: () => {
+                    // widget.onTap(contact)
+                    Navigator.push(
+                      context,
+                      CupertinoPageRoute(
+                        // title: contact.userName,
+                        builder: (BuildContext context) => ProfilePage(
+                          contact: contact,
+                          isAtContact: true
+                        )
+                      )
+                    )
+                  }
+                );
             },
             itemCount: contacts.length,
             separatorBuilder: (BuildContext context, int index) {

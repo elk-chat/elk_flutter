@@ -151,14 +151,15 @@ const AuthPGResp$json = const {
 const AuthKeyExchangeReq$json = const {
   '1': 'AuthKeyExchangeReq',
   '2': const [
-    const {'1': 'E', '3': 1, '4': 1, '5': 12, '10': 'E'},
+    const {'1': 'ClientNonce', '3': 1, '4': 1, '5': 12, '10': 'ClientNonce'},
   ],
 };
 
 const AuthKeyExchangeResp$json = const {
   '1': 'AuthKeyExchangeResp',
   '2': const [
-    const {'1': 'F', '3': 1, '4': 1, '5': 12, '10': 'F'},
+    const {'1': 'ServerNonce', '3': 1, '4': 1, '5': 12, '10': 'ServerNonce'},
+    const {'1': 'AuthKeyID', '3': 2, '4': 1, '5': 4, '10': 'AuthKeyID'},
   ],
 };
 

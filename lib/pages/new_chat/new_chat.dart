@@ -44,7 +44,7 @@ class _NewChatPageState extends State<NewChatPage> {
         onTap: (contact) {
           var chat = Chat();
           chat.chatType = ChatType.OneToOne;
-          Navigator.popUntil(context, ModalRoute.withName('/'));
+          // Navigator.popUntil(context, ModalRoute.withName('/'));
           Navigator.push(
             context,
             CupertinoPageRoute(

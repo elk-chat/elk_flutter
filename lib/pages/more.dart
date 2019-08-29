@@ -5,6 +5,8 @@ import 'package:elk_chat/protocol/api_util/api_util.dart';
 
 import 'package:elk_chat/protocol/protobuf/koi.pb.dart';
 import 'package:elk_chat/pages/edit_profile.dart';
+import 'package:elk_chat/widgets/divid.dart';
+import 'package:elk_chat/widgets/list_item.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -71,17 +73,21 @@ class _MorePageState extends State<MorePage> {
               onTap: onChangeAvatar,
             ),
             SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.only(left: 12.0, right: 12.0),
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(minWidth: double.infinity),
-                child: CupertinoButton(
-                  color: Colors.red,
-                  onPressed: onLogout,
-                  child: Text('退出登录', style: TextStyle(color: Colors.white))
-                )
-              ),
+            ListItem(
+              title: Text('退出登录'),
             ),
+            Divid(),
+            // Padding(
+            //   padding: const EdgeInsets.only(left: 12.0, right: 12.0),
+            //   child: ConstrainedBox(
+            //     constraints: const BoxConstraints(minWidth: double.infinity),
+            //     child: CupertinoButton(
+            //       color: Colors.red,
+            //       onPressed: onLogout,
+            //       child: Text('退出登录', style: TextStyle(color: Colors.white))
+            //     )
+            //   ),
+            // ),
           ],
         ),
       ),

@@ -48,7 +48,7 @@ class _ChatWindowPageState extends State<ChatWindowPage> {
   final FocusNode _focusNode = FocusNode();
   FocusNode _unFocusNode;
   final int PAGE_SIZE = 12;
-  final DateFormat dateFormat = DateFormat('MM/dd HH:mm');
+  final DateFormat dateFormat = DateFormat.Hm();
 
   Int64 avatarFileID;
   int pageIndex = 0;

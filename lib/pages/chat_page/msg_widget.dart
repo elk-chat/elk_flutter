@@ -4,6 +4,7 @@ import 'package:elk_chat/protocol/api_util/api_util.dart';
 import 'package:elk_chat/pages/chat_page/queue_msg.dart';
 import 'package:elk_chat/widgets/img.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/material_community_icons.dart';
 import 'package:intl/intl.dart';
 
 class MsgWidget extends StatelessWidget {
@@ -87,44 +88,61 @@ class ContentWidgetByType extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget tmp;
+    List<Widget> msgWidget = [];
     var dtime = msg.actionTime.toInt() * 1000;
     switch (msg.contentType) {
       case ChatContentType.Text:
-        tmp = Text(
-          '${msg.message}  ${isRead == null ? '' : isRead ? '已读' : '未读'} ${status != null ? status == QueueMsgStatus.loading ? '正在发送' : '发送失败' : ''}',
-          // textAlign: TextAlign.left
+        msgWidget.add(
+          Text(
+            '${msg.message} ${status != null ? status == QueueMsgStatus.loading ? '正在发送' : '发送失败' : ''}',
+            // ${isRead == null ? '' : isRead ? '已读' : '未读'} 
+            // textAlign: TextAlign.left
+          )
         );
+        if(isRead != null) {
+          msgWidget.add(
+            Icon(
+              isRead ? Icons.done_all : Icons.done,
+              // MaterialCommunityIcons.getIconData(isRead ? 'done_all' : 'done'),
+              size: 12.0,
+            )
+          );
+        }
         break;
       case ChatContentType.Image:
-        tmp = Img(
-          fileID: msg.fileID,
-          width: 100.0,
-          height: 100.0,
-          type: 3,
-          hasTap: true,
+        msgWidget.add(
+          Img(
+            fileID: msg.fileID,
+            width: 100.0,
+            height: 100.0,
+            type: 3,
+            hasTap: true,
+          )
         );
         break;
       default:
-        tmp = Text(
-          'unprocess type ${msg.contentType}',
-          textAlign: TextAlign.right
+        msgWidget.add(
+          Text(
+            'unprocess type ${msg.contentType}',
+            textAlign: TextAlign.right
+          )
         );
     }
-    return Column(
-      children: <Widget>[
-        tmp,
-        Container(
-          child: Text(
-            dateFormat.format(DateTime.fromMillisecondsSinceEpoch(dtime)),
-            textAlign: TextAlign.left,
-            style: TextStyle(
-              color: Colors.black38,
-              fontSize: 12.0
-            ),
+    msgWidget.add(
+      Container(
+        child: Text(
+          // dateFormat.format(DateTime.fromMillisecondsSinceEpoch(dtime)),
+          dateFormat.format(DateTime.fromMillisecondsSinceEpoch(dtime)),
+          textAlign: TextAlign.left,
+          style: TextStyle(
+            color: Colors.black38,
+            fontSize: 12.0
           ),
-        )
-      ]
+        ),
+      )
+    );
+    return Column(
+      children: msgWidget
     );
   }
 }

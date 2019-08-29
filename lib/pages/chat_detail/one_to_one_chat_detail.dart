@@ -1,6 +1,8 @@
 import 'package:elk_chat/blocs/chat/chat.dart';
 import 'package:elk_chat/protocol/protobuf/koi.pb.dart';
 import 'package:elk_chat/widgets/contact_item.dart';
+import 'package:elk_chat/widgets/divid.dart';
+import 'package:elk_chat/widgets/list_item.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -35,28 +37,32 @@ class _OneToOneChatDetailState extends State<OneToOneChatDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-        centerTitle: true,
+    return CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(
+        middle: Text(widget.title),
       ),
-      body: ListView(
+      child: ListView(
         physics: const BouncingScrollPhysics(),
         children: <Widget>[
           ContactWidget(
             user: widget.user,
             avatarSize: 48,
           ),
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: ConstrainedBox(
-                constraints: const BoxConstraints(minWidth: double.infinity),
-                child: CupertinoButton(
-                    color: Colors.red,
-                    onPressed: onConfirmDeleteChat,
-                    child:
-                        Text('删除该聊天', style: TextStyle(color: Colors.white)))),
-          )
+          SizedBox(height: 20,),
+          ListItem(
+            title: Text('删除该聊天', textAlign: TextAlign.center),
+          ),
+          Divid(),
+          // Padding(
+          //   padding: const EdgeInsets.all(12.0),
+          //   child: ConstrainedBox(
+          //       constraints: const BoxConstraints(minWidth: double.infinity),
+          //       child: CupertinoButton(
+          //           color: Colors.red,
+          //           onPressed: onConfirmDeleteChat,
+          //           child:
+          //               Text('删除该聊天', style: TextStyle(color: Colors.white)))),
+          // )
         ],
       ),
     );

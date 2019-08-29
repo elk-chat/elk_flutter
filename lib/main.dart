@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:elk_chat/styles.dart';
+import 'package:elk_chat/theme_cupertino.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -127,6 +128,11 @@ class _MyAppState extends State<MyApp> {
         title: Constants.appName,
         color: Styles.appBackground,
         navigatorKey: Catcher.navigatorKey,
+        theme: CupertinoThemeData(
+          // backgroundColor: lightBG,
+          primaryColor: Colors.black54,
+          scaffoldBackgroundColor: Themes.pageBGColor,
+        ),
         // 国际化
         onGenerateTitle: (BuildContext context) => L10n.of(context).appTitle,
         localizationsDelegates: [

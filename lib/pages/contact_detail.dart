@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:elk_chat/widgets/divid.dart';
 import 'package:elk_chat/widgets/flushbar.dart';
 import 'package:elk_chat/widgets/list_item.dart';
 import 'package:flutter/cupertino.dart';
@@ -45,7 +46,7 @@ class _EditProfilePageState extends State<ProfilePage> {
   onChat() async {
     var chat = Chat();
     chat.chatType = ChatType.OneToOne;
-    Navigator.popUntil(context, ModalRoute.withName('/'));
+    // Navigator.popUntil(context, ModalRoute.withName('/'));
     Navigator.push(
       context,
       CupertinoPageRoute(
@@ -106,19 +107,15 @@ class _EditProfilePageState extends State<ProfilePage> {
             }
 
             return Container(
-              child: Row(
-                // crossAxisAlignment: CrossAxisAlignment.stretch,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  // Column(
-                  //   children: <Widget>[
-                      
-                  //   ],
-                  // )
+                  SizedBox(height: 100.0),
                   ContactWidget(
                     user: widget.contact,
                     avatarSize: 64,
                   ),
-                  SizedBox(height: 10.0),
+                  SizedBox(height: 20.0),
                   ListItem(
                     title: Text('发消息'),
                     onTap: onChat,
@@ -135,6 +132,8 @@ class _EditProfilePageState extends State<ProfilePage> {
                         //     disabledColor: Colors.blue.shade100,
                         //     child: Text(loading ? '正在保存...' : '保存到通讯录')),
                       ),
+                  // 
+                  Divid(),
                 ],
               )
             );

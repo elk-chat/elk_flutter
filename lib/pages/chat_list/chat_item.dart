@@ -230,12 +230,13 @@ class _ChatItemState extends State<ChatItem> {
         child: Row(
           children: <Widget>[
             Img(
-                key: ValueKey(chatInfo['avatarFileID']),
-                type: chat.chatType,
-                fileID: chatInfo['avatarFileID'],
-                title: chatInfo['title'],
-                width: 48.0,
-                height: 48.0),
+              key: ValueKey(chatInfo['avatarFileID']),
+              type: chat.chatType,
+              fileID: chatInfo['avatarFileID'],
+              title: chatInfo['title'],
+              width: 48.0,
+              height: 48.0
+            ),
             SizedBox(width: 8),
             Flexible(
               child: Column(

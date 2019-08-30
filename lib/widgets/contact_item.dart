@@ -1,3 +1,4 @@
+import 'package:elk_chat/widgets/list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:elk_chat/protocol/protobuf/koi.pb.dart';
 import 'widgets.dart';
@@ -60,29 +61,29 @@ class _ContactWidgetState extends State<ContactWidget> {
       : widget.onTap,
       child: Material(
         child: Row(
+          mainAxisSize: MainAxisSize.max,
           children: <Widget>[
             widget.hasCheckbox
               ? Checkbox(value: checked, onChanged: onChange)
               : Container(),
-            Container(
-              padding: EdgeInsets.only(left: 12, right: widget.avatarSize / 4),
-              child: Img(
-                key: Key('${widget.user.avatarFileID}'),
-                width: widget.avatarSize,
-                height: widget.avatarSize,
-                fileID: widget.user.avatarFileID,
-                title: widget.user.userName,
-              )
-            ),
-            Container(
-              padding: EdgeInsets.symmetric(vertical: widget.avatarSize / (2)),
-              child: Text(
-                widget.user.userName,
-                style: TextStyle(
-                  fontSize: widget.avatarSize / (2.5),
-                  fontWeight: FontWeight.w400
+            Flexible(
+              child: ListItem(
+                padding: 8.0,
+                title: Text(
+                  widget.user.userName,
+                  style: TextStyle(
+                    fontSize: widget.avatarSize / (2.5),
+                    fontWeight: FontWeight.w400
+                  ),
                 ),
-              )
+                leading: Img(
+                  key: Key('${widget.user.avatarFileID}'),
+                  width: widget.avatarSize,
+                  height: widget.avatarSize,
+                  fileID: widget.user.avatarFileID,
+                  title: widget.user.userName,
+                ),
+              ),
             )
           ],
         ),

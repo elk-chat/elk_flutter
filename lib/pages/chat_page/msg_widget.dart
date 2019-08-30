@@ -15,15 +15,15 @@ class MsgWidget extends StatelessWidget {
   final dynamic isRead;
   final QueueMsgStatus status;
 
-  const MsgWidget(
-      {Key key,
-      this.dateFormat,
-      this.isSelf,
-      this.dtime,
-      this.msg,
-      this.status,
-      this.isRead})
-      : super(key: key);
+  const MsgWidget({
+    Key key,
+    this.dateFormat,
+    this.isSelf,
+    this.dtime,
+    this.msg,
+    this.status,
+    this.isRead
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -90,17 +90,28 @@ class ContentWidgetByType extends StatelessWidget {
   Widget build(BuildContext context) {
     List<Widget> msgWidget = [];
     var dtime = msg.actionTime.toInt() * 1000;
+    Widget timeTip = Container(
+      child: Text(
+        // dateFormat.format(DateTime.fromMillisecondsSinceEpoch(dtime)),
+        dateFormat.format(DateTime.fromMillisecondsSinceEpoch(dtime)),
+        textAlign: TextAlign.left,
+        style: TextStyle(
+          color: Colors.black38,
+          fontSize: 12.0
+        ),
+      ),
+    );
     switch (msg.contentType) {
       case ChatContentType.Text:
-        msgWidget.add(
-          Text(
-            '${msg.message} ${status != null ? status == QueueMsgStatus.loading ? '正在发送' : '发送失败' : ''}',
-            // ${isRead == null ? '' : isRead ? '已读' : '未读'} 
-            // textAlign: TextAlign.left
+        List<Widget> txtMsgGroup = [
+          Flexible(
+            child: Text(
+              '${msg.message} ${status != null ? status == QueueMsgStatus.loading ? '正在发送' : '发送失败' : ''}',
+            ),
           )
-        );
+        ];
         if(isRead != null) {
-          msgWidget.add(
+          txtMsgGroup.add(
             Icon(
               isRead ? Icons.done_all : Icons.done,
               // MaterialCommunityIcons.getIconData(isRead ? 'done_all' : 'done'),
@@ -108,6 +119,14 @@ class ContentWidgetByType extends StatelessWidget {
             )
           );
         }
+        txtMsgGroup.add(timeTip);
+        Widget txtMsg = (
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: txtMsgGroup,
+          )
+        );
+        msgWidget.add(txtMsg);
         break;
       case ChatContentType.Image:
         msgWidget.add(
@@ -128,19 +147,6 @@ class ContentWidgetByType extends StatelessWidget {
           )
         );
     }
-    msgWidget.add(
-      Container(
-        child: Text(
-          // dateFormat.format(DateTime.fromMillisecondsSinceEpoch(dtime)),
-          dateFormat.format(DateTime.fromMillisecondsSinceEpoch(dtime)),
-          textAlign: TextAlign.left,
-          style: TextStyle(
-            color: Colors.black38,
-            fontSize: 12.0
-          ),
-        ),
-      )
-    );
     return Column(
       children: msgWidget
     );

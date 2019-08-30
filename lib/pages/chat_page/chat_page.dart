@@ -318,36 +318,37 @@ class _ChatWindowPageState extends State<ChatWindowPage> {
           onTap: () {
             if (_chat.chatType == ChatType.OneToOne) {
               Navigator.push(
-                  context,
-                  CupertinoPageRoute(
-                      builder: (BuildContext context) =>
-                          OneToOneChatDetailPage(
-                              title: '聊天详情',
-                              avatarFileID: avatarFileID,
-                              user: widget.user,
-                              chat: widget.chat)));
+                context,
+                CupertinoPageRoute(
+                  builder: (BuildContext context) =>
+                    OneToOneChatDetailPage(
+                      title: '聊天详情',
+                      avatarFileID: avatarFileID,
+                      user: widget.user,
+                      chat: widget.chat
+                    )
+                  )
+              );
             } else if (_chat.chatType == ChatType.Group) {
               Navigator.push(
-                  context,
-                  CupertinoPageRoute(
-                      builder: (BuildContext context) =>
-                          GroupChatDetailPage(
-                              title: '聊天信息',
-                              updateParentChat: (chat) {
-                                _chat = chat;
-                                setState(() {});
-                              },
-                              avatarFileID: _chat.avatarFileID,
-                              chat: _chat)));
+                context,
+                CupertinoPageRoute(
+                  builder: (BuildContext context) =>
+                    GroupChatDetailPage(
+                      title: '聊天信息',
+                      updateParentChat: (chat) {
+                        _chat = chat;
+                        setState(() {});
+                      },
+                      avatarFileID: _chat.avatarFileID,
+                      chat: _chat
+                    )
+                  )
+                );
             }
           },
-          icon: Img(
-            key: Key('${_chat.avatarFileID}'),
-            width: 32,
-            height: 32,
-            type: _chat.chatType,
-            fileID: _chat.avatarFileID,
-            // title: widget.contact.userName,
+          icon: Icon(
+            Icons.more_horiz
           )
         )
       ),
@@ -574,31 +575,32 @@ class _ChatWindowPageState extends State<ChatWindowPage> {
 
   Widget buildAttachment() {
     return Container(
-        child: Column(
-      children: <Widget>[
-        Row(
-          children: <Widget>[
-            IconButton(
-              iconSize: 36.0,
-              color: Colors.blueAccent,
-              onPressed: getImageFromCamera,
-              icon: Icon(MaterialCommunityIcons.getIconData('camera')),
-            ),
-            IconButton(
-              iconSize: 35.0,
-              color: Colors.purpleAccent,
-              onPressed: getImageFromGallery,
-              icon: Icon(MaterialCommunityIcons.getIconData('image')),
-            ),
-            // IconButton(
-            //   iconSize: 33.0,
-            //   color: Colors.cyan,
-            //   onPressed: getFile, // 选择文件
-            //   icon: Icon(MaterialCommunityIcons.getIconData('file')),
-            // ),
-          ],
-        )
-      ],
-    ));
+      child: Column(
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              IconButton(
+                iconSize: 36.0,
+                color: Colors.blueAccent,
+                onPressed: getImageFromCamera,
+                icon: Icon(MaterialCommunityIcons.getIconData('camera')),
+              ),
+              IconButton(
+                iconSize: 35.0,
+                color: Colors.purpleAccent,
+                onPressed: getImageFromGallery,
+                icon: Icon(MaterialCommunityIcons.getIconData('image')),
+              ),
+              // IconButton(
+              //   iconSize: 33.0,
+              //   color: Colors.cyan,
+              //   onPressed: getFile, // 选择文件
+              //   icon: Icon(MaterialCommunityIcons.getIconData('file')),
+              // ),
+            ],
+          )
+        ],
+      )
+    );
   }
 }

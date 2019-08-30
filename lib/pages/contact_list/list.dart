@@ -64,15 +64,15 @@ class _ContactListState extends State<ContactList> {
           }
           contacts.addAll(state.contacts);
           return CupertinoScrollbar(
-              child: ListView.separated(
-            physics: const BouncingScrollPhysics(),
-            itemBuilder: (BuildContext context, int index) {
-              if (beforeLength == 1 && index == 0) {
-                return widget.beforeWidget;
-              }
-              var contact = contacts[index];
+            child: ListView.builder(
+              physics: const BouncingScrollPhysics(),
+              itemBuilder: (BuildContext context, int index) {
+                if (beforeLength == 1 && index == 0) {
+                  return widget.beforeWidget;
+                }
+                var contact = contacts[index];
 
-              return ContactWidget(
+                return ContactWidget(
                   key: ValueKey(contact.userID),
                   hasCheckbox: widget.hasCheckbox,
                   onChange: (value, contact) {
@@ -82,9 +82,9 @@ class _ContactListState extends State<ContactList> {
                   checked: checkedCache[contact.userID] != null
                       ? checkedCache[contact.userID]
                       : false,
-                  avatarSize: 42.0,
+                  avatarSize: 36.0,
                   user: contact,
-                  onTap: () => {
+                  onTap: () {
                     // widget.onTap(contact)
                     Navigator.push(
                       context,
@@ -95,20 +95,21 @@ class _ContactListState extends State<ContactList> {
                           isAtContact: true
                         )
                       )
-                    )
+                    );
                   }
                 );
-            },
-            itemCount: contacts.length,
-            separatorBuilder: (BuildContext context, int index) {
-              if (beforeLength == 1 && index == 0) {
-                return Container();
-              }
-              return EDivider(
-                indent: 66,
-              );
-            },
-          ));
+              },
+              itemCount: contacts.length,
+              // separatorBuilder: (BuildContext context, int index) {
+              //   if (beforeLength == 1 && index == 0) {
+              //     return Container();
+              //   }
+              //   return EDivider(
+              //     indent: 66,
+              //   );
+              // },
+            )
+          );
         }
         return Center(
           child: CupertinoActivityIndicator(

@@ -5,6 +5,7 @@ import 'package:elk_chat/widgets/widgets.dart';
 import '../theme_cupertino.dart';
 import 'chat_list/chat_list.dart';
 import 'contact_list/contact_list.dart';
+import 'discover/discover.dart';
 import 'more.dart';
 
 class TabsPage extends StatelessWidget {
@@ -43,8 +44,8 @@ class TabsPage extends StatelessWidget {
         } else if (index == 1) {
           return ContactPage(title: Connection(title: '通讯录'));
         } else if (index == 2) {
-          return Center(
-            child: Text('发现'),
+          return DiscoverPage(
+            title: '发现',
           );
         } else {
           return MorePage(title: Connection(title: '设置'));

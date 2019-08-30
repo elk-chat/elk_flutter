@@ -61,8 +61,10 @@ class _ConnectionState extends State<Connection> {
     if (currentStatus != WSStatus.connected) {
       title = WSStausTextMap[currentStatus];
     }
-    if (currentStatus == WSStatus.connecting ||
-        currentStatus == WSStatus.updating) {
+    if (
+      currentStatus == WSStatus.connecting ||
+      currentStatus == WSStatus.updating
+    ) {
       widgets.add(CupertinoActivityIndicator(
         radius: 10,
       ));

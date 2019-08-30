@@ -33,6 +33,7 @@ class _ChatPageState extends State<ChatListPage> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
+      backgroundColor: Color(0xffffffff),
       navigationBar: new CupertinoNavigationBar(
         heroTag: 'ChatList',
         transitionBetweenRoutes: false,

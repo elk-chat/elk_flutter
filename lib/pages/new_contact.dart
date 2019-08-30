@@ -69,12 +69,14 @@ class _NewContactPageState extends State<NewContactPage> {
   handleTap(User contact) {
     // Navigator.of(context).popUntil(ModalRoute.withName('/my-target-screen'));
     Navigator.push(
-        context,
-        CupertinoPageRoute(
-            builder: (BuildContext context) => ProfilePage(
-                  title: contact.userName,
-                  contact: contact,
-                )));
+      context,
+      CupertinoPageRoute(
+        builder: (BuildContext context) => ProfilePage(
+          title: contact.userName,
+          contact: contact,
+        )
+      )
+    );
   }
 
   @override
@@ -88,70 +90,75 @@ class _NewContactPageState extends State<NewContactPage> {
       if (_users.isNotEmpty) {
         tips = Container(
           padding: const EdgeInsets.only(left: 10.0, top: 10.0, bottom: 5.0),
-          child: Text('搜索结果',
-              style: TextStyle(fontSize: 14, color: Colors.black45)),
+          child: Text('搜索结果', style: TextStyle(fontSize: 14, color: Colors.black45)),
         );
         container = Expanded(
-            child: ListView.separated(
-          physics: const BouncingScrollPhysics(),
-          itemBuilder: (BuildContext context, int index) {
-            return ContactWidget(
+          child: ListView.separated(
+            physics: const BouncingScrollPhysics(),
+            itemBuilder: (BuildContext context, int index) {
+              return ContactWidget(
                 avatarSize: 48,
                 user: _users[index],
                 onTap: () {
                   handleTap(_users[index]);
-                });
-          },
-          itemCount: _users.length,
-          separatorBuilder: (context, index) {
-            return EDivider(
-              indent: 66,
-            );
-          },
-        ));
+                }
+              );
+            },
+            itemCount: _users.length,
+            separatorBuilder: (context, index) {
+              return EDivider(
+                indent: 66,
+              );
+            },
+          )
+        );
       }
     } else if (_status == 'loading') {
       // 加载中
       container = Container(
         child: Center(
-            child: CupertinoActivityIndicator(
-          radius: 10,
-        )),
+          child: CupertinoActivityIndicator(
+            radius: 10,
+          )
+        ),
       );
     } else {
       // 加载失败
       container = Center(child: Container(child: Text('加载失败')));
     }
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-        centerTitle: true,
+    return CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(
+        middle: Text(widget.title),
+        heroTag: 'NewContact',
+        transitionBetweenRoutes: false,
       ),
-      body: Container(
-          child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Container(
-              padding: const EdgeInsets.only(left: 5.0, right: 5.0, top: 0.0),
-              child: TextField(
-                autocorrect: false,
-                autofocus: true,
-                controller: _controller,
-                onSubmitted: (text) {
-                  handleSearch(text.trim());
-                },
-                textInputAction: TextInputAction.search,
-                // style: TextStyle(color: Colors.blue),
-                decoration: InputDecoration(
-                    hintText: "搜索...",
-                    // hintStyle: TextStyle(color: Colors.blue.shade200),
-                    border: InputBorder.none,
-                    prefixIcon: Icon(
-                      MaterialCommunityIcons.getIconData('account-search'),
-                      color: Colors.black87,
-                      size: 22,
-                    ),
-                    suffixIcon: IconButton(
+      child: CupertinoScrollbar(
+        child: Material(
+          child: SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  padding: const EdgeInsets.only(left: 5.0, right: 5.0, top: 0.0),
+                  child: TextField(
+                    autocorrect: false,
+                    autofocus: true,
+                    controller: _controller,
+                    onSubmitted: (text) {
+                      handleSearch(text.trim());
+                    },
+                    textInputAction: TextInputAction.search,
+                    // style: TextStyle(color: Colors.blue),
+                    decoration: InputDecoration(
+                      hintText: "搜索...",
+                      // hintStyle: TextStyle(color: Colors.blue.shade200),
+                      border: InputBorder.none,
+                      prefixIcon: Icon(
+                        MaterialCommunityIcons.getIconData('account-search'),
+                        color: Colors.black87,
+                        size: 22,
+                      ),
+                      suffixIcon: IconButton(
                         icon: Icon(
                           MaterialCommunityIcons.getIconData('close-circle'),
                           color: Colors.black38,
@@ -163,18 +170,24 @@ class _NewContactPageState extends State<NewContactPage> {
                           });
                           WidgetsBinding.instance
                               .addPostFrameCallback((_) => _controller.clear());
-                        })),
-              )),
-          Container(
-            child: Divider(
-              height: 2,
+                        }
+                      )
+                    ),
+                  )
+                ),
+                Container(
+                  child: Divider(
+                    height: 2,
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                ),
+                tips,
+                container
+              ],
             ),
-            padding: const EdgeInsets.symmetric(horizontal: 10.0),
-          ),
-          tips,
-          container
-        ],
-      )),
+          )
+        )
+      ),
     );
   }
 }

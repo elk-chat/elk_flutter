@@ -63,10 +63,10 @@ class _MorePageState extends State<MorePage> {
       // navigationBar: CupertinoNavigationBar(
       //   middle: widget.title,
       // ),
-      child: Container(
+      child: SafeArea(
         child: Column(
           children: <Widget>[
-            SizedBox(height: 80),
+            SizedBox(height: 30),
             ContactWidget(
               avatarSize: 74.0,
               user: $CH.user,
@@ -75,19 +75,9 @@ class _MorePageState extends State<MorePage> {
             SizedBox(height: 20),
             ListItem(
               title: Text('退出登录'),
+              onTap: onLogout,
             ),
             Divid(),
-            // Padding(
-            //   padding: const EdgeInsets.only(left: 12.0, right: 12.0),
-            //   child: ConstrainedBox(
-            //     constraints: const BoxConstraints(minWidth: double.infinity),
-            //     child: CupertinoButton(
-            //       color: Colors.red,
-            //       onPressed: onLogout,
-            //       child: Text('退出登录', style: TextStyle(color: Colors.white))
-            //     )
-            //   ),
-            // ),
           ],
         ),
       ),
@@ -96,40 +86,41 @@ class _MorePageState extends State<MorePage> {
 
   goToProfile() {
     Navigator.push(
-        context,
-        CupertinoPageRoute(
-            builder: (BuildContext context) => EditProfilePage(title: '个人信息')));
+      context,
+      CupertinoPageRoute(
+        builder: (BuildContext context) => EditProfilePage(title: '个人信息')));
   }
 
   onChangeAvatar() {
     showCupertinoModalPopup(
-        builder: (BuildContext context) {
-          return CupertinoActionSheet(
-            title: Text('更换头像'),
-            // message: Text('请选择'),
-            actions: <Widget>[
-              CupertinoActionSheetAction(
-                child: Text('拍照', style: TextStyle(fontSize: 16)),
-                onPressed: () {
-                  getImageFromCamera();
-                },
-              ),
-              CupertinoActionSheetAction(
-                child: Text('相册', style: TextStyle(fontSize: 16)),
-                onPressed: () {
-                  getImageFromGallery();
-                },
-              ),
-            ],
-            cancelButton: CupertinoActionSheetAction(
-              child: Text('取消', style: TextStyle(fontSize: 16)),
+      builder: (BuildContext context) {
+        return CupertinoActionSheet(
+          title: Text('更换头像'),
+          // message: Text('请选择'),
+          actions: <Widget>[
+            CupertinoActionSheetAction(
+              child: Text('拍照', style: TextStyle(fontSize: 16)),
               onPressed: () {
-                Navigator.pop(context);
+                getImageFromCamera();
               },
             ),
-          );
-        },
-        context: context);
+            CupertinoActionSheetAction(
+              child: Text('相册', style: TextStyle(fontSize: 16)),
+              onPressed: () {
+                getImageFromGallery();
+              },
+            ),
+          ],
+          cancelButton: CupertinoActionSheetAction(
+            child: Text('取消', style: TextStyle(fontSize: 16)),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        );
+      },
+      context: context
+    );
   }
 
   // 从图库获取图片
@@ -225,44 +216,44 @@ class _MorePageState extends State<MorePage> {
 
   onLogout() {
     showCupertinoModalPopup(
-        builder: (BuildContext context) {
-          return CupertinoActionSheet(
-            title: Text('请选择退出方式'),
-            // message: Text('请选择退出方式'),
-            actions: <Widget>[
-              CupertinoActionSheetAction(
-                child: Text('退出', style: TextStyle(fontSize: 16)),
-                onPressed: () {
-                  Navigator.of(context).pop(false);
-                  $CH.clear();
-                  authBloc.dispatch(LoggedOut());
-                },
-              ),
-              CupertinoActionSheetAction(
-                child: Text('清除记录退出', style: TextStyle(fontSize: 16)),
-                onPressed: () {
-                  Navigator.of(context).pop(false);
-                  $CH.clear();
-                  authBloc.dispatch(LoggedOut());
-                  contactBloc.dispatch(ClearContact());
-                  chatBloc.dispatch(ClearChat());
-                },
-              ),
-            ],
-            cancelButton: CupertinoActionSheetAction(
-              child: Text('取消', style: TextStyle(fontSize: 16)),
+      builder: (BuildContext context) {
+        return CupertinoActionSheet(
+          title: Text('请选择退出方式'),
+          // message: Text('请选择退出方式'),
+          actions: <Widget>[
+            CupertinoActionSheetAction(
+              child: Text('退出', style: TextStyle(fontSize: 16)),
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.of(context).pop(false);
+                $CH.clear();
+                authBloc.dispatch(LoggedOut());
               },
             ),
-          );
-        },
-        context: context);
+            CupertinoActionSheetAction(
+              child: Text('清除记录退出', style: TextStyle(fontSize: 16)),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+                $CH.clear();
+                authBloc.dispatch(LoggedOut());
+                contactBloc.dispatch(ClearContact());
+                chatBloc.dispatch(ClearChat());
+              },
+            ),
+          ],
+          cancelButton: CupertinoActionSheetAction(
+            child: Text('取消', style: TextStyle(fontSize: 16)),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        );
+      },
+      context: context
+    );
   }
 
   @override
   void dispose() {
     super.dispose();
   }
-
 }

@@ -6,7 +6,7 @@ class Themes {
 
   //Colors for theme
   static Color themeColor = Color(0xff0a8cff);
-  static Color pageBGColor = Color(0xfffcfcfc);
+  static Color pageBGColor = Color(0xffeeeeee);
   static Color borderColor = Color(0xffefefef);
   
   static Color lightPrimary = Color(0xfffcfcff);

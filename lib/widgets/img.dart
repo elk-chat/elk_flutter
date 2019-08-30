@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:elk_chat/protocol/protobuf/koi.pb.dart';
+import 'package:elk_chat/theme_cupertino.dart';
 import 'package:elk_chat/widgets/image_viewer.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/cupertino.dart';
@@ -69,38 +70,58 @@ class _AvatarState extends State<Img> {
   @override
   Widget build(BuildContext context) {
     Widget placeholder = Container(
-        width: widget.width,
-        height: widget.height,
-        color: const Color(0xffeeeeee),
-        child: Center(
-            child: Icon(
+      width: widget.width,
+      height: widget.height,
+      color: const Color(0xffeeeeee),
+      child: Center(
+        child: Icon(
           avatarTypeMap[widget.type],
           color: const Color(0xffa4a5a7),
           size: widget.width / 1.6,
-        )));
+        )
+      )
+    );
     Widget child;
     if (imgSrc.isNotEmpty) {
       child = GestureDetector(
-          onTap: widget.hasTap
-              ? () {
-                  showCupertinoDialog(
-                    context: context,
-                    builder: (context) {
-                      return ImageViewer(
-                        imageProviders: [CachedNetworkImageProvider(imgSrc)],
-                      );
-                    },
+        onTap: widget.hasTap
+          ? () {
+              showCupertinoDialog(
+                context: context,
+                builder: (context) {
+                  return ImageViewer(
+                    imageProviders: [CachedNetworkImageProvider(imgSrc)],
                   );
-                }
-              : null,
-          child: CachedNetworkImage(
-              width: widget.width,
-              height: widget.height,
-              fit: BoxFit.cover,
-              imageUrl: imgSrc,
-              placeholder: (context, url) => placeholder));
+                },
+              );
+            }
+          : null,
+        child: CachedNetworkImage(
+          width: widget.width,
+          height: widget.height,
+          fit: BoxFit.cover,
+          imageUrl: imgSrc,
+          placeholder: (context, url) => placeholder
+        )
+      );
     } else {
-      child = placeholder;
+      // child = placeholder;
+      child = widget.title.length > 0 ? Container(
+        width: widget.width,
+        height: widget.height,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(5.0)),
+          color: Themes.themeColor,
+        ),
+        child: Center(
+          child: Text(widget.title[0].toUpperCase(),
+            style: TextStyle(
+              fontSize: 24.0, color: Colors.white,
+              fontWeight: FontWeight.w500
+            ),
+          ),
+        ),
+      ) : placeholder;
     }
 
     return child;

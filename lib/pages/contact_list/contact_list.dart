@@ -31,6 +31,7 @@ class _ContactPageState extends State<ContactPage> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
+      backgroundColor: Color(0xfffafafa),
       navigationBar: CupertinoNavigationBar(
         heroTag: 'ContactList',
         transitionBetweenRoutes: false,
@@ -45,7 +46,7 @@ class _ContactPageState extends State<ContactPage> {
               context,
               CupertinoPageRoute(
                 builder: (BuildContext context) => NewContactPage(
-                  title: '新联系人',
+                  title: '添加联系人',
                 )
               )
             );

@@ -8,6 +8,9 @@ class ListItem extends StatelessWidget {
   final Widget leading;
   final Widget trailing;
   final BoxDecoration decoration;
+  final bool topBorder;
+  final padding;
+  final Color bgColor;
   
   const ListItem({
     Key key,
@@ -16,32 +19,45 @@ class ListItem extends StatelessWidget {
     this.leading,
     this.trailing,
     this.decoration,
+    this.topBorder = true,
+    this.padding = 12.0,
+    this.bgColor = const Color(0xffffffff),
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     List<Widget> rowChildren = [];
     if(leading != null) {
-      rowChildren.add(leading);
+      rowChildren.add(
+        Padding(
+          padding: EdgeInsets.only(right: 10.0),
+          child: leading,
+        )
+      );
     }
     if(title != null) {
-      rowChildren.add(Center(child: title));
+      rowChildren.add(Flexible(child: title));
     }
     if(trailing != null) {
-      rowChildren.add(trailing);
+      rowChildren.add(
+        Padding(
+          padding: EdgeInsets.only(right: 10.0),
+          child: trailing,
+        )
+      );
     }
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.translucent,
       child: Container(
-        padding: EdgeInsets.all(12.0),
+        padding: EdgeInsets.all(padding),
         decoration: BoxDecoration(
-          color: Color(0xffffffff),
+          color: bgColor,
           border: Border(
-            top: BorderSide(
+            top: topBorder ? BorderSide(
               color: Themes.borderColor,
               width: 1.0,
-            )
+            ) : null
           )
         ),
         child: Row(

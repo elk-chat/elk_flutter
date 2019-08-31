@@ -28,7 +28,7 @@ class TabsPage extends StatelessWidget {
           ),
           BottomNavigationBarItem(
             icon: Icon(IOSIcons.discover),
-            // activeIcon: Icon(IOSIcons.person_solid),
+            activeIcon: Icon(IOSIcons.discover_solid),
             title: Text('发现'),
           ),
           BottomNavigationBarItem(

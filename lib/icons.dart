@@ -127,6 +127,7 @@ class IOSIcons {
   static IconData profile_circle = getIconData(0xf41a);
 
   static IconData discover = getIconData(0xf46d);
+  static IconData discover_solid = getIconData(0xf46e);
 
   /// A '+' sign in a circle.
   static const IconData plus_circled =

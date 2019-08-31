@@ -65,10 +65,17 @@ dependencies:
     path: packages/chatkit
 
 dev_dependencies:
+  flutter_launcher_icons: "^0.7.2"
   flutter_test:
     sdk: flutter
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
+
+# 用于生成 ICON
+flutter_icons:
+  android: "launcher_icon" 
+  ios: true
+  image_path: "assets/img/logo.png"
 
 # The following section is specific to Flutter.
 flutter:

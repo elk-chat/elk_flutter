@@ -13,11 +13,13 @@ class MsgWidget extends StatelessWidget {
   final int dtime;
   final dynamic msg;
   final dynamic isRead;
+  final String userName;
   final QueueMsgStatus status;
 
   const MsgWidget({
     Key key,
     this.dateFormat,
+    this.userName,
     this.isSelf,
     this.dtime,
     this.msg,
@@ -27,48 +29,51 @@ class MsgWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Widget avatar = Img(
+      height: 26.0,
+      width: 26.0,
+      // fileID: msg.avatarFileID,
+      title: msg.senderName,
+      type: 3,
+    );
+    Widget bubble = Container(
+      constraints: BoxConstraints(
+        maxWidth: MediaQuery.of(context).size.width * 0.7
+      ),
+      child: Bubble(
+        margin: const BubbleEdges.only(top: 10),
+        alignment: isSelf ? Alignment.topRight : Alignment.topLeft,
+        nip: isSelf ? BubbleNip.rightTop : BubbleNip.leftTop,
+        color: isSelf ? Color(0xffE1ECF4) : Colors.white,
+        child: ContentWidgetByType(
+          isRead: isSelf ? isRead : null, 
+          msg: msg, 
+          status: isSelf ? status : null,
+          dateFormat: dateFormat
+        )
+      ),
+    );
+    Widget offset = SizedBox(width: 8.0);
+    List <Widget> msgItem = isSelf ? [
+      bubble,
+      offset,
+      avatar,
+    ] : [
+      avatar,
+      offset,
+      bubble,
+    ];
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: isSelf ? CrossAxisAlignment.end : CrossAxisAlignment.start,
       children: <Widget>[
-        // Bubble(
-        //   alignment: Alignment.center,
-        //   color: Color.fromRGBO(212, 234, 244, 1.0),
-        //   child: Text(
-        //     dateFormat.format(DateTime.fromMillisecondsSinceEpoch(dtime)),
-        //     textAlign: TextAlign.center,
-        //     style: TextStyle(fontSize: 11.0)
-        //   ),
-        // ),
         Padding(
-          padding: EdgeInsets.all(10.0),
-          child: 
-            isSelf
-              ? Bubble(
-                  margin: const BubbleEdges.only(top: 10),
-                  alignment: Alignment.topRight,
-                  nip: BubbleNip.rightTop,
-                  color: Color.fromRGBO(225, 255, 199, 1.0),
-                  child: ContentWidgetByType(
-                    isRead: isRead, msg: msg, status: status,
-                    dateFormat: dateFormat
-                  )
-                )
-              : Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Container(child: Text(msg.senderName)),
-                  Bubble(
-                    margin: const BubbleEdges.only(top: 5.0),
-                    alignment: Alignment.topLeft,
-                    nip: BubbleNip.leftTop,
-                    child: ContentWidgetByType(
-                      isRead: null, msg: msg, status: null,
-                      dateFormat: dateFormat
-                    ),
-                  )
-                ],
-              )
-            )
+          padding: EdgeInsets.all(5.0),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: msgItem,
+          ),
+        )
       ],
     );
   }
@@ -83,8 +88,7 @@ class ContentWidgetByType extends StatelessWidget {
   const ContentWidgetByType({
     Key key, this.msg, this.isRead, this.status,
     this.dateFormat
-  })
-      : super(key: key);
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -123,6 +127,7 @@ class ContentWidgetByType extends StatelessWidget {
         Widget txtMsg = (
           Row(
             mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: txtMsgGroup,
           )
         );
@@ -148,6 +153,7 @@ class ContentWidgetByType extends StatelessWidget {
         );
     }
     return Column(
+      // mainAxisAlignment: MainAxisAlignment.end,
       children: msgWidget
     );
   }

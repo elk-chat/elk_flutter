@@ -5,6 +5,7 @@ import 'package:elk_chat/protocol/api_util/api_util.dart';
 
 import 'package:elk_chat/protocol/protobuf/koi.pb.dart';
 import 'package:elk_chat/pages/edit_profile.dart';
+import 'package:elk_chat/theme_cupertino.dart';
 import 'package:elk_chat/widgets/divid.dart';
 import 'package:elk_chat/widgets/list_item.dart';
 import 'package:flutter/cupertino.dart';
@@ -55,6 +56,19 @@ class _MorePageState extends State<MorePage> {
     chatBloc = BlocProvider.of<ChatBloc>(context);
   }
 
+  doing() {
+    // Fluttertoast.cancel();
+    Fluttertoast.showToast(
+      msg: "施工中，敬请期待",
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.CENTER,
+      timeInSecForIos: 1,
+      // backgroundColor: Colors.red,
+      // textColor: Colors.white,
+      fontSize: 16.0
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // super.build(context);
@@ -74,7 +88,47 @@ class _MorePageState extends State<MorePage> {
             ),
             SizedBox(height: 20),
             ListItem(
+              title: Text('收藏'),
+              actionTip: true,
+              leading: Icon(
+                Icons.cloud_circle,
+                color: Themes.blue,
+              ),
+              onTap: doing,
+            ),
+            ListItem(
+              title: Text('相册'),
+              actionTip: true,
+              leading: Icon(
+                Icons.collections,
+                color: Themes.green,
+              ),
+              onTap: doing,
+            ),
+            ListItem(
+              title: Text('表情'),
+              actionTip: true,
+              leading: Icon(
+                Icons.tag_faces,
+                color: Themes.orange,
+              ),
+              onTap: doing,
+            ),
+            Divid(),
+            SizedBox(height: 30),
+            ListItem(
+              title: Text('设置'),
+              actionTip: true,
+              leading: Icon(
+                Icons.settings,
+                color: Themes.red,
+              ),
+              onTap: doing,
+            ),
+            SizedBox(height: 30),
+            ListItem(
               title: Text('退出登录'),
+              actionTip: true,
               onTap: onLogout,
             ),
             Divid(),

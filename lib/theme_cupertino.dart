@@ -5,7 +5,15 @@ class Themes {
   static String appName = "Social app";
 
   //Colors for theme
-  static Color themeColor = Color(0xff0a8cff);
+  static Color themeColor = Color(0xff376bfb);
+  static Color blue = Color(0xff376bfb);
+  static Color red = Color(0xfffc4173);
+  static Color green = Color(0xff0fd279);
+  static Color cyan = Color(0xff21e7da);
+  static Color yellow = Color(0xffffec3d);
+  static Color orange = Color(0xfffda929);
+  static Color purple = Color(0xffa700fd);
+
   static Color pageBGColor = Color(0xffeeeeee);
   static Color borderColor = Color(0xffefefef);
   

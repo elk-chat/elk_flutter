@@ -68,7 +68,7 @@ class _ContactWidgetState extends State<ContactWidget> {
               : Container(),
             Flexible(
               child: ListItem(
-                padding: 8.0,
+                // padding: 10.0,
                 title: Text(
                   widget.user.userName,
                   style: TextStyle(

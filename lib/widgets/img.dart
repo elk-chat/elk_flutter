@@ -30,20 +30,20 @@ class Img extends StatefulWidget {
   final String title;
   final bool hasTap;
 
-  Img(
-      {Key key,
-      this.type = 2,
-      this.fileID,
-      this.title,
-      this.hasTap = false,
-      @required this.width,
-      @required this.height})
-      : super(key: key);
+  Img({
+    Key key,
+    this.type = 2,
+    this.fileID,
+    this.title,
+    this.hasTap = false,
+    @required this.width,
+    @required this.height
+  }) : super(key: key);
 
-  _AvatarState createState() => _AvatarState();
+  _ImageState createState() => _ImageState();
 }
 
-class _AvatarState extends State<Img> {
+class _ImageState extends State<Img> {
   String imgSrc = '';
   UtilityFileStatReq _UtilityFileStatReq = UtilityFileStatReq();
 
@@ -106,7 +106,7 @@ class _AvatarState extends State<Img> {
       );
     } else {
       // child = placeholder;
-      child = widget.title.length > 0 ? Container(
+      child = widget.title != null && widget.title.length > 0 ? Container(
         width: widget.width,
         height: widget.height,
         decoration: BoxDecoration(
@@ -116,7 +116,8 @@ class _AvatarState extends State<Img> {
         child: Center(
           child: Text(widget.title[0].toUpperCase(),
             style: TextStyle(
-              fontSize: 24.0, color: Colors.white,
+              fontSize: widget.height / 1.5, 
+              color: Colors.white,
               fontWeight: FontWeight.w500
             ),
           ),

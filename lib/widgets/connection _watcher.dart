@@ -124,7 +124,7 @@ class _ConnectionWatcherState extends State<ConnectionWatcher> {
   }
 
   onHeartBeat(payload) {
-    print('心跳包：$payload');
+    // print('心跳包：$payload');
   }
 
   onAuth(data) async {

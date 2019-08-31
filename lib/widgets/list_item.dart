@@ -9,6 +9,7 @@ class ListItem extends StatelessWidget {
   final Widget trailing;
   final BoxDecoration decoration;
   final bool topBorder;
+  final bool actionTip;
   final padding;
   final Color bgColor;
   
@@ -21,6 +22,7 @@ class ListItem extends StatelessWidget {
     this.decoration,
     this.topBorder = true,
     this.padding = 12.0,
+    this.actionTip = false,
     this.bgColor = const Color(0xffffffff),
   }) : super(key: key);
 
@@ -36,13 +38,23 @@ class ListItem extends StatelessWidget {
       );
     }
     if(title != null) {
-      rowChildren.add(Flexible(child: title));
+      rowChildren.add(
+        Expanded(child: title)
+      );
     }
     if(trailing != null) {
       rowChildren.add(
         Padding(
           padding: EdgeInsets.only(right: 10.0),
           child: trailing,
+        )
+      );
+    }
+    if(actionTip) {
+      rowChildren.add(
+        Padding(
+          padding: EdgeInsets.only(left: 10.0),
+          child: Icon(Icons.keyboard_arrow_right),
         )
       );
     }

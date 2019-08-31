@@ -79,9 +79,10 @@ class _MsgBubbleState extends State<MsgBubble> {
   Widget build(BuildContext context) {
     getStateRead();
 
-    var state = widget.stateUpdate;
-    var updMsg = state.updateMessage;
-    var isAdminDid = widget.chat.creatorID == state.senderID;
+    StateUpdate state = widget.stateUpdate;
+    UpdateMessage updMsg = state.updateMessage;
+    bool isAdminDid = widget.chat.creatorID == state.senderID;
+    
     switch (state.messageType) {
       case ChatMessageType.AddMember:
         return Container(
@@ -94,25 +95,27 @@ class _MsgBubbleState extends State<MsgBubble> {
                   : Text(updMsg.updateMessageChatAddMember.addedMemeberName,
                       style: TextStyle(color: Colors.blue)),
               Text(
-                  isAdminDid
-                      // ? ' 被${updMsg.updateMessageChatAddMember.senderName}邀请入群'
-                      ? ' 进入群聊'
-                      : ' 加入群聊',
-                  style: TextStyle(color: Colors.black38)
-                ),
+                isAdminDid
+                  // ? ' 被${updMsg.updateMessageChatAddMember.senderName}邀请入群'
+                  ? ' 进入群聊'
+                  : ' 加入群聊',
+                style: TextStyle(color: Colors.black38)
+              ),
             ],
           )
         );
       case ChatMessageType.DeleteMember:
         return Container(
+          padding: EdgeInsets.only(top: 3.0, bottom: 3.0),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              widget.userName != null &&
-                      updMsg.updateMessageChatDeleteMember.deletedMemeberName ==
-                          widget.userName
-                  ? Text('你', style: TextStyle(color: Colors.black87))
-                  : Text(updMsg.updateMessageChatDeleteMember.deletedMemeberName,
-                      style: TextStyle(color: Colors.blue)),
+              widget.userName != null && updMsg.updateMessageChatDeleteMember.deletedMemeberName == widget.userName
+                ? Text('你', style: TextStyle(color: Colors.black38))
+                : Text(
+                    updMsg.updateMessageChatDeleteMember.deletedMemeberName,
+                    style: TextStyle(color: Colors.black38)
+                  ),
               Text(
                 isAdminDid
                   // ? '被${updMsg.updateMessageChatDeleteMember.senderName}移出群聊'
@@ -124,17 +127,19 @@ class _MsgBubbleState extends State<MsgBubble> {
           )
         );
       case ChatMessageType.SendMessage:
-        var msg = updMsg.updateMessageChatSendMessage.chatMessage;
+        ChatMessage msg = updMsg.updateMessageChatSendMessage.chatMessage;
 
         return MsgWidget(
           key: ValueKey(msg.actionTime),
           // dtime: msg.actionTime.toInt() * 1000,
           dateFormat: dateFormat,
           isSelf: widget.isSelf,
+          userName: widget.userName,
           isRead: stateRead >= widget.stateUpdate.state,
           msg: msg
         );
+      default:
+        return Container(child: Text('未知消息类型 messageType： ${state.messageType}'));
     }
-    return Container(child: Text('未知消息类型 messageType： ${state.messageType}'));
   }
 }

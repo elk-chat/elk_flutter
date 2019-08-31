@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:elk_chat/theme_cupertino.dart';
 import 'package:elk_chat/widgets/divid.dart';
 import 'package:elk_chat/widgets/flushbar.dart';
 import 'package:elk_chat/widgets/list_item.dart';
@@ -118,6 +119,8 @@ class _EditProfilePageState extends State<ProfilePage> {
                   SizedBox(height: 20.0),
                   ListItem(
                     title: Text('发消息'),
+                    // leading: Icon(Icons.chat),
+                    actionTip: true,
                     onTap: onChat,
                   ),
                   _isAtContact

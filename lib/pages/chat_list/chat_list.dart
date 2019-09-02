@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'chat_item.dart';
-import '../new_chat/new_chat.dart';
 
 class ChatListPage extends StatefulWidget {
   final title;
@@ -95,7 +94,4 @@ class _ChatPageState extends State<ChatListPage> {
     _scrollController.dispose();
     super.dispose();
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }

@@ -24,12 +24,7 @@ class Themes {
   static Color lightBG = Color(0xfffcfcff);
   static Color darkBG = Colors.black;
   static Color badgeColor = Colors.red;
-  static const Map<TargetPlatform, PageTransitionsBuilder> _defaultBuilders =
-      <TargetPlatform, PageTransitionsBuilder>{
-    TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
-    TargetPlatform.iOS: FadeUpwardsPageTransitionsBuilder(),
-  };
-
+  
   static CupertinoThemeData lightTheme = CupertinoThemeData(
     // backgroundColor: lightBG,
     primaryColor: Colors.blue,

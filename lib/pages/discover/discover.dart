@@ -32,7 +32,7 @@ class DiscoverPage extends StatelessWidget {
     doStuffCallback() {
       isShowing = false;
     }
-    var timer = Timer(const Duration(milliseconds: 2), doStuffCallback);
+    Timer(const Duration(milliseconds: 2), doStuffCallback);
   }
 
   @override

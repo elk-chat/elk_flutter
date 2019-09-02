@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:elk_chat/theme_cupertino.dart';
 import 'package:elk_chat/widgets/divid.dart';
 import 'package:elk_chat/widgets/flushbar.dart';
 import 'package:elk_chat/widgets/list_item.dart';
@@ -16,13 +15,11 @@ import 'chat_page/chat_page.dart';
 
 /// 个人资料
 class ProfilePage extends StatefulWidget {
-  final String title;
   final User contact;
   final bool isAtContact;
 
   ProfilePage(
       {Key key,
-      @required this.title,
       @required this.contact,
       this.isAtContact = false})
       : super(key: key);

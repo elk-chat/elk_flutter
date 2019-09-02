@@ -267,7 +267,6 @@ class _GroupChatDetailState extends State<GroupChatDetailPage> {
                       context,
                       CupertinoPageRoute(
                           builder: (BuildContext context) => ProfilePage(
-                              title: user.userName,
                               contact: user,
                               isAtContact: false)));
                 },

@@ -56,19 +56,19 @@ class _NewGroupChatState extends State<NewGroupChatCreatePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text('${widget.title}'),
-          centerTitle: true,
-          actions: <Widget>[
-            CupertinoButton(
-              child: Text('创建', style: const TextStyle(fontSize: 15.0)),
-              onPressed:
-                  text.isNotEmpty && !uploading ? handleCreateChat : null,
-            ),
-          ],
+    return CupertinoPageScaffold(
+        navigationBar: CupertinoNavigationBar(
+          middle: Text('${widget.title}'),
+          heroTag: 'NewGroupChatSelectUsersPage',
+          transitionBetweenRoutes: false,
+          trailing: CupertinoButton(
+            padding: EdgeInsets.zero,
+            child: Text('创建', style: const TextStyle(fontSize: 15.0)),
+            onPressed: text.isNotEmpty && !uploading ? handleCreateChat : null,
+          ),
         ),
-        body: Stack(
+        child: SafeArea(
+            child: Stack(
           children: <Widget>[
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -124,6 +124,6 @@ class _NewGroupChatState extends State<NewGroupChatCreatePage> {
               ],
             )
           ],
-        ));
+        )));
   }
 }

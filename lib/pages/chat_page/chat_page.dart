@@ -6,7 +6,6 @@ import 'package:elk_chat/protocol/api_util/api_util.dart';
 import 'package:elk_chat/protocol/protobuf/koi.pb.dart';
 import 'package:elk_chat/widgets/c_icon_button.dart';
 import 'package:elk_chat/widgets/flushbar.dart';
-import 'package:elk_chat/widgets/img.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

@@ -72,7 +72,6 @@ class _NewContactPageState extends State<NewContactPage> {
       context,
       CupertinoPageRoute(
         builder: (BuildContext context) => ProfilePage(
-          title: contact.userName,
           contact: contact,
         )
       )

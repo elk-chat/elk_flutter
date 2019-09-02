@@ -52,29 +52,29 @@ class GroupInfoEdit extends StatelessWidget {
                     height: 64.0)),
             Container(
                 child: Flexible(
-                    child: TextField(
+                    child: CupertinoTextField(
               autofocus: true,
+              decoration: BoxDecoration(),
               controller: controller,
               onChanged: (value) {
                 setText(value.trim());
               },
               textInputAction: TextInputAction.go,
               // style: TextStyle(color: Colors.blue),
-              decoration: InputDecoration(
-                  hintText: "群名称",
-                  border: InputBorder.none,
-                  suffixIcon: IconButton(
-                      icon: Icon(
-                        MaterialCommunityIcons.getIconData('close-circle'),
-                        color: Colors.black38,
-                        size: 18,
-                      ),
-                      onPressed: () {
-                        setText('');
+              placeholder: "群名称",
+              suffix: GestureDetector(
+                child: Icon(
+                  MaterialCommunityIcons.getIconData('close-circle'),
+                  color: Colors.black38,
+                  size: 18,
+                ),
+                onTap: () {
+                  setText('');
 
-                        WidgetsBinding.instance
-                            .addPostFrameCallback((_) => controller.clear());
-                      })),
+                  WidgetsBinding.instance
+                      .addPostFrameCallback((_) => controller.clear());
+                },
+              ),
             ))),
           ],
         ),

@@ -4,7 +4,6 @@ import 'package:elk_chat/protocol/api_util/api_util.dart';
 import 'package:elk_chat/pages/chat_page/queue_msg.dart';
 import 'package:elk_chat/widgets/img.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/material_community_icons.dart';
 import 'package:intl/intl.dart';
 
 class MsgWidget extends StatelessWidget {

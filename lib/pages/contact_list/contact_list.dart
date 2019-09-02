@@ -1,7 +1,6 @@
 import 'package:elk_chat/widgets/c_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:elk_chat/pages/contact_detail.dart';
 import '../new_contact.dart';
 import 'list.dart';
 

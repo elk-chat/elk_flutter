@@ -1,4 +1,5 @@
 import 'package:elk_chat/protocol/protobuf/koi.pb.dart';
+import 'package:elk_chat/theme_cupertino.dart';
 import 'package:elk_chat/widgets/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -92,38 +93,47 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   Widget _buildPageContent(BuildContext context) {
-    return Container(
-      color: Colors.blue.shade100,
-      child: ListView(
-        children: <Widget>[
-          SizedBox(
-            height: 30.0,
+    return Material(
+      child: Container(
+        // color: Colors.blue.shade100,
+        decoration: BoxDecoration(
+          // color: Colors.black,
+          image: DecorationImage(
+            image: AssetImage('assets/img/bg_register.jpg'),
+            fit: BoxFit.cover
           ),
-          CircleAvatar(
-            child: Image.asset('assets/img/origami.png'),
-            maxRadius: 50,
-            backgroundColor: Colors.transparent,
-          ),
-          SizedBox(
-            height: 20.0,
-          ),
-          _buildForm(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              FloatingActionButton(
-                mini: true,
-                onPressed: loading
-                    ? null
-                    : () {
-                        Navigator.pop(context);
-                      },
-                backgroundColor: Colors.blue,
-                child: Icon(Icons.arrow_back),
-              )
-            ],
-          )
-        ],
+        ),
+        child: ListView(
+          children: <Widget>[
+            SizedBox(
+              height: 30.0,
+            ),
+            CircleAvatar(
+              child: Image.asset('assets/img/logo_login.png'),
+              maxRadius: 50,
+              backgroundColor: Colors.transparent,
+            ),
+            SizedBox(
+              height: 20.0,
+            ),
+            _buildForm(),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.center,
+            //   children: <Widget>[
+            //     FloatingActionButton(
+            //       mini: true,
+            //       onPressed: loading
+            //           ? null
+            //           : () {
+            //               Navigator.pop(context);
+            //             },
+            //       backgroundColor: Colors.blue,
+            //       child: Icon(Icons.arrow_back),
+            //     )
+            //   ],
+            // )
+          ],
+        ),
       ),
     );
   }
@@ -134,12 +144,8 @@ class _RegisterPageState extends State<RegisterPage> {
       child: Stack(
         children: <Widget>[
           Container(
-            height: 320,
+            // height: 320,
             padding: EdgeInsets.all(10.0),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(40.0)),
-              color: Colors.white,
-            ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -147,112 +153,133 @@ class _RegisterPageState extends State<RegisterPage> {
                   height: 30.0,
                 ),
                 Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20.0),
-                    child: TextField(
-                      autocorrect: false,
-                      focusNode: _usernameFocusNode,
-                      controller: _usernameController,
-                      textInputAction: TextInputAction.next,
-                      onSubmitted: (term) {
-                        FocusScope.of(context).requestFocus(_passwordFocusNode);
-                      },
-                      style: TextStyle(color: Colors.blue),
-                      decoration: InputDecoration(
-                          hintText: "用户名",
-                          hintStyle: TextStyle(color: Colors.blue.shade200),
-                          border: InputBorder.none,
-                          icon: Icon(
-                            Icons.person_outline,
-                            color: Colors.blue,
-                          )),
-                    )),
-                Container(
-                  child: Divider(
-                    color: Colors.blue.shade400,
-                  ),
-                  padding:
-                      EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0),
+                  child: TextField(
+                    autocorrect: false,
+                    focusNode: _usernameFocusNode,
+                    controller: _usernameController,
+                    textInputAction: TextInputAction.next,
+                    onSubmitted: (term) {
+                      FocusScope.of(context).requestFocus(_passwordFocusNode);
+                    },
+                    style: TextStyle(color: Colors.blue),
+                    decoration: InputDecoration(
+                      hintText: "用户名",
+                      hintStyle: TextStyle(color: Colors.blue.shade200),
+                      border: InputBorder.none,
+                      icon: Icon(
+                        Icons.person_outline,
+                        color: Colors.blue,
+                      )
+                    ),
+                  )
                 ),
                 Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20.0),
-                    child: TextField(
-                      focusNode: _passwordFocusNode,
-                      controller: _passwordController,
-                      onSubmitted: (term) {
-                        FocusScope.of(context)
-                            .requestFocus(_confirmPasswordFocusNode);
-                      },
-                      textInputAction: TextInputAction.next,
-                      obscureText: true,
-                      style: TextStyle(color: Colors.blue),
-                      decoration: InputDecoration(
-                          hintText: "密码",
-                          hintStyle: TextStyle(color: Colors.blue.shade200),
-                          border: InputBorder.none,
-                          icon: Icon(
-                            Icons.lock_open,
-                            color: Colors.blue,
-                          )),
-                    )),
-                Container(
                   child: Divider(
                     color: Colors.blue.shade400,
                   ),
-                  padding:
-                      EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0),
                 ),
                 Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20.0),
-                    child: TextField(
-                      focusNode: _confirmPasswordFocusNode,
-                      controller: _confirmPasswordController,
-                      textInputAction: TextInputAction.done,
-                      onSubmitted: (term) {
-                        if (loading) return;
-                        onSubmit();
-                      },
-                      obscureText: true,
-                      style: TextStyle(color: Colors.blue),
-                      decoration: InputDecoration(
-                          hintText: "确认密码",
-                          hintStyle: TextStyle(color: Colors.blue.shade200),
-                          border: InputBorder.none,
-                          icon: Icon(
-                            Icons.lock_outline,
-                            color: Colors.blue,
-                          )),
-                    )),
+                  child: TextField(
+                    focusNode: _passwordFocusNode,
+                    controller: _passwordController,
+                    onSubmitted: (term) {
+                      FocusScope.of(context)
+                          .requestFocus(_confirmPasswordFocusNode);
+                    },
+                    textInputAction: TextInputAction.next,
+                    obscureText: true,
+                    style: TextStyle(color: Colors.blue),
+                    decoration: InputDecoration(
+                      hintText: "密码",
+                      hintStyle: TextStyle(color: Colors.blue.shade200),
+                      border: InputBorder.none,
+                      icon: Icon(
+                        Icons.lock_open,
+                        color: Colors.blue,
+                      )
+                    ),
+                  )
+                ),
                 Container(
                   child: Divider(
                     color: Colors.blue.shade400,
                   ),
-                  padding:
-                      EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0),
+                ),
+                Container(
+                  child: TextField(
+                    focusNode: _confirmPasswordFocusNode,
+                    controller: _confirmPasswordController,
+                    textInputAction: TextInputAction.done,
+                    onSubmitted: (term) {
+                      if (loading) return;
+                      onSubmit();
+                    },
+                    obscureText: true,
+                    style: TextStyle(color: Colors.blue),
+                    decoration: InputDecoration(
+                      hintText: "确认密码",
+                      hintStyle: TextStyle(color: Colors.blue.shade200),
+                      border: InputBorder.none,
+                      icon: Icon(
+                        Icons.lock_outline,
+                        color: Colors.blue,
+                      )
+                    ),
+                  )
+                ),
+                Container(
+                  child: Divider(
+                    color: Colors.blue.shade400,
+                  ),
                 ),
                 SizedBox(
                   height: 10.0,
                 ),
+                Container(
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: CupertinoButton(
+                          borderRadius: BorderRadius.circular(30),
+                          onPressed: loading
+                            ? null
+                            : () {
+                                this.onSubmit();
+                              },
+                          child: Text(
+                            loading ? '立即注册中' : '立即注册',
+                            style: TextStyle(color: Colors.white)
+                          ),
+                          color: Colors.blue,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 20),
+                CupertinoButton(
+                  onPressed: loading
+                      ? null
+                      : () {
+                          Navigator.pop(context);
+                        },
+                  // backgroundColor: Themes.red,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      // Icon(Icons.arrow_back),
+                      Text(
+                        '已有账号，点击登陆', 
+                        style: TextStyle(
+                          fontSize: 15.0
+                        ),
+                      )
+                    ],
+                  ),
+                )
               ],
             ),
           ),
-          Container(
-            height: 340,
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: RaisedButton(
-                onPressed: loading
-                    ? null
-                    : () {
-                        this.onSubmit();
-                      },
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(40.0)),
-                child: Text(loading ? '立即注册中' : '立即注册',
-                    style: TextStyle(color: Colors.white)),
-                color: Colors.blue,
-              ),
-            ),
-          )
         ],
       ),
     );
@@ -260,8 +287,8 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Builder(builder: (BuildContext context) {
+    return CupertinoPageScaffold(
+      child: Builder(builder: (BuildContext context) {
         _context = context;
         return _buildPageContent(context);
       }),

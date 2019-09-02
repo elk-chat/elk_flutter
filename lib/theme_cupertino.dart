@@ -16,6 +16,8 @@ class Themes {
 
   static Color pageBGColor = Color(0xffeeeeee);
   static Color borderColor = Color(0xffefefef);
+
+  static Color myBubbleColor = Color(0xffE1ECF4);
   
   static Color lightPrimary = Color(0xfffcfcff);
   static Color darkPrimary = Colors.black;

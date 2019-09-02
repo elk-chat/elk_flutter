@@ -28,6 +28,12 @@ PODS:
     - TOCropViewController (~> 2.5.0)
   - image_picker (0.0.1):
     - Flutter
+  - JCore (2.1.1)
+  - JPush (3.2.2):
+    - JCore (< 3.0.0, >= 2.0.0)
+  - jpush_flutter (0.0.2):
+    - Flutter
+    - JPush
   - Mantle (2.1.0):
     - Mantle/extobjc (= 2.1.0)
   - Mantle/extobjc (2.1.0)
@@ -62,6 +68,7 @@ DEPENDENCIES:
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - image_cropper (from `.symlinks/plugins/image_cropper/ios`)
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
+  - jpush_flutter (from `.symlinks/plugins/jpush_flutter/ios`)
   - package_info (from `.symlinks/plugins/package_info/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
@@ -73,6 +80,8 @@ DEPENDENCIES:
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - FMDB
+    - JCore
+    - JPush
     - Mantle
     - Reachability
     - TOCropViewController
@@ -102,6 +111,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/image_cropper/ios"
   image_picker:
     :path: ".symlinks/plugins/image_picker/ios"
+  jpush_flutter:
+    :path: ".symlinks/plugins/jpush_flutter/ios"
   package_info:
     :path: ".symlinks/plugins/package_info/ios"
   path_provider:
@@ -131,6 +142,9 @@ SPEC CHECKSUMS:
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   image_cropper: f25bdfbf1ef970c9a0a0f78306fb6a0aaac7229e
   image_picker: 16e5fec1fbc87fd3b297c53e4048521eaf17cd06
+  JCore: 4072327557f0b83cc22dd4041f2f839740c0077b
+  JPush: 0e9088c85c73275629facc311fe5992dfac36eeb
+  jpush_flutter: d7e3a79466eb9447fd940233f02661b514f137c6
   Mantle: 2fa750afa478cd625a94230fbf1c13462f29395b
   package_info: 78cabb3c322943c55d39676f4a5bfc748c01d055
   path_provider: f96fff6166a8867510d2c25fdcc346327cc4b259

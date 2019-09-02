@@ -16,16 +16,16 @@ class MsgBubble extends StatefulWidget {
   final Function setOwnStateRead;
   final DateFormat dateFormat;
 
-  MsgBubble(
-      {Key key,
-      @required this.chat,
-      @required this.stateUpdate,
-      @required this.dateFormat,
-      @required this.isSelf,
-      @required this.getStateRead,
-      @required this.setOwnStateRead,
-      this.userName})
-      : super(key: key);
+  MsgBubble({
+    Key key,
+    @required this.chat,
+    @required this.stateUpdate,
+    @required this.dateFormat,
+    @required this.isSelf,
+    @required this.getStateRead,
+    @required this.setOwnStateRead,
+    this.userName
+  }) : super(key: key);
 
   _MsgBubbleState createState() => _MsgBubbleState();
 }
@@ -86,12 +86,14 @@ class _MsgBubbleState extends State<MsgBubble> {
     switch (state.messageType) {
       case ChatMessageType.AddMember:
         return Container(
+          padding: EdgeInsets.only(top: 3.0, bottom: 3.0),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               widget.userName != null &&
                       updMsg.updateMessageChatAddMember.addedMemeberName ==
                           widget.userName
-                  ? Text('你', style: TextStyle(color: Colors.black87))
+                  ? Text('你', style: TextStyle(color: Colors.black38))
                   : Text(updMsg.updateMessageChatAddMember.addedMemeberName,
                       style: TextStyle(color: Colors.blue)),
               Text(

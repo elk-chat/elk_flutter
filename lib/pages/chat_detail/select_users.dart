@@ -19,23 +19,20 @@ class _NewGroupChatState extends State<SelectUsersPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text('${widget.title}'),
-          centerTitle: true,
-          actions: <Widget>[
-            CupertinoButton(
-              child: Text('完成 (${selectUsers.length})',
-                  style: const TextStyle(fontSize: 15.0)),
-              onPressed: selectUsers.length > 0
-                  ? () {
-                      Navigator.pop(context, selectUsers);
-                    }
-                  : null,
-            ),
-          ],
+    return CupertinoPageScaffold(
+        navigationBar: CupertinoNavigationBar(
+          middle: Text('${widget.title}'),
+          trailing: CupertinoButton(
+            child: Text('完成 (${selectUsers.length})',
+                style: const TextStyle(fontSize: 15.0)),
+            onPressed: selectUsers.length > 0
+                ? () {
+                    Navigator.pop(context, selectUsers);
+                  }
+                : null,
+          ),
         ),
-        body: Stack(
+        child: Stack(
           children: <Widget>[
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,

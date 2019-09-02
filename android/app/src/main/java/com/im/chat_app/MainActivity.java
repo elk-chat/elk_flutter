@@ -1,4 +1,4 @@
-package com.example.elk_chat;
+package com.im.kchat;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;

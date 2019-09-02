@@ -352,24 +352,25 @@ class WebSocket extends EventEmitter {
 
   /// 发送请求
   /// 返回清除方法，通过执行可以清除
-  Function send(
-      {String method,
-      dynamic protobuf,
-      WebsocketCallback cb,
-      // requestID: 通过  $WS.getRequestID() 生成，参数可选
-      BigInt requestID,
-      // 是否需要没网络时，返回
-      bool delay = false,
-      // 如果没有网络，是否放到队列中
-      bool queue = false,
-      // 是否需要登录
-      bool auth = true,
-      // 用于同一个方法但是多个请求
-      dynamic queueID = 0,
-      // 是��需要超时，如果是文件上传，这���需要设置为 false
-      bool hasTimeout = true,
-      // 是否响应回调
-      bool hasResponse = true}) {
+  Function send({
+    String method,
+    dynamic protobuf,
+    WebsocketCallback cb,
+    // requestID: 通过  $WS.getRequestID() 生成，参数可选
+    BigInt requestID,
+    // 是否需要没网络时，返回
+    bool delay = false,
+    // 如果没有网络，是否放到队列中
+    bool queue = false,
+    // 是否需要登录
+    bool auth = true,
+    // 用于同一个方法但是多个请求
+    dynamic queueID = 0,
+    // 是��需要超时，如果是文件上传，这���需要设置为 false
+    bool hasTimeout = true,
+    // 是否响应回调
+    bool hasResponse = true
+  }) {
     method = stringUtil.getConstantCase(text: method);
     sendCount++;
     // 用时间戳和随机数作为 RequestID
@@ -409,7 +410,7 @@ class WebSocket extends EventEmitter {
 
     // 执行
     void fn() {
-      log.info('ws:send data $method; count $sendCount');
+      // log.info('ws:send data $method; count $sendCount');
       try {
         dataBuf = encodeData(method, protobuf.writeToBuffer(), rid);
         channel.sink.add(dataBuf);

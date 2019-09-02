@@ -67,6 +67,17 @@ class _ImageState extends State<Img> {
     });
   }
 
+  handleTapImg() {
+    showCupertinoDialog(
+      context: context,
+      builder: (context) {
+        return ImageViewer(
+          imageProviders: [CachedNetworkImageProvider(imgSrc)],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget placeholder = Container(
@@ -85,16 +96,7 @@ class _ImageState extends State<Img> {
     if (imgSrc.isNotEmpty) {
       child = GestureDetector(
         onTap: widget.hasTap
-          ? () {
-              showCupertinoDialog(
-                context: context,
-                builder: (context) {
-                  return ImageViewer(
-                    imageProviders: [CachedNetworkImageProvider(imgSrc)],
-                  );
-                },
-              );
-            }
+          ? handleTapImg
           : null,
         child: CachedNetworkImage(
           width: widget.width,

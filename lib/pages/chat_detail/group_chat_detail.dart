@@ -302,7 +302,7 @@ class _GroupChatDetailState extends State<GroupChatDetailPage> {
     });
   }
 
-  // 是否退��群聊
+  // 是否退群聊
   onConfirmDeleteChat() {
     showCupertinoModalPopup(
         builder: (BuildContext context) {

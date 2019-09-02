@@ -49,15 +49,16 @@ class QueueMsg {
   int contentType;
   String message;
   int actionTime;
-  QueueMsg(
-      {@required this.status,
-      @required this.chatID,
-      @required this.messageType,
-      @required this.contentType,
-      @required this.message,
-      @required this.actionTime,
-      this.fileID,
-      this.filePath});
+  QueueMsg({
+    @required this.status,
+    @required this.chatID,
+    @required this.messageType,
+    @required this.contentType,
+    @required this.message,
+    @required this.actionTime,
+    this.fileID,
+    this.filePath
+  });
 
   QueueMsg.fromMap(Map<String, dynamic> map) {
     status = map['status'];

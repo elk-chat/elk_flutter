@@ -70,98 +70,104 @@ class _LoginFormState extends State<LoginForm> {
       // 绑定
       child: BlocBuilder<LoginBloc, LoginState>(
         builder: (context, state) {
-          return Container(
-            padding: EdgeInsets.only(top: 30.0, right: 20.0, left: 20.0),
-            child: ListView(
-              children: <Widget>[
-                SizedBox(
-                  height: 30.0,
+          return Material(
+            child: Container(
+              padding: EdgeInsets.only(top: 30.0, right: 20.0, left: 20.0),
+              decoration: BoxDecoration(
+                // color: Colors.black,
+                image: DecorationImage(
+                  image: AssetImage('assets/img/bg_login.jpg'),
+                  fit: BoxFit.cover
                 ),
-                CircleAvatar(
-                  child: Image.asset('assets/img/origami.png'),
-                  maxRadius: 50,
-                  backgroundColor: Colors.transparent,
-                ),
-                SizedBox(
-                  height: 25.0,
-                ),
-                Stack(
-                  children: <Widget>[
-                    Container(
-                      height: 280,
-                      padding: EdgeInsets.all(10.0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(40.0)),
-                        color: Colors.white,
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          SizedBox(
-                            height: 10.0,
-                          ),
-                          SizedBox(
-                            height: 10.0,
-                          ),
-                          Container(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 20.0),
-                              child: TextField(
-                                  autocorrect: false,
-                                  onChanged: (val) {
-                                    setState(() {
-                                      _text = val;
-                                    });
-                                  },
-                                  controller: _usernameController,
-                                  focusNode: _usernameFocusNode,
-                                  textInputAction: TextInputAction.next,
-                                  onSubmitted: (term) {
-                                    FocusScope.of(context)
-                                        .requestFocus(_passwordFocusNode);
-                                  },
-                                  style: TextStyle(color: Colors.blue),
-                                  decoration: InputDecoration(
-                                      hintText: "用户名",
-                                      hintStyle: TextStyle(
-                                          color: Colors.blue.shade200),
-                                      border: InputBorder.none,
-                                      icon: Icon(
-                                        Icons.person_outline,
-                                        color: Colors.blue,
-                                      ),
-                                      suffixIcon: _text.isEmpty
-                                          ? null
-                                          : IconButton(
-                                              icon: Icon(
-                                                MaterialCommunityIcons
-                                                    .getIconData(
-                                                        'close-circle'),
-                                                color: Colors.black38,
-                                                size: 18,
-                                              ),
-                                              onPressed: () {
-                                                setState(() {
-                                                  _text = '';
-                                                });
-                                                WidgetsBinding.instance
-                                                    .addPostFrameCallback((_) =>
-                                                        _usernameController
-                                                            .clear());
-
-                                                FocusScope.of(context)
-                                                    .requestFocus(
-                                                        _usernameFocusNode);
-                                              })))),
-                          Container(
-                            child: Divider(
-                              color: Colors.blue.shade400,
+              ),
+              child: ListView(
+                children: <Widget>[
+                  SizedBox(
+                    height: 30.0,
+                  ),
+                  CircleAvatar(
+                    child: Image.asset('assets/img/logo_login.png'),
+                    maxRadius: 50,
+                    backgroundColor: Colors.transparent,
+                  ),
+                  SizedBox(
+                    height: 25.0,
+                  ),
+                  Stack(
+                    children: <Widget>[
+                      Container(
+                        // height: 280,
+                        padding: EdgeInsets.all(10.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            SizedBox(
+                              height: 10.0,
                             ),
-                            padding: EdgeInsets.only(
-                                left: 20.0, right: 20.0, bottom: 10.0),
-                          ),
-                          Container(
-                              padding: EdgeInsets.symmetric(horizontal: 20.0),
+                            SizedBox(
+                              height: 10.0,
+                            ),
+                            Container(
+                              // padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                              child: TextField(
+                                autocorrect: false,
+                                onChanged: (val) {
+                                  setState(() {
+                                    _text = val;
+                                  });
+                                },
+                                controller: _usernameController,
+                                focusNode: _usernameFocusNode,
+                                textInputAction: TextInputAction.next,
+                                onSubmitted: (term) {
+                                  FocusScope.of(context)
+                                    .requestFocus(_passwordFocusNode);
+                                },
+                                style: TextStyle(color: Colors.blue),
+                                decoration: InputDecoration(
+                                  hintText: "用户名",
+                                  hintStyle: TextStyle(
+                                      color: Colors.blue.shade200),
+                                  border: InputBorder.none,
+                                  icon: Icon(
+                                    Icons.person_outline,
+                                    color: Colors.blue,
+                                  ),
+                                  suffixIcon: _text.isEmpty
+                                      ? null
+                                      : IconButton(
+                                          icon: Icon(
+                                            MaterialCommunityIcons
+                                                .getIconData(
+                                                    'close-circle'),
+                                            color: Colors.black38,
+                                            size: 18,
+                                          ),
+                                          onPressed: () {
+                                            setState(() {
+                                              _text = '';
+                                            });
+                                            WidgetsBinding.instance
+                                                .addPostFrameCallback((_) =>
+                                                    _usernameController
+                                                        .clear());
+
+                                            FocusScope.of(context)
+                                                .requestFocus(
+                                                    _usernameFocusNode);
+                                          }
+                                        )
+                                      )
+                                    )
+                                  ),
+                            Container(
+                              child: Divider(
+                                color: Colors.blue.shade400,
+                              ),
+                              padding: EdgeInsets.only(bottom: 10.0),
+                            ),
+                            Container(
+                              // padding: EdgeInsets.symmetric(horizontal: 20.0),
                               child: TextField(
                                 controller: _passwordController,
                                 focusNode: _passwordFocusNode,
@@ -173,107 +179,117 @@ class _LoginFormState extends State<LoginForm> {
                                 obscureText: _obscureText,
                                 style: TextStyle(color: Colors.blue),
                                 decoration: InputDecoration(
-                                    hintText: "密码",
-                                    hintStyle:
-                                        TextStyle(color: Colors.blue.shade200),
-                                    border: InputBorder.none,
+                                  hintText: "密码",
+                                  hintStyle:
+                                      TextStyle(color: Colors.blue.shade200),
+                                  border: InputBorder.none,
+                                  icon: Icon(
+                                    Icons.lock_outline,
+                                    color: Colors.blue,
+                                  ),
+                                  suffixIcon: IconButton(
                                     icon: Icon(
-                                      Icons.lock_outline,
-                                      color: Colors.blue,
+                                      MaterialCommunityIcons.getIconData(
+                                          _obscureText
+                                              ? 'eye-off-outline'
+                                              : 'eye'),
+                                      color: Colors.black38,
+                                      size: 20,
                                     ),
-                                    suffixIcon: IconButton(
-                                        icon: Icon(
-                                          MaterialCommunityIcons.getIconData(
-                                              _obscureText
-                                                  ? 'eye-off-outline'
-                                                  : 'eye'),
-                                          color: Colors.black38,
-                                          size: 20,
-                                        ),
-                                        onPressed: () {
-                                          setState(() {
-                                            _obscureText = !_obscureText;
-                                          });
-                                        })),
-                              )),
-                          Container(
-                            child: Divider(
-                              color: Colors.blue.shade400,
+                                    onPressed: () {
+                                      setState(() {
+                                        _obscureText = !_obscureText;
+                                      });
+                                    }
+                                  )
+                                ),
+                              )
                             ),
-                            padding: EdgeInsets.only(left: 20.0, right: 20.0),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: <Widget>[
-                              GestureDetector(
+                            Container(
+                              child: Divider(
+                                color: Colors.blue.shade400,
+                              ),
+                              // padding: EdgeInsets.only(left: 20.0, right: 20.0),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: <Widget>[
+                                GestureDetector(
                                   onTap: () {
                                     HapticFeedback.mediumImpact();
                                     Navigator.push(
-                                        context,
-                                        CupertinoPageRoute(
-                                            builder: (BuildContext context) =>
-                                                FindLoginPwdPage()));
+                                      context,
+                                      CupertinoPageRoute(
+                                        builder: (BuildContext context) =>
+                                          FindLoginPwdPage()
+                                      )
+                                    );
                                   },
                                   child: Container(
-                                      padding: EdgeInsets.only(
-                                          top: 10.0, bottom: 10.0, right: 20.0),
-                                      child: Text(
-                                        "忘记密码？",
-                                        style: TextStyle(
-                                            color: Colors.redAccent,
-                                            fontSize: 14.0),
-                                      )))
-                            ],
-                          ),
-                          SizedBox(
-                            height: 10.0,
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      height: 300,
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: RaisedButton(
-                          onPressed: state is LoginLoading
-                              ? null
-                              : _onLoginButtonPressed,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(40.0)),
-                          child: Text(state is LoginLoading ? '登录中' : "登录",
-                              style: TextStyle(color: Colors.white)),
-                          color: Colors.blue,
+                                    padding: EdgeInsets.only(
+                                        top: 10.0, bottom: 10.0, right: 20.0),
+                                    child: Text(
+                                      "忘记密码？",
+                                      style: TextStyle(
+                                        color: Colors.blue,
+                                        fontSize: 14.0
+                                      ),
+                                    )
+                                  )
+                                )
+                              ],
+                            ),
+                            SizedBox(
+                              height: 10.0,
+                            ),
+                            Row(
+                              children: <Widget>[
+                                Expanded(
+                                  // height: 300,
+                                  child: CupertinoButton(
+                                    borderRadius: BorderRadius.circular(30),
+                                    onPressed: state is LoginLoading
+                                      ? null
+                                      : _onLoginButtonPressed,
+                                    // shape: RoundedRectangleBorder(
+                                    //     borderRadius: BorderRadius.circular(40.0)),
+                                    child: Text(
+                                      state is LoginLoading ? '登录中' : "登录",
+                                      style: TextStyle(color: Colors.white)
+                                    ),
+                                    color: Colors.blue,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 20),
+                            CupertinoButton(
+                              onPressed: () async {
+                                var result = await Navigator.push(
+                                    context,
+                                    CupertinoPageRoute(
+                                      builder: (BuildContext context) => RegisterPage(),
+                                    ));
+                                if (result != null) {
+                                  _usernameController.text = result['userName'];
+                                  _passwordController.text = result['password'];
+                                  setState(() {
+                                    _onLoginButtonPressed();
+                                  });
+                                }
+                              },
+                              child: Text(
+                                "注册",
+                                style: TextStyle(color: Colors.blue, fontSize: 14.0)
+                              ),
+                            )
+                          ],
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    SizedBox(height: 80),
-                    CupertinoButton(
-                      onPressed: () async {
-                        var result = await Navigator.push(
-                            context,
-                            CupertinoPageRoute(
-                              builder: (BuildContext context) => RegisterPage(),
-                            ));
-                        if (result != null) {
-                          _usernameController.text = result['userName'];
-                          _passwordController.text = result['password'];
-                          setState(() {
-                            _onLoginButtonPressed();
-                          });
-                        }
-                      },
-                      child: Text("或 注册新账号",
-                          style: TextStyle(color: Colors.blue, fontSize: 14.0)),
-                    )
-                  ],
-                )
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
           );
         },

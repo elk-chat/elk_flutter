@@ -2,6 +2,8 @@ import 'package:bubble/bubble.dart';
 import 'package:elk_chat/protocol/api_util/api_util.dart';
 
 import 'package:elk_chat/pages/chat_page/queue_msg.dart';
+import 'package:elk_chat/theme_cupertino.dart';
+import 'package:elk_chat/utils/cache.dart';
 import 'package:elk_chat/widgets/img.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -28,13 +30,8 @@ class MsgWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget avatar = Img(
-      height: 26.0,
-      width: 26.0,
-      // fileID: msg.avatarFileID,
-      title: msg.senderName,
-      type: 3,
-    );
+    /** 缓存头像，减少开销 */
+    Widget avatar = GetCacheAvatar(msg.senderName);
     Widget bubble = Container(
       constraints: BoxConstraints(
         maxWidth: MediaQuery.of(context).size.width * 0.7
@@ -43,7 +40,7 @@ class MsgWidget extends StatelessWidget {
         margin: const BubbleEdges.only(top: 10),
         alignment: isSelf ? Alignment.topRight : Alignment.topLeft,
         nip: isSelf ? BubbleNip.rightTop : BubbleNip.leftTop,
-        color: isSelf ? Color(0xffE1ECF4) : Colors.white,
+        color: isSelf ? Themes.myBubbleColor : Colors.white,
         child: ContentWidgetByType(
           isRead: isSelf ? isRead : null, 
           msg: msg, 
@@ -109,7 +106,7 @@ class ContentWidgetByType extends StatelessWidget {
         List<Widget> txtMsgGroup = [
           Flexible(
             child: Text(
-              '${msg.message} ${status != null ? status == QueueMsgStatus.loading ? '正在发送' : '发送失败' : ''}',
+              msg.message,
             ),
           )
         ];

@@ -263,7 +263,7 @@ class ChatHub {
         ..aOS(2, 'senderName')
         ..aOS(3, 'deletedMemeberName')
 
-        updateMessageChatDeleteMember： 移除���员
+        updateMessageChatDeleteMember： 移除员
 
 
         ..aInt64(1, 'chatID')
@@ -280,7 +280,7 @@ class ChatHub {
         ..aOS(2, 'senderName')
         ..a<Int64>(3, 'stateRead', $pb.PbFieldType.OU6, Int64.ZERO)
 
-        updateMessageChatReadMessage�� 消息已读
+        updateMessageChatReadMessage 消息已读
 
         ..aInt64(1, 'chatID')
         ..aOS(2, 'senderName')
@@ -314,7 +314,7 @@ class ChatHub {
       // 发消息，如果当前没有这个聊天，就创建
       eventName = CHEvent.SEND_MSG(res.chatID, res.messageID);
       // 未读+1，已读就在渲染里面加，如果未读，又渲染了的话 未读 -1
-      // 如果是自己的推送消息���不管
+      // 如果是自己的推送消息不管
       if (res.senderID != $CH.user.userID) {
         $WS.emit(CHEvent.INIT_CHAT_UNREAD_ALL,
             {'type': 'increase', 'chatID': res.chatID});

@@ -242,8 +242,10 @@ class ChatApi {
     });
   }
 
-  Future sendMsg(Int64 chatID, int contentType,
-      [String message, Int64 fileID]) async {
+  Future sendMsg(
+    Int64 chatID, int contentType,
+    [String message, Int64 fileID]
+  ) async {
     ChatSendMessageReq _ChatSendMessageReq = ChatSendMessageReq();
     ChatMessage _ChatMessage = ChatMessage();
     _ChatMessage.chatID = chatID;
@@ -260,7 +262,7 @@ class ChatApi {
 
     Completer _completer = Completer();
     sendChatMsg($WS.genRequestID(), _ChatSendMessageReq, (data) {
-      print('发送��息返回：$data');
+      // print('发送息返回：$data');
       if (data.hasError) {
         _completer.completeError(data.res);
       } else {

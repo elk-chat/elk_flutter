@@ -14,16 +14,17 @@ class EditProfilePage extends StatefulWidget {
 class _EditProfilePageState extends State<EditProfilePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-        centerTitle: true,
+    return CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(
+        middle: Text(widget.title),
       ),
-      body: Container(
-          child: CupertinoButton(
-              color: Colors.blue,
-              onPressed: onChangeAvatar,
-              child: Text('更换头像', style: TextStyle(color: Colors.white)))),
+      child: Container(
+        child: CupertinoButton(
+          color: Colors.blue,
+          onPressed: onChangeAvatar,
+          child: Text('更换头像', style: TextStyle(color: Colors.white))
+        )
+      ),
     );
   }
 

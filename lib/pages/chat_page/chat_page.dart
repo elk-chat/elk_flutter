@@ -4,6 +4,7 @@ import 'package:elk_chat/blocs/blocs.dart';
 import 'package:elk_chat/init_websocket.dart';
 import 'package:elk_chat/protocol/api_util/api_util.dart';
 import 'package:elk_chat/protocol/protobuf/koi.pb.dart';
+import 'package:elk_chat/utils/chat_msg_config.dart';
 import 'package:elk_chat/widgets/c_icon_button.dart';
 import 'package:elk_chat/widgets/flushbar.dart';
 import 'package:fixnum/fixnum.dart';
@@ -46,11 +47,14 @@ class _ChatWindowPageState extends State<ChatWindowPage> {
   final _textEditingController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
   FocusNode _unFocusNode;
-  final int PAGE_SIZE = 12;
-  final DateFormat dateFormat = DateFormat.Hm();
+  final DateFormat dateFormat = ChatMsgConfig.msgFormat;
+
+  static int PAGE_SIZE = 12;
+  static int INIT_PAGE = 2;
+  static int INIT_PAGE_SIZE = PAGE_SIZE * INIT_PAGE;
 
   Int64 avatarFileID;
-  int pageIndex = 0;
+  int pageIndex = INIT_PAGE;
   bool loading = true;
   bool hasReachedMax = false;
   Int64 pageSize;
@@ -222,14 +226,14 @@ class _ChatWindowPageState extends State<ChatWindowPage> {
         _chat.chatID,
         [1, 2, 4], // messageTypes
         null, //pageIndex
-        PAGE_SIZE, // pageSize
+        INIT_PAGE_SIZE, // pageSize
 
         stateBefore, //stateBefore,
         stateAfter, // stateAfter,
       );
       if (!mounted) return;
 
-      if (res.stateUpdates.length < PAGE_SIZE) {
+      if (res.stateUpdates.length < INIT_PAGE_SIZE) {
         hasReachedMax = true;
       }
       if (mounted) {
@@ -290,7 +294,7 @@ class _ChatWindowPageState extends State<ChatWindowPage> {
   onTyping() {
     if (typingTimer == null) {
       typingTimer = Timer(Duration(seconds: 1), () {
-        print('停止输入');
+        // print('停止输入');
         typingTimer = null;
       });
       $CH.chatApi.sendTyping(_chat.chatID);
@@ -389,7 +393,7 @@ class _ChatWindowPageState extends State<ChatWindowPage> {
             }
             // 如果是已经加载的消息
             if (index < queue_msgs.length) {
-              var queueMsg = queue_msgs[index];
+              QueueMsg queueMsg = queue_msgs[index];
               return QueueMsgBubble(
                 key: ValueKey(queueMsg.actionTime),
                 queueMsg: queueMsg,
@@ -404,7 +408,7 @@ class _ChatWindowPageState extends State<ChatWindowPage> {
               );
             }
 
-            var stateUpdate = msgs[index - queue_msgs.length];
+            StateUpdate stateUpdate = msgs[index - queue_msgs.length];
             return MsgBubble(
               key: ValueKey(stateUpdate.messageID),
               chat: widget.chat,
@@ -483,8 +487,7 @@ class _ChatWindowPageState extends State<ChatWindowPage> {
                 child: IconButton(
                   icon: Icon(MaterialCommunityIcons.getIconData('send')),
                   onPressed: () {
-                    onSendMessage(
-                        _textEditingController.text, ChatContentType.Text);
+                    onSendMessage(_textEditingController.text, ChatContentType.Text);
                   },
                   color: Colors.black45,
                 ),
@@ -506,20 +509,20 @@ class _ChatWindowPageState extends State<ChatWindowPage> {
   }
 
   focusInput() {
-    print('focus');
+    // print('focus');
     _focusNode.unfocus();
     FocusScope.of(context).requestFocus(_focusNode);
   }
 
   // 发送消息直接推送到列表，等返回再移除
-  // 文件上传得到���径
+  // 文件上传得到径
   onSendMessage(String msg, int contentType) async {
-    var message = msg.trim();
+    String message = msg.trim();
     if (message.isEmpty) {
       focusInput();
       return;
     }
-    var map = {
+    Map<String, dynamic> map = {
       'status': QueueMsgStatus.init,
       'chatID': _chat.chatID,
       'messageType': ChatMessageType.SendMessage,
@@ -590,12 +593,6 @@ class _ChatWindowPageState extends State<ChatWindowPage> {
                 onPressed: getImageFromGallery,
                 icon: Icon(MaterialCommunityIcons.getIconData('image')),
               ),
-              // IconButton(
-              //   iconSize: 33.0,
-              //   color: Colors.cyan,
-              //   onPressed: getFile, // 选择文件
-              //   icon: Icon(MaterialCommunityIcons.getIconData('file')),
-              // ),
             ],
           )
         ],

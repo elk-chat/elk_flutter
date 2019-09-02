@@ -8,10 +8,13 @@ import 'package:elk_chat/protocol/api_util/api_util.dart';
 
 import 'package:elk_chat/protocol/protobuf/koi.pb.dart';
 import 'package:elk_chat/blocs/blocs.dart';
+import 'package:elk_chat/theme_cupertino.dart';
+import 'package:elk_chat/utils/chat_msg_config.dart';
 import 'package:elk_chat/widgets/img.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'msg_widget.dart';
 import 'queue_msg.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
@@ -20,12 +23,12 @@ class QueueMsgBubble extends StatefulWidget {
   final DateFormat dateFormat;
   final Function remove;
 
-  QueueMsgBubble(
-      {Key key,
-      @required this.remove,
-      @required this.queueMsg,
-      @required this.dateFormat})
-      : super(key: key);
+  QueueMsgBubble({
+    Key key,
+    @required this.remove,
+    @required this.queueMsg,
+    @required this.dateFormat
+  }) : super(key: key);
 
   _QueueMsgBubbleState createState() => _QueueMsgBubbleState();
 }
@@ -72,10 +75,11 @@ class _QueueMsgBubbleState extends State<QueueMsgBubble> {
     }
     try {
       var res = await chatApi.sendMsg(
-          queueMsg.chatID, queueMsg.contentType, message, fileID);
+        queueMsg.chatID, queueMsg.contentType, message, fileID
+      );
 
       widget.remove();
-      print(res);
+      print('send res: ${res}');
     } catch (e) {
       setState(() {
         status = QueueMsgStatus.error;
@@ -137,20 +141,18 @@ class _QueueMsgBubbleState extends State<QueueMsgBubble> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Bubble(
-          alignment: Alignment.center,
-          color: Color.fromRGBO(212, 234, 244, 1.0),
-          child: Text(
-              widget.dateFormat.format(
-                  DateTime.fromMillisecondsSinceEpoch(queueMsg.actionTime)),
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 11.0)),
+          margin: const BubbleEdges.only(top: 10),
+          alignment: Alignment.topRight,
+          nip: BubbleNip.rightTop,
+          color: Themes.myBubbleColor,
+          // child: buildMsgContentByType(queueMsg)
+          child: ContentWidgetByType(
+            isRead: null, 
+            msg: queueMsg, 
+            status: status,
+            dateFormat: ChatMsgConfig.msgFormat
+          )
         ),
-        Bubble(
-            margin: const BubbleEdges.only(top: 10),
-            alignment: Alignment.topRight,
-            nip: BubbleNip.rightTop,
-            color: Color.fromRGBO(225, 255, 199, 1.0),
-            child: buildMsgContentByType(queueMsg)),
       ],
     );
   }
@@ -160,24 +162,36 @@ class _QueueMsgBubbleState extends State<QueueMsgBubble> {
 
     switch (queueMsg.contentType) {
       case ChatContentType.Text:
-        widget = Text(
-            '${queueMsg.message}  ${status == QueueMsgStatus.loading ? '正在发送' : '发送失败'}',
-            textAlign: TextAlign.right);
+        widget = Row(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text(
+              queueMsg.message,
+              textAlign: TextAlign.right
+            ),
+            Icon(
+              Icons.refresh,
+              // MaterialCommunityIcons.getIconData(isRead ? 'done_all' : 'done'),
+              size: 12.0,
+            )
+          ],
+        );
         break;
       case ChatContentType.Image:
         if (queueMsg.fileID == null) {
           widget = bytes != null
               ? Image.memory(bytes, width: 100.0, height: 100.0)
               : Container(
-                  child: Text('加载图片..'),
-                );
+                child: Text('加载图片..'),
+              );
         } else {
           widget = Img(
-              key: ValueKey(queueMsg.fileID),
-              fileID: queueMsg.fileID,
-              width: 100.0,
-              height: 100.0,
-              type: 3);
+            key: ValueKey(queueMsg.fileID),
+            fileID: queueMsg.fileID,
+            width: 100.0,
+            height: 100.0,
+            type: 3
+          );
         }
         break;
       case ChatContentType.Video:

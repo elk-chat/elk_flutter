@@ -54,7 +54,6 @@ dependencies:
       ref: bf9f57ee901c8ff0e2cdb0f7b911135820a86fc0
   photo_view: ^0.4.2
   fixnum: ^0.10.9
-  bubble: 1.1.9+1
   logging: 0.11.3+2
   flushbar: ^1.8.2
   fluttertoast: ^3.1.0

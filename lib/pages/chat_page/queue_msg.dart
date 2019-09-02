@@ -48,6 +48,7 @@ class QueueMsg {
   int messageType;
   int contentType;
   String message;
+  String senderName;
   int actionTime;
   QueueMsg({
     @required this.status,
@@ -66,6 +67,7 @@ class QueueMsg {
     messageType = map['messageType'];
     contentType = map['contentType'];
     message = map['message'];
+    senderName = map['senderName'];
     actionTime = DateTime.now().millisecondsSinceEpoch;
 
     if (contentType != ChatContentType.Text &&

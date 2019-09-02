@@ -527,6 +527,7 @@ class _ChatWindowPageState extends State<ChatWindowPage> {
       'chatID': _chat.chatID,
       'messageType': ChatMessageType.SendMessage,
       'contentType': ChatContentType.Text,
+      'senderName': $CH.user.userName,
       'message': message,
     };
     addMsgToQueue(map);
@@ -558,6 +559,7 @@ class _ChatWindowPageState extends State<ChatWindowPage> {
       'chatID': _chat.chatID,
       'messageType': ChatMessageType.SendMessage,
       'contentType': contentType,
+      'senderName': $CH.user.userName,
       'message': '',
       'filePath': new_file.path,
     };

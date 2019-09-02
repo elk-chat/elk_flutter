@@ -2,7 +2,6 @@
 
 import 'dart:io';
 
-import 'package:bubble/bubble.dart';
 import 'package:elk_chat/init_websocket.dart';
 import 'package:elk_chat/protocol/api_util/api_util.dart';
 
@@ -137,71 +136,61 @@ class _QueueMsgBubbleState extends State<QueueMsgBubble> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Bubble(
-          margin: const BubbleEdges.only(top: 10),
-          alignment: Alignment.topRight,
-          nip: BubbleNip.rightTop,
-          color: Themes.myBubbleColor,
-          // child: buildMsgContentByType(queueMsg)
-          child: ContentWidgetByType(
-            isRead: null, 
-            msg: queueMsg, 
-            status: status,
-            dateFormat: ChatMsgConfig.msgFormat
-          )
-        ),
-      ],
+    return MsgWidget(
+      isRead: null, 
+      isSelf: true, 
+      userName: queueMsg.senderName,
+      msg: queueMsg, 
+      status: status,
+      dateFormat: ChatMsgConfig.msgFormat
     );
   }
 
-  Widget buildMsgContentByType(QueueMsg queueMsg) {
-    Widget widget;
+  // Widget buildMsgContentByType(QueueMsg queueMsg) {
+  //   Widget widget;
 
-    switch (queueMsg.contentType) {
-      case ChatContentType.Text:
-        widget = Row(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Text(
-              queueMsg.message,
-              textAlign: TextAlign.right
-            ),
-            Icon(
-              Icons.refresh,
-              // MaterialCommunityIcons.getIconData(isRead ? 'done_all' : 'done'),
-              size: 12.0,
-            )
-          ],
-        );
-        break;
-      case ChatContentType.Image:
-        if (queueMsg.fileID == null) {
-          widget = bytes != null
-              ? Image.memory(bytes, width: 100.0, height: 100.0)
-              : Container(
-                child: Text('加载图片..'),
-              );
-        } else {
-          widget = Img(
-            key: ValueKey(queueMsg.fileID),
-            fileID: queueMsg.fileID,
-            width: 100.0,
-            height: 100.0,
-            type: 3
-          );
-        }
-        break;
-      case ChatContentType.Video:
-        widget = Text('视频', textAlign: TextAlign.right);
-        break;
-      default:
-        widget = Text('unprocess type ${queueMsg.contentType}',
-            textAlign: TextAlign.right);
-    }
+  //   switch (queueMsg.contentType) {
+  //     case ChatContentType.Text:
+  //       widget = Row(
+  //         mainAxisSize: MainAxisSize.min,
+  //         children: <Widget>[
+  //           Text(
+  //             queueMsg.message,
+  //             textAlign: TextAlign.right
+  //           ),
+  //           Icon(
+  //             Icons.refresh,
+  //             // MaterialCommunityIcons.getIconData(isRead ? 'done_all' : 'done'),
+  //             size: 12.0,
+  //           )
+  //         ],
+  //       );
+  //       break;
+  //     case ChatContentType.Image:
+  //       if (queueMsg.fileID == null) {
+  //         widget = bytes != null
+  //             ? Image.memory(bytes, width: 100.0, height: 100.0)
+  //             : Container(
+  //               child: Text('加载图片..'),
+  //             );
+  //       } else {
+  //         widget = Img(
+  //           key: ValueKey(queueMsg.fileID),
+  //           fileID: queueMsg.fileID,
+  //           width: 100.0,
+  //           height: 100.0,
+  //           type: 3
+  //         );
+  //       }
+  //       break;
+  //     case ChatContentType.Video:
+  //       widget = Text('视频', textAlign: TextAlign.right);
+  //       break;
+  //     default:
+  //       widget = Text('unprocess type ${queueMsg.contentType}',
+  //           textAlign: TextAlign.right);
+  //   }
 
-    return widget;
-  }
+  //   return widget;
+  // }
 }

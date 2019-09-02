@@ -1,4 +1,3 @@
-import 'package:bubble/bubble.dart';
 import 'package:elk_chat/protocol/api_util/api_util.dart';
 
 import 'package:elk_chat/pages/chat_page/queue_msg.dart';
@@ -33,21 +32,19 @@ class MsgWidget extends StatelessWidget {
     /** 缓存头像，减少开销 */
     Widget avatar = GetCacheAvatar(msg.senderName);
     Widget bubble = Container(
-      constraints: BoxConstraints(
-        maxWidth: MediaQuery.of(context).size.width * 0.7
-      ),
-      child: Bubble(
-        margin: const BubbleEdges.only(top: 10),
-        alignment: isSelf ? Alignment.topRight : Alignment.topLeft,
-        nip: isSelf ? BubbleNip.rightTop : BubbleNip.leftTop,
-        color: isSelf ? Themes.myBubbleColor : Colors.white,
-        child: ContentWidgetByType(
-          isRead: isSelf ? isRead : null, 
-          msg: msg, 
-          status: isSelf ? status : null,
-          dateFormat: dateFormat
-        )
-      ),
+      child: Row(
+        mainAxisAlignment: isSelf ? MainAxisAlignment.end : MainAxisAlignment.start,
+        children: <Widget>[
+          ContentWidgetByType(
+            isRead: isSelf ? isRead : null, 
+            msg: msg, 
+            isSelf: isSelf,
+            status: isSelf ? status : null,
+            textColor: isSelf ? Themes.myBubbleTextColor : Colors.black87,
+            dateFormat: dateFormat
+          )
+        ],
+      )
     );
     Widget offset = SizedBox(width: 8.0);
     List <Widget> msgItem = isSelf ? [
@@ -63,7 +60,7 @@ class MsgWidget extends StatelessWidget {
       crossAxisAlignment: isSelf ? CrossAxisAlignment.end : CrossAxisAlignment.start,
       children: <Widget>[
         Padding(
-          padding: EdgeInsets.all(5.0),
+          padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 5.0),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -80,10 +77,14 @@ class ContentWidgetByType extends StatelessWidget {
   final dynamic isRead;
   final QueueMsgStatus status;
   final DateFormat dateFormat;
+  final Color textColor;
+  final bool isSelf;
 
   const ContentWidgetByType({
     Key key, this.msg, this.isRead, this.status,
-    this.dateFormat
+    this.dateFormat,
+    this.isSelf,
+    this.textColor = Colors.black87,
   }) : super(key: key);
 
   @override
@@ -91,6 +92,7 @@ class ContentWidgetByType extends StatelessWidget {
     List<Widget> msgWidget = [];
     var dtime = msg.actionTime.toInt() * 1000;
     Widget timeTip = Container(
+      padding: EdgeInsets.symmetric(horizontal: 3.0),
       child: Text(
         // dateFormat.format(DateTime.fromMillisecondsSinceEpoch(dtime)),
         dateFormat.format(DateTime.fromMillisecondsSinceEpoch(dtime)),
@@ -107,15 +109,21 @@ class ContentWidgetByType extends StatelessWidget {
           Flexible(
             child: Text(
               msg.message,
+              style: TextStyle(
+                color: textColor,
+              ),
             ),
           )
         ];
         if(isRead != null) {
           txtMsgGroup.add(
-            Icon(
-              isRead ? Icons.done_all : Icons.done,
-              // MaterialCommunityIcons.getIconData(isRead ? 'done_all' : 'done'),
-              size: 12.0,
+            Padding(
+              padding: EdgeInsets.all(3.0),
+              child: Icon(
+                isRead ? Icons.done_all : Icons.done,
+                // MaterialCommunityIcons.getIconData(isRead ? 'done_all' : 'done'),
+                size: 12.0,
+              ),
             )
           );
         }
@@ -127,7 +135,18 @@ class ContentWidgetByType extends StatelessWidget {
             children: txtMsgGroup,
           )
         );
-        msgWidget.add(txtMsg);
+        msgWidget.add(
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+            constraints: BoxConstraints(
+              maxWidth: MediaQuery.of(context).size.width * 0.65
+            ),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(3.0)),
+              color: isSelf ? Themes.myBubbleColor : Colors.white,
+            ),
+            child: txtMsg
+          ));
         break;
       case ChatContentType.Image:
         msgWidget.add(

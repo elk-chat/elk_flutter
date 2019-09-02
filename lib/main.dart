@@ -10,6 +10,7 @@ import 'package:catcher/catcher_plugin.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:jpush_flutter/jpush_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app_config.dart';
@@ -60,6 +61,30 @@ void main() {
           SystemUiOverlayStyle(statusBarColor: Colors.transparent);
       SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
     }
+  }
+
+  JPush jpush = JPush();
+  jpush.addEventHandler(
+    // 接收通知回调方法。
+    onReceiveNotification: (Map<String, dynamic> message) async {
+      print("flutter onReceiveNotification: $message");
+    },
+    // 点击通知回调方法。
+    onOpenNotification: (Map<String, dynamic> message) async {
+      print("flutter onOpenNotification: $message");
+    },
+    // 接收自定义消息回调方法。
+    onReceiveMessage: (Map<String, dynamic> message) async {
+      print("flutter onReceiveMessage: $message");
+    },
+  );
+  if(Platform.isAndroid) {
+    jpush.setup(
+      appKey: "845e4cf18a9766b289679c1e",
+      // channel: "theChannel",
+      production: false,
+      debug: false, // 设置是否打印 debug 日志
+    );
   }
 
   start();

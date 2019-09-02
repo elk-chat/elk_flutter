@@ -158,11 +158,7 @@ class WebSocket extends EventEmitter {
     if (currentStatus != WSStatus.disconnected) {
       return channel;
     }
-    if (!is_reconnected) {
-      currentStatus = WSStatus.connecting;
-      WSStatusData payload = WSStatusData(type: currentStatus);
-      emit(WS_STATUS, payload);
-    }
+
     isLogined = false;
     // 重连的时候关闭之前的连接
     if (channel != null) {
@@ -176,7 +172,15 @@ class WebSocket extends EventEmitter {
     // if (method != 'HEARTBEAT_REQ') {
     //   this.heartBeat();
     // }
-    this.initConnection();
+
+    if (currentStatus != WSStatus.connecting) {
+      currentStatus = WSStatus.connecting;
+      this.initConnection();
+    }
+
+    WSStatusData payload = WSStatusData(type: currentStatus);
+    emit(WS_STATUS, payload);
+
     return channel;
   }
 
@@ -188,18 +192,25 @@ class WebSocket extends EventEmitter {
         _executeLoginedQueues();
         cb();
       };
+    } else if (!isLogined) {
+      print('init connection auth callback');
+      authCallback = () {
+        {
+          emit(B00006);
+        }
+      };
     }
     send(
-      method: 'InitConnectionReq',
-      protobuf: _InitConnectionReq,
-      hasTimeout: false,
-      queue: false,
-      cb: (data) {
-        print('init connection back data: $data');
-        if (!data.hasError) {
-          this.heartBeat();
-        }
-      });
+        method: 'InitConnectionReq',
+        protobuf: _InitConnectionReq,
+        hasTimeout: false,
+        queue: false,
+        cb: (data) {
+          print('init connection back data: $data');
+          if (!data.hasError) {
+            this.heartBeat();
+          }
+        });
   }
 
   /// 登录后，定时发送心跳包

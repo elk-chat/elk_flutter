@@ -20,7 +20,7 @@ class AuthApi {
     if (auth_info != null) {
       UserLoginResp loginResp = UserLoginResp.fromJson(auth_info);
       if (loginResp.token.isNotEmpty) {
-        $WS.setSSID(loginResp);
+        // $WS.setSSID(loginResp);
         $CH.setLoginResp(loginResp);
       }
       _completer.complete(loginResp);

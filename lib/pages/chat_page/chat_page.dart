@@ -21,7 +21,6 @@ import 'package:elk_chat/pages/chat_detail/chat_detail.dart';
 import 'package:intl/intl.dart';
 import 'msg_bubble.dart';
 import 'queue_msg.dart';
-import 'queue_msg_bubble.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 // 聊天窗口

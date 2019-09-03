@@ -144,7 +144,7 @@ class WebSocket extends EventEmitter {
         checkWebsocketConnect();
       } else if (result == AppLifecycleState.inactive) {
       } else if (result == AppLifecycleState.suspending) {
-        currentStatus = WSStatus.disconnected;
+        // currentStatus = WSStatus.disconnected;
       }
     });
     return createWebsocket();
@@ -168,9 +168,6 @@ class WebSocket extends EventEmitter {
         onError: _onError, onDone: _onDone, cancelOnError: false);
     reconnectCount++;
     log.info('ws:create websocket $reconnectCount');
-    // if (method != 'HEARTBEAT_REQ') {
-    //   this.heartBeat();
-    // }
 
     this.initConnection();
 
@@ -182,24 +179,27 @@ class WebSocket extends EventEmitter {
 
   // 初始化连接，在发所有请求之前，必须先发这个
   void initConnection([Function cb]) {
-    if (cb != null) {
-      authCallback = () {
+    if (currentStatus == WSStatus.connecting) {
+      print('connecting');
+      return;
+    }
+    print('init connection');
+    print('currentStatus $currentStatus');
+    currentStatus = WSStatus.connecting;
+    authCallback = () {
+      if (cb != null) {
+        print('登录后执行 _executeLoginedQueues');
         _executeLoginedQueues();
         cb();
-      };
-    } else if (!isLogined) {
-      print('init connection auth callback');
-      authCallback = () {
-        {
-          emit(B00006);
-        }
-      };
+      } else {
+        print('重新登录 B00006');
+        emit(B00006);
+      }
+    };
+    if (currentStatus == WSStatus.connected) {
+      return;
     }
-
-    if (currentStatus != WSStatus.connecting) {
-      currentStatus = WSStatus.connecting;
-      print('init connection');
-      send(
+    send(
         method: 'InitConnectionReq',
         protobuf: _InitConnectionReq,
         hasTimeout: false,
@@ -209,9 +209,7 @@ class WebSocket extends EventEmitter {
           if (!data.hasError) {
             this.heartBeat();
           }
-      });
-    }
-
+        });
   }
 
   /// 登录后，定时发送心跳包
@@ -354,25 +352,24 @@ class WebSocket extends EventEmitter {
 
   /// 发送请求
   /// 返回清除方法，通过执行可以清除
-  Function send({
-    String method,
-    dynamic protobuf,
-    WebsocketCallback cb,
-    // requestID: 通过  $WS.getRequestID() 生成，参数可选
-    BigInt requestID,
-    // 是否需要没网络时，返回
-    bool delay = false,
-    // 如果没有网络，是否放到队列中
-    bool queue = false,
-    // 是否需要登录
-    bool auth = true,
-    // 用于同一个方法但是多个请求
-    dynamic queueID = 0,
-    // 是��需要超时，如果是文件上传，这���需要设置为 false
-    bool hasTimeout = true,
-    // 是否响应回调
-    bool hasResponse = true
-  }) {
+  Function send(
+      {String method,
+      dynamic protobuf,
+      WebsocketCallback cb,
+      // requestID: 通过  $WS.getRequestID() 生成，参数可选
+      BigInt requestID,
+      // 是否需要没网络时，返回
+      bool delay = false,
+      // 如果没有网络，是否放到队列中
+      bool queue = false,
+      // 是否需要登录
+      bool auth = true,
+      // 用于同一个方法但是多个请求
+      dynamic queueID = 0,
+      // 是��需要超时，如果是文件上传，这���需要设置为 false
+      bool hasTimeout = true,
+      // 是否响应回调
+      bool hasResponse = true}) {
     method = stringUtil.getConstantCase(text: method);
     sendCount++;
     // 用时间戳和随机数作为 RequestID
@@ -541,7 +538,7 @@ class WebSocket extends EventEmitter {
 
     bool hasError = false;
     try {
-      // 解码数据
+      // 解���数据
       decodedData = decodeData(data);
       RequestID = decodedData['RequestID'];
       eventName = getEventName(RequestID);

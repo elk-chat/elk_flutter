@@ -1,5 +1,4 @@
 import 'package:elk_chat/protocol/protobuf/koi.pb.dart';
-import 'package:elk_chat/theme_cupertino.dart';
 import 'package:elk_chat/widgets/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';

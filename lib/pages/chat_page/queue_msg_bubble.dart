@@ -7,9 +7,7 @@ import 'package:elk_chat/protocol/api_util/api_util.dart';
 
 import 'package:elk_chat/protocol/protobuf/koi.pb.dart';
 import 'package:elk_chat/blocs/blocs.dart';
-import 'package:elk_chat/theme_cupertino.dart';
 import 'package:elk_chat/utils/chat_msg_config.dart';
-import 'package:elk_chat/widgets/img.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';

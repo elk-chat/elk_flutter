@@ -167,7 +167,7 @@ class ChatHub {
     lastMsgMap[chatID] = stateUpdate;
     // if (notInChatList) return;
     if (sortTimer != null) {
-      print('取消排序延迟200ms');
+      // print('取消排序延迟200ms');
       sortTimer?.cancel();
     }
     sortTimer = Timer(Duration(milliseconds: 200), () {

@@ -22,6 +22,7 @@ import 'package:intl/intl.dart';
 import 'msg_bubble.dart';
 import 'queue_msg.dart';
 import 'queue_msg_bubble.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 // 聊天窗口
 class ChatWindowPage extends StatefulWidget {
@@ -137,27 +138,25 @@ class _ChatWindowPageState extends State<ChatWindowPage> {
     var _ChatGetStateReadReq = ChatGetStateReadReq();
     _ChatGetStateReadReq.chatID = _chat.chatID;
     // 获取读到哪条，需要监听 stateRead 变化
+    unSupscription = $WS.on(CHEvent.ALL_MSG(_chat.chatID), handleReceiveMsg);
     getStateRead(_ChatGetStateReadReq, (data) {
       if (data.hasError) {
         // showFlushBar('获取未读 stateRead 失败: ${data.res}', context);
       } else {
         _stateRead = data.res;
-        print('未读 stateRead: ${data.res}');
-
-        readSubscription = $WS.on(CHEvent.READ_MSG(_chat.chatID), (res) {
-          _stateRead.stateRead =
-              res.updateMessage.updateMessageChatReadMessage.stateRead;
-          if (mounted) {
-            setState(() {
-              _stateRead = _stateRead;
-            });
-          }
-        });
+        readSubscription = $WS.on(CHEvent.READ_MSG(_chat.chatID), handleReadMsg);
         getMsgHistory(null, null);
       }
     });
+  }
 
-    unSupscription = $WS.on(CHEvent.ALL_MSG(_chat.chatID), handleReceiveMsg);
+  handleReadMsg(res) {
+    _stateRead.stateRead = res.updateMessage.updateMessageChatReadMessage.stateRead;
+    if (mounted) {
+      setState(() {
+        _stateRead = _stateRead;
+      });
+    }
   }
 
   handleReceiveMsg(res) {
@@ -258,7 +257,8 @@ class _ChatWindowPageState extends State<ChatWindowPage> {
   Future getImageFromGallery() async {
     try {
       File imageFile = await ImagePicker.pickImage(
-          source: ImageSource.gallery, imageQuality: 80);
+        source: ImageSource.gallery, imageQuality: 80
+      );
       onSendFile(ChatContentType.Image, imageFile);
     } catch (e) {
       var error = "图库选择图片出错 $e";
@@ -278,7 +278,7 @@ class _ChatWindowPageState extends State<ChatWindowPage> {
     }
   }
 
-  showError(String error) {
+  void showError(String error) {
     print(error);
 
     Fluttertoast.showToast(
@@ -292,7 +292,7 @@ class _ChatWindowPageState extends State<ChatWindowPage> {
     );
   }
 
-  onTyping() {
+  void onTyping() {
     if (typingTimer == null) {
       typingTimer = Timer(Duration(seconds: 1), () {
         // print('停止输入');
@@ -302,7 +302,7 @@ class _ChatWindowPageState extends State<ChatWindowPage> {
     }
   }
 
-  unFocus([data]) {
+  void unFocus([data]) {
     // 触摸收起键盘
     FocusScope.of(context).requestFocus(_unFocusNode);
     if (showAttachment) {
@@ -310,6 +310,144 @@ class _ChatWindowPageState extends State<ChatWindowPage> {
         showAttachment = false;
       });
     }
+  }
+
+  void focusInput() {
+    // print('focus');
+    _focusNode.unfocus();
+    FocusScope.of(context).requestFocus(_focusNode);
+  }
+
+  // 发送消息直接推送到列表，等返回再移除
+  // 文件上传得到径
+  void onSendMessage(String msg, int contentType) async {
+    String message = msg.trim();
+    if (message.isEmpty) {
+      focusInput();
+      return;
+    }
+    Map<String, dynamic> msgData = {
+      'status': QueueMsgStatus.init,
+      'chatID': _chat.chatID,
+      'messageType': ChatMessageType.SendMessage,
+      'contentType': ChatContentType.Text,
+      'senderName': $CH.user.userName,
+      'message': message,
+    };
+    // addMsgToQueue(msgData);
+    sendMSG(msgData);
+    _textEditingController.clear();
+  }
+
+  // 2. compress file and get file.
+  Future<File> compressAndGetFile(File file, String targetPath) async {
+    var result = await FlutterImageCompress.compressAndGetFile(
+      file.absolute.path,
+      targetPath,
+      // quality: 100,
+      minWidth: 960,
+      minHeight: 1280,
+    );
+
+    print(file.lengthSync());
+    print(result.lengthSync());
+
+    return result;
+  }
+
+  // 发送文件：图片/视频/文档等。。
+  void onSendFile(int contentType, File file) async {
+    if (file == null) return;
+    File newFile = await compressAndGetFile(file, file.path);
+    file = null;
+    // addMsgToQueue(sendMsgData);
+    sendFile(newFile.path, contentType, (fileID) {
+      Map sendMsgData = {
+        'status': QueueMsgStatus.init,
+        'chatID': _chat.chatID,
+        'messageType': ChatMessageType.SendMessage,
+        'contentType': contentType,
+        'senderName': $CH.user.userName,
+        'message': '',
+        'fileID': fileID
+        // 'filePath': newFile.path,
+      };
+      sendMSG(sendMsgData);
+    });
+  }
+
+  List<int> bytes;
+  // 发送文件：图片/视频/文件 etc
+  void sendFile(String filePath, int contentType, Function onUpdated) async {
+    bytes = await readFileBytesFromPath(filePath);
+    UtilityUploadReq utilityUploadReq = UtilityUploadReq();
+    utilityUploadReq.chatID = _chat.chatID;
+    utilityUploadReq.data = bytes;
+    utilityUploadReq.fileName = filePath.split('/').last;
+    utilityUploadReq.contentType = contentType;
+
+    switch (contentType) {
+      // 处理图片
+      case ChatContentType.Image:
+        var imageInfo = await getImageInfo(bytes);
+        utilityUploadReq.width = imageInfo.width;
+        utilityUploadReq.height = imageInfo.height;
+        imageInfo.dispose();
+        break;
+      default:
+    }
+
+    // if (contentType == ChatContentType.Image) {
+    //   // setState(() {});
+    //   // utilityUploadReq.caption = 'caption';
+    // }
+    uploadFile(utilityUploadReq, (data) async {
+      utilityUploadReq.clear();
+      if (data.hasError) {
+        print('上传文件错误 ${data.res}');
+      } else {
+        // sendMsg('', data.res.file.fileID);
+        if(onUpdated != null) onUpdated(data.res.file.fileID);
+        // sendMSG(msgData);
+        // 缓存图片
+        await DefaultCacheManager().putFile(data.res.file.uRL, bytes);
+        bytes = null;
+      }
+    });
+  }
+  readFileBytesFromPath(path) async {
+    File file = await File(path);
+    List<int> bytes = await file.readAsBytes();
+    return bytes;
+  }
+  // 获取图片宽高
+  getImageInfo(List<int> fileBytes) async {
+    var decodedImage = await decodeImageFromList(fileBytes);
+    return decodedImage;
+  }
+
+  // void addMsgToQueue(Map msgData) async {
+  //   sendMSG(msgData);
+  //   // QueueMsg _queueMsgItem = QueueMsg.fromMap(msgData);
+
+  //   // var list = [_queueMsgItem];
+  //   // list.addAll(queue_msgs);
+  //   // setState(() {
+  //   //   queue_msgs = list.toList();
+  //   // });
+  // }
+
+  void sendMSG(msgData) async {
+    var res = await $CH.chatApi.sendMsg(
+      _chat.chatID, msgData['contentType'], msgData['message'], msgData['fileID']
+    );
+    // try {
+    //   var res = await $CH.chatApi.sendMsg(
+    //     _chat.chatID, msgData['contentType'], msgData['message'], msgData['fileID']
+    //   );
+    // } catch (e) {
+    //   print('消息发送失败 $e');
+    // }
   }
 
   @override
@@ -506,117 +644,29 @@ class _ChatWindowPageState extends State<ChatWindowPage> {
     );
   }
 
-  focusInput() {
-    // print('focus');
-    _focusNode.unfocus();
-    FocusScope.of(context).requestFocus(_focusNode);
-  }
-
-  // 发送消息直接推送到列表，等返回再移除
-  // 文件上传得到径
-  onSendMessage(String msg, int contentType) async {
-    String message = msg.trim();
-    if (message.isEmpty) {
-      focusInput();
-      return;
-    }
-    Map<String, dynamic> map = {
-      'status': QueueMsgStatus.init,
-      'chatID': _chat.chatID,
-      'messageType': ChatMessageType.SendMessage,
-      'contentType': ChatContentType.Text,
-      'senderName': $CH.user.userName,
-      'message': message,
-    };
-    addMsgToQueue(map);
-    _textEditingController.clear();
-  }
-
-  // 2. compress file and get file.
-  Future<File> compressAndGetFile(File file, String targetPath) async {
-    var result = await FlutterImageCompress.compressAndGetFile(
-      file.absolute.path,
-      targetPath,
-      // quality: 100,
-      minWidth: 960,
-      minHeight: 1280,
-    );
-
-    print(file.lengthSync());
-    print(result.lengthSync());
-
-    return result;
-  }
-
-  // 发送文件：图片/视频/文档等。。
-  onSendFile(int contentType, File file) async {
-    if (file == null) return;
-    var new_file = await compressAndGetFile(file, file.path);
-    var map = {
-      'status': QueueMsgStatus.init,
-      'chatID': _chat.chatID,
-      'messageType': ChatMessageType.SendMessage,
-      'contentType': contentType,
-      'senderName': $CH.user.userName,
-      'message': '',
-      'filePath': new_file.path,
-    };
-    file = null;
-    addMsgToQueue(map);
-  }
-
-  addMsgToQueue(Map map) {
-    QueueMsg _queueMsgItem = QueueMsg.fromMap(map);
-
-    var list = [_queueMsgItem];
-    list.addAll(queue_msgs);
-    setState(() {
-      queue_msgs = list.toList();
-    });
-  }
-
-  // sendMsg(String message, [Int64 fileID]) async {
-  //   if (status != QueueMsgStatus.loading) {
-  //     setState(() {
-  //       status = QueueMsgStatus.loading;
-  //     });
-  //   }
-  //   try {
-  //     var res = await chatApi.sendMsg(
-  //       queueMsg.chatID, queueMsg.contentType, message, fileID
-  //     );
-
-  //     widget.remove();
-  //     print('send res: ${res}');
-  //   } catch (e) {
-  //     setState(() {
-  //       status = QueueMsgStatus.error;
-  //     });
-  //     print('发送失败 $e');
-  //   }
-  // }
-
   Widget buildAttachment() {
-    return Container(
-      child: Column(
-        children: <Widget>[
-          Row(
-            children: <Widget>[
-              IconButton(
-                iconSize: 36.0,
-                color: Colors.blueAccent,
-                onPressed: getImageFromCamera,
-                icon: Icon(MaterialCommunityIcons.getIconData('camera')),
-              ),
-              IconButton(
-                iconSize: 35.0,
-                color: Colors.purpleAccent,
-                onPressed: getImageFromGallery,
-                icon: Icon(MaterialCommunityIcons.getIconData('image')),
-              ),
-            ],
-          )
-        ],
+    return Material(
+      child: Container(
+        child: Column(
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                IconButton(
+                  iconSize: 36.0,
+                  color: Colors.blueAccent,
+                  onPressed: getImageFromCamera,
+                  icon: Icon(Icons.camera_alt),
+                ),
+                IconButton(
+                  iconSize: 35.0,
+                  color: Colors.purpleAccent,
+                  onPressed: getImageFromGallery,
+                  icon: Icon(Icons.photo),
+                ),
+              ],
+            )
+          ],
+        ),
       )
     );
   }

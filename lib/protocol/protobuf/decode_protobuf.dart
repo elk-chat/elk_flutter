@@ -206,6 +206,15 @@ decodeProto = (buffer) => proto.UserGetOptionReq.fromBuffer(buffer);
 } else if (sig == SigMapper['SIG_USER_GET_OPTION_RESP']) {
 decodeMethod ='SIG_USER_GET_OPTION_RESP';
 decodeProto = (buffer) => proto.UserGetOptionResp.fromBuffer(buffer);
+} else if (sig == SigMapper['SIG_DISCOVER_ITEM']) {
+decodeMethod ='SIG_DISCOVER_ITEM';
+decodeProto = (buffer) => proto.DiscoverItem.fromBuffer(buffer);
+} else if (sig == SigMapper['SIG_USER_GET_DISCOVER_ITEMS_REQ']) {
+decodeMethod ='SIG_USER_GET_DISCOVER_ITEMS_REQ';
+decodeProto = (buffer) => proto.UserGetDiscoverItemsReq.fromBuffer(buffer);
+} else if (sig == SigMapper['SIG_USER_GET_DISCOVER_ITEMS_RESP']) {
+decodeMethod ='SIG_USER_GET_DISCOVER_ITEMS_RESP';
+decodeProto = (buffer) => proto.UserGetDiscoverItemsResp.fromBuffer(buffer);
 } else if (sig == SigMapper['SIG_CONTACT_ADD_REQ']) {
 decodeMethod ='SIG_CONTACT_ADD_REQ';
 decodeProto = (buffer) => proto.ContactAddReq.fromBuffer(buffer);

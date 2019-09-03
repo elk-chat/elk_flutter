@@ -131,26 +131,7 @@ class _ChatWindowPageState extends State<ChatWindowPage> {
     });
   }
 
-  void init() {
-    _focusNode.addListener(onFocusChange);
-    _scrollController.addListener(_scrollListener);
-
-    var _ChatGetStateReadReq = ChatGetStateReadReq();
-    _ChatGetStateReadReq.chatID = _chat.chatID;
-    // 获取读到哪条，需要监听 stateRead 变化
-    unSupscription = $WS.on(CHEvent.ALL_MSG(_chat.chatID), handleReceiveMsg);
-    getStateRead(_ChatGetStateReadReq, (data) {
-      if (data.hasError) {
-        // showFlushBar('获取未读 stateRead 失败: ${data.res}', context);
-      } else {
-        _stateRead = data.res;
-        readSubscription = $WS.on(CHEvent.READ_MSG(_chat.chatID), handleReadMsg);
-        getMsgHistory(null, null);
-      }
-    });
-  }
-
-  handleReadMsg(res) {
+  void handleReadMsg(res) {
     _stateRead.stateRead = res.updateMessage.updateMessageChatReadMessage.stateRead;
     if (mounted) {
       setState(() {
@@ -159,7 +140,7 @@ class _ChatWindowPageState extends State<ChatWindowPage> {
     }
   }
 
-  handleReceiveMsg(res) {
+  void handleReceiveMsg(res) {
     if (res.messageType == ChatMessageType.ReadState) return;
     // 有新消息
     if (mounted) {
@@ -180,9 +161,30 @@ class _ChatWindowPageState extends State<ChatWindowPage> {
         chatMsgs = msgList;
       });
 
-      _scrollController.animateTo(0.0,
-          duration: Duration(milliseconds: 300), curve: Curves.easeOut);
+      _scrollController.animateTo(
+        0.0,
+        duration: Duration(milliseconds: 300), curve: Curves.easeOut
+      );
     }
+  }
+
+  void init() {
+    _focusNode.addListener(onFocusChange);
+    _scrollController.addListener(_scrollListener);
+
+    ChatGetStateReadReq chatGetStateReadReq = ChatGetStateReadReq();
+    chatGetStateReadReq.chatID = _chat.chatID;
+    // 获取读到哪条，需要监听 stateRead 变化
+    unSupscription = $WS.on(CHEvent.ALL_MSG(_chat.chatID), handleReceiveMsg);
+    getStateRead(chatGetStateReadReq, (data) {
+      if (data.hasError) {
+        // showFlushBar('获取未读 stateRead 失败: ${data.res}', context);
+      } else {
+        _stateRead = data.res;
+        readSubscription = $WS.on(CHEvent.READ_MSG(_chat.chatID), handleReadMsg);
+        getMsgHistory(null, null);
+      }
+    });
   }
 
   void onFocusChange() {
@@ -438,16 +440,16 @@ class _ChatWindowPageState extends State<ChatWindowPage> {
   // }
 
   void sendMSG(msgData) async {
-    var res = await $CH.chatApi.sendMsg(
-      _chat.chatID, msgData['contentType'], msgData['message'], msgData['fileID']
-    );
-    // try {
-    //   var res = await $CH.chatApi.sendMsg(
-    //     _chat.chatID, msgData['contentType'], msgData['message'], msgData['fileID']
-    //   );
-    // } catch (e) {
-    //   print('消息发送失败 $e');
-    // }
+    // var res = await $CH.chatApi.sendMsg(
+    //   _chat.chatID, msgData['contentType'], msgData['message'], msgData['fileID']
+    // );
+    try {
+      var res = await $CH.chatApi.sendMsg(
+        _chat.chatID, msgData['contentType'], msgData['message'], msgData['fileID']
+      );
+    } catch (e) {
+      print('消息发送失败 $e');
+    }
   }
 
   @override

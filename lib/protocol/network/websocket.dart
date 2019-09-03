@@ -143,10 +143,9 @@ class WebSocket extends EventEmitter {
       } else if (result == AppLifecycleState.resumed) {
         checkWebsocketConnect();
       } else if (result == AppLifecycleState.inactive) {
-      } else if (result == AppLifecycleState.suspending) {}
-      // app 退到后台，停止心跳包；用户回到 app，开始心跳包；
-      // 网络断开，停止心跳；网络连接，开始心跳；
-      // 开始心跳时，如果不知道已经断开，如何重连？
+      } else if (result == AppLifecycleState.suspending) {
+        currentStatus = WSStatus.disconnected;
+      }
     });
     return createWebsocket();
   }
@@ -173,10 +172,7 @@ class WebSocket extends EventEmitter {
     //   this.heartBeat();
     // }
 
-    if (currentStatus != WSStatus.connecting) {
-      currentStatus = WSStatus.connecting;
-      this.initConnection();
-    }
+    this.initConnection();
 
     WSStatusData payload = WSStatusData(type: currentStatus);
     emit(WS_STATUS, payload);
@@ -186,7 +182,6 @@ class WebSocket extends EventEmitter {
 
   // 初始化连接，在发所有请求之前，必须先发这个
   void initConnection([Function cb]) {
-    print('init connection');
     if (cb != null) {
       authCallback = () {
         _executeLoginedQueues();
@@ -200,7 +195,11 @@ class WebSocket extends EventEmitter {
         }
       };
     }
-    send(
+
+    if (currentStatus != WSStatus.connecting) {
+      currentStatus = WSStatus.connecting;
+      print('init connection');
+      send(
         method: 'InitConnectionReq',
         protobuf: _InitConnectionReq,
         hasTimeout: false,
@@ -210,7 +209,9 @@ class WebSocket extends EventEmitter {
           if (!data.hasError) {
             this.heartBeat();
           }
-        });
+      });
+    }
+
   }
 
   /// 登录后，定时发送心跳包
@@ -307,6 +308,7 @@ class WebSocket extends EventEmitter {
   void setSSID(UserLoginResp loginResp) {
     isLogined = true;
     setHeaderSSID(loginResp.sessionID);
+    print('setSSID');
     initConnection(() {
       emitUpdating();
     });

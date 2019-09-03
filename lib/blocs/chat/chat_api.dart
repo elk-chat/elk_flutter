@@ -11,7 +11,7 @@ class ChatApi {
       UserGetChatUserSuperscriptReq(); // 未读数
   ChatGetStateReadReq _ChatGetStateReadReq = ChatGetStateReadReq(); // 已读状态
   ChatCreateReq _ChatCreateReq = ChatCreateReq(); // 创建聊天
-  ChatUpdateProfileReq _ChatUpdateProfileReq = ChatUpdateProfileReq(); // 更新群聊信息
+  ChatUpdateProfileReq chatUpdateProfileReq = ChatUpdateProfileReq(); // 更新群聊信息
   ChatAddMemberReq _ChatAddMemberReq = ChatAddMemberReq(); // 添加聊天成员
   // ChatSendMessageReq _ChatSendMessageReq = ChatSendMessageReq(); // 发送消息
   ChatSyncChatStateMessagesReq _ChatSyncChatStateMessagesReq =
@@ -218,10 +218,10 @@ class ChatApi {
 
   Future updateProfile(Int64 chatID, String title, Int64 avatarFileID) async {
     Completer _completer = Completer();
-    _ChatUpdateProfileReq.title = title;
-    _ChatUpdateProfileReq.chatID = chatID;
-    _ChatUpdateProfileReq.avatarFileID = avatarFileID;
-    updateChatProfile(_ChatUpdateProfileReq, (data) {
+    chatUpdateProfileReq.title = title;
+    chatUpdateProfileReq.chatID = chatID;
+    chatUpdateProfileReq.avatarFileID = avatarFileID;
+    updateChatProfile(chatUpdateProfileReq, (data) {
       if (data.hasError) {
         _completer.completeError(data.res);
       } else {
@@ -247,18 +247,18 @@ class ChatApi {
     [String message, Int64 fileID]
   ) async {
     ChatSendMessageReq _ChatSendMessageReq = ChatSendMessageReq();
-    ChatMessage _ChatMessage = ChatMessage();
-    _ChatMessage.chatID = chatID;
-    _ChatMessage.contentType = contentType;
+    ChatMessage chatMessage = ChatMessage();
+    chatMessage.chatID = chatID;
+    chatMessage.contentType = contentType;
     if (message.isNotEmpty) {
-      _ChatMessage.message = message;
+      chatMessage.message = message;
     }
     if (contentType != ChatContentType.Text &&
         contentType != ChatContentType.Geo &&
         fileID != null) {
-      _ChatMessage.fileID = fileID;
+      chatMessage.fileID = fileID;
     }
-    _ChatSendMessageReq.chatMessage = _ChatMessage;
+    _ChatSendMessageReq.chatMessage = chatMessage;
 
     Completer _completer = Completer();
     sendChatMsg($WS.genRequestID(), _ChatSendMessageReq, (data) {

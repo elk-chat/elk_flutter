@@ -16,7 +16,7 @@ WebSocket initWS(
   ChatApi chatApi,
   ContactApi contactApi
 ) {
-  if ($WS == null) {
+  if ($WS != null) {
     print('调用了多次 initWS，请检查代码');
   }
   $WS = WebSocket(wsUrl, pingInterval, timeout);

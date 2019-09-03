@@ -218,6 +218,7 @@ const UserLoginReq$json = const {
     const {'1': 'Password', '3': 2, '4': 1, '5': 9, '10': 'Password'},
     const {'1': 'Token', '3': 3, '4': 1, '5': 9, '10': 'Token'},
     const {'1': 'ClientApplication', '3': 4, '4': 1, '5': 9, '10': 'ClientApplication'},
+    const {'1': 'ClientPlatform', '3': 5, '4': 1, '5': 9, '10': 'ClientPlatform'},
   ],
 };
 
@@ -449,6 +450,29 @@ const UserGetOptionResp$json = const {
   ],
 };
 
+const DiscoverItem$json = const {
+  '1': 'DiscoverItem',
+  '2': const [
+    const {'1': 'DiscoverID', '3': 1, '4': 1, '5': 3, '10': 'DiscoverID'},
+    const {'1': 'IconURL', '3': 2, '4': 1, '5': 9, '10': 'IconURL'},
+    const {'1': 'EntryURL', '3': 3, '4': 1, '5': 9, '10': 'EntryURL'},
+    const {'1': 'Remark', '3': 4, '4': 1, '5': 9, '10': 'Remark'},
+    const {'1': 'Sort', '3': 5, '4': 1, '5': 5, '10': 'Sort'},
+    const {'1': 'DiscoverType', '3': 6, '4': 1, '5': 5, '10': 'DiscoverType'},
+  ],
+};
+
+const UserGetDiscoverItemsReq$json = const {
+  '1': 'UserGetDiscoverItemsReq',
+};
+
+const UserGetDiscoverItemsResp$json = const {
+  '1': 'UserGetDiscoverItemsResp',
+  '2': const [
+    const {'1': 'DiscoverItems', '3': 1, '4': 3, '5': 11, '6': '.kproto.DiscoverItem', '10': 'DiscoverItems'},
+  ],
+};
+
 const ContactAddReq$json = const {
   '1': 'ContactAddReq',
   '2': const [
@@ -624,15 +648,16 @@ const ChatMessage$json = const {
   '1': 'ChatMessage',
   '2': const [
     const {'1': 'ChatID', '3': 1, '4': 1, '5': 3, '10': 'ChatID'},
-    const {'1': 'SenderName', '3': 2, '4': 1, '5': 9, '10': 'SenderName'},
-    const {'1': 'ContentType', '3': 3, '4': 1, '5': 5, '10': 'ContentType'},
-    const {'1': 'Message', '3': 4, '4': 1, '5': 9, '10': 'Message'},
-    const {'1': 'FileID', '3': 5, '4': 1, '5': 3, '10': 'FileID'},
-    const {'1': 'ActionTime', '3': 6, '4': 1, '5': 3, '10': 'ActionTime'},
-    const {'1': 'Markup', '3': 7, '4': 1, '5': 11, '6': '.kproto.Markup', '10': 'Markup'},
-    const {'1': 'ReplyState', '3': 8, '4': 1, '5': 4, '10': 'ReplyState'},
-    const {'1': 'ForwardChatID', '3': 9, '4': 1, '5': 3, '10': 'ForwardChatID'},
-    const {'1': 'ForwardState', '3': 10, '4': 1, '5': 4, '10': 'ForwardState'},
+    const {'1': 'ClientMessageID', '3': 2, '4': 1, '5': 4, '10': 'ClientMessageID'},
+    const {'1': 'SenderName', '3': 3, '4': 1, '5': 9, '10': 'SenderName'},
+    const {'1': 'ContentType', '3': 4, '4': 1, '5': 5, '10': 'ContentType'},
+    const {'1': 'Message', '3': 5, '4': 1, '5': 9, '10': 'Message'},
+    const {'1': 'FileID', '3': 6, '4': 1, '5': 3, '10': 'FileID'},
+    const {'1': 'ActionTime', '3': 7, '4': 1, '5': 3, '10': 'ActionTime'},
+    const {'1': 'Markup', '3': 8, '4': 1, '5': 11, '6': '.kproto.Markup', '10': 'Markup'},
+    const {'1': 'ReplyState', '3': 9, '4': 1, '5': 4, '10': 'ReplyState'},
+    const {'1': 'ForwardChatID', '3': 10, '4': 1, '5': 3, '10': 'ForwardChatID'},
+    const {'1': 'ForwardState', '3': 11, '4': 1, '5': 4, '10': 'ForwardState'},
   ],
 };
 
@@ -648,6 +673,7 @@ const ChatSendMessageResp$json = const {
   '2': const [
     const {'1': 'MessageID', '3': 1, '4': 1, '5': 4, '10': 'MessageID'},
     const {'1': 'State', '3': 2, '4': 1, '5': 4, '10': 'State'},
+    const {'1': 'ClientMessageID', '3': 3, '4': 1, '5': 4, '10': 'ClientMessageID'},
   ],
 };
 

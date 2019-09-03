@@ -8,12 +8,19 @@ export 'package:elk_chat/chat_hub/const.dart';
 WebSocket $WS;
 ChatHub $CH;
 
-WebSocket initWS(String wsUrl, int pingInterval, int timeout, AuthApi authApi,
-    ChatApi chatApi, ContactApi contactApi) {
+WebSocket initWS(
+  String wsUrl, 
+  int pingInterval, 
+  int timeout, 
+  AuthApi authApi,
+  ChatApi chatApi,
+  ContactApi contactApi
+) {
   if ($WS == null) {
-    $WS = WebSocket(wsUrl, pingInterval, timeout);
-    // ChatHub 消息分发处理
-    $CH = ChatHub($WS, authApi, chatApi, contactApi);
+    print('调用了多次 initWS，请检查代码');
   }
+  $WS = WebSocket(wsUrl, pingInterval, timeout);
+  // ChatHub 消息分发处理
+  $CH = ChatHub($WS, authApi, chatApi, contactApi);
   return $WS;
 }

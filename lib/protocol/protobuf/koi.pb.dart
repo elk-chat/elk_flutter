@@ -908,6 +908,7 @@ class UserLoginReq extends $pb.GeneratedMessage {
     ..aOS(2, 'password')
     ..aOS(3, 'token')
     ..aOS(4, 'clientApplication')
+    ..aOS(5, 'clientPlatform')
     ..hasRequiredFields = false
   ;
 
@@ -944,6 +945,11 @@ class UserLoginReq extends $pb.GeneratedMessage {
   set clientApplication($core.String v) { $_setString(3, v); }
   $core.bool hasClientApplication() => $_has(3);
   void clearClientApplication() => clearField(4);
+
+  $core.String get clientPlatform => $_getS(4, '');
+  set clientPlatform($core.String v) { $_setString(4, v); }
+  $core.bool hasClientPlatform() => $_has(4);
+  void clearClientPlatform() => clearField(5);
 }
 
 class UserLoginResp extends $pb.GeneratedMessage {
@@ -1857,6 +1863,105 @@ class UserGetOptionResp extends $pb.GeneratedMessage {
   void clearValue() => clearField(2);
 }
 
+class DiscoverItem extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('DiscoverItem', package: const $pb.PackageName('kproto'))
+    ..aInt64(1, 'discoverID')
+    ..aOS(2, 'iconURL')
+    ..aOS(3, 'entryURL')
+    ..aOS(4, 'remark')
+    ..a<$core.int>(5, 'sort', $pb.PbFieldType.O3)
+    ..a<$core.int>(6, 'discoverType', $pb.PbFieldType.O3)
+    ..hasRequiredFields = false
+  ;
+
+  DiscoverItem._() : super();
+  factory DiscoverItem() => create();
+  factory DiscoverItem.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory DiscoverItem.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  DiscoverItem clone() => DiscoverItem()..mergeFromMessage(this);
+  DiscoverItem copyWith(void Function(DiscoverItem) updates) => super.copyWith((message) => updates(message as DiscoverItem));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static DiscoverItem create() => DiscoverItem._();
+  DiscoverItem createEmptyInstance() => create();
+  static $pb.PbList<DiscoverItem> createRepeated() => $pb.PbList<DiscoverItem>();
+  static DiscoverItem getDefault() => _defaultInstance ??= create()..freeze();
+  static DiscoverItem _defaultInstance;
+
+  Int64 get discoverID => $_getI64(0);
+  set discoverID(Int64 v) { $_setInt64(0, v); }
+  $core.bool hasDiscoverID() => $_has(0);
+  void clearDiscoverID() => clearField(1);
+
+  $core.String get iconURL => $_getS(1, '');
+  set iconURL($core.String v) { $_setString(1, v); }
+  $core.bool hasIconURL() => $_has(1);
+  void clearIconURL() => clearField(2);
+
+  $core.String get entryURL => $_getS(2, '');
+  set entryURL($core.String v) { $_setString(2, v); }
+  $core.bool hasEntryURL() => $_has(2);
+  void clearEntryURL() => clearField(3);
+
+  $core.String get remark => $_getS(3, '');
+  set remark($core.String v) { $_setString(3, v); }
+  $core.bool hasRemark() => $_has(3);
+  void clearRemark() => clearField(4);
+
+  $core.int get sort => $_get(4, 0);
+  set sort($core.int v) { $_setSignedInt32(4, v); }
+  $core.bool hasSort() => $_has(4);
+  void clearSort() => clearField(5);
+
+  $core.int get discoverType => $_get(5, 0);
+  set discoverType($core.int v) { $_setSignedInt32(5, v); }
+  $core.bool hasDiscoverType() => $_has(5);
+  void clearDiscoverType() => clearField(6);
+}
+
+class UserGetDiscoverItemsReq extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('UserGetDiscoverItemsReq', package: const $pb.PackageName('kproto'))
+    ..hasRequiredFields = false
+  ;
+
+  UserGetDiscoverItemsReq._() : super();
+  factory UserGetDiscoverItemsReq() => create();
+  factory UserGetDiscoverItemsReq.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory UserGetDiscoverItemsReq.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  UserGetDiscoverItemsReq clone() => UserGetDiscoverItemsReq()..mergeFromMessage(this);
+  UserGetDiscoverItemsReq copyWith(void Function(UserGetDiscoverItemsReq) updates) => super.copyWith((message) => updates(message as UserGetDiscoverItemsReq));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static UserGetDiscoverItemsReq create() => UserGetDiscoverItemsReq._();
+  UserGetDiscoverItemsReq createEmptyInstance() => create();
+  static $pb.PbList<UserGetDiscoverItemsReq> createRepeated() => $pb.PbList<UserGetDiscoverItemsReq>();
+  static UserGetDiscoverItemsReq getDefault() => _defaultInstance ??= create()..freeze();
+  static UserGetDiscoverItemsReq _defaultInstance;
+}
+
+class UserGetDiscoverItemsResp extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('UserGetDiscoverItemsResp', package: const $pb.PackageName('kproto'))
+    ..pc<DiscoverItem>(1, 'discoverItems', $pb.PbFieldType.PM,DiscoverItem.create)
+    ..hasRequiredFields = false
+  ;
+
+  UserGetDiscoverItemsResp._() : super();
+  factory UserGetDiscoverItemsResp() => create();
+  factory UserGetDiscoverItemsResp.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory UserGetDiscoverItemsResp.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  UserGetDiscoverItemsResp clone() => UserGetDiscoverItemsResp()..mergeFromMessage(this);
+  UserGetDiscoverItemsResp copyWith(void Function(UserGetDiscoverItemsResp) updates) => super.copyWith((message) => updates(message as UserGetDiscoverItemsResp));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static UserGetDiscoverItemsResp create() => UserGetDiscoverItemsResp._();
+  UserGetDiscoverItemsResp createEmptyInstance() => create();
+  static $pb.PbList<UserGetDiscoverItemsResp> createRepeated() => $pb.PbList<UserGetDiscoverItemsResp>();
+  static UserGetDiscoverItemsResp getDefault() => _defaultInstance ??= create()..freeze();
+  static UserGetDiscoverItemsResp _defaultInstance;
+
+  $core.List<DiscoverItem> get discoverItems => $_getList(0);
+}
+
 class ContactAddReq extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('ContactAddReq', package: const $pb.PackageName('kproto'))
     ..aInt64(1, 'userID')
@@ -2566,15 +2671,16 @@ class MarkupElement extends $pb.GeneratedMessage {
 class ChatMessage extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('ChatMessage', package: const $pb.PackageName('kproto'))
     ..aInt64(1, 'chatID')
-    ..aOS(2, 'senderName')
-    ..a<$core.int>(3, 'contentType', $pb.PbFieldType.O3)
-    ..aOS(4, 'message')
-    ..aInt64(5, 'fileID')
-    ..aInt64(6, 'actionTime')
-    ..a<Markup>(7, 'markup', $pb.PbFieldType.OM, Markup.getDefault, Markup.create)
-    ..a<Int64>(8, 'replyState', $pb.PbFieldType.OU6, Int64.ZERO)
-    ..aInt64(9, 'forwardChatID')
-    ..a<Int64>(10, 'forwardState', $pb.PbFieldType.OU6, Int64.ZERO)
+    ..a<Int64>(2, 'clientMessageID', $pb.PbFieldType.OU6, Int64.ZERO)
+    ..aOS(3, 'senderName')
+    ..a<$core.int>(4, 'contentType', $pb.PbFieldType.O3)
+    ..aOS(5, 'message')
+    ..aInt64(6, 'fileID')
+    ..aInt64(7, 'actionTime')
+    ..a<Markup>(8, 'markup', $pb.PbFieldType.OM, Markup.getDefault, Markup.create)
+    ..a<Int64>(9, 'replyState', $pb.PbFieldType.OU6, Int64.ZERO)
+    ..aInt64(10, 'forwardChatID')
+    ..a<Int64>(11, 'forwardState', $pb.PbFieldType.OU6, Int64.ZERO)
     ..hasRequiredFields = false
   ;
 
@@ -2597,50 +2703,55 @@ class ChatMessage extends $pb.GeneratedMessage {
   $core.bool hasChatID() => $_has(0);
   void clearChatID() => clearField(1);
 
-  $core.String get senderName => $_getS(1, '');
-  set senderName($core.String v) { $_setString(1, v); }
-  $core.bool hasSenderName() => $_has(1);
-  void clearSenderName() => clearField(2);
+  Int64 get clientMessageID => $_getI64(1);
+  set clientMessageID(Int64 v) { $_setInt64(1, v); }
+  $core.bool hasClientMessageID() => $_has(1);
+  void clearClientMessageID() => clearField(2);
 
-  $core.int get contentType => $_get(2, 0);
-  set contentType($core.int v) { $_setSignedInt32(2, v); }
-  $core.bool hasContentType() => $_has(2);
-  void clearContentType() => clearField(3);
+  $core.String get senderName => $_getS(2, '');
+  set senderName($core.String v) { $_setString(2, v); }
+  $core.bool hasSenderName() => $_has(2);
+  void clearSenderName() => clearField(3);
 
-  $core.String get message => $_getS(3, '');
-  set message($core.String v) { $_setString(3, v); }
-  $core.bool hasMessage() => $_has(3);
-  void clearMessage() => clearField(4);
+  $core.int get contentType => $_get(3, 0);
+  set contentType($core.int v) { $_setSignedInt32(3, v); }
+  $core.bool hasContentType() => $_has(3);
+  void clearContentType() => clearField(4);
 
-  Int64 get fileID => $_getI64(4);
-  set fileID(Int64 v) { $_setInt64(4, v); }
-  $core.bool hasFileID() => $_has(4);
-  void clearFileID() => clearField(5);
+  $core.String get message => $_getS(4, '');
+  set message($core.String v) { $_setString(4, v); }
+  $core.bool hasMessage() => $_has(4);
+  void clearMessage() => clearField(5);
 
-  Int64 get actionTime => $_getI64(5);
-  set actionTime(Int64 v) { $_setInt64(5, v); }
-  $core.bool hasActionTime() => $_has(5);
-  void clearActionTime() => clearField(6);
+  Int64 get fileID => $_getI64(5);
+  set fileID(Int64 v) { $_setInt64(5, v); }
+  $core.bool hasFileID() => $_has(5);
+  void clearFileID() => clearField(6);
 
-  Markup get markup => $_getN(6);
-  set markup(Markup v) { setField(7, v); }
-  $core.bool hasMarkup() => $_has(6);
-  void clearMarkup() => clearField(7);
+  Int64 get actionTime => $_getI64(6);
+  set actionTime(Int64 v) { $_setInt64(6, v); }
+  $core.bool hasActionTime() => $_has(6);
+  void clearActionTime() => clearField(7);
 
-  Int64 get replyState => $_getI64(7);
-  set replyState(Int64 v) { $_setInt64(7, v); }
-  $core.bool hasReplyState() => $_has(7);
-  void clearReplyState() => clearField(8);
+  Markup get markup => $_getN(7);
+  set markup(Markup v) { setField(8, v); }
+  $core.bool hasMarkup() => $_has(7);
+  void clearMarkup() => clearField(8);
 
-  Int64 get forwardChatID => $_getI64(8);
-  set forwardChatID(Int64 v) { $_setInt64(8, v); }
-  $core.bool hasForwardChatID() => $_has(8);
-  void clearForwardChatID() => clearField(9);
+  Int64 get replyState => $_getI64(8);
+  set replyState(Int64 v) { $_setInt64(8, v); }
+  $core.bool hasReplyState() => $_has(8);
+  void clearReplyState() => clearField(9);
 
-  Int64 get forwardState => $_getI64(9);
-  set forwardState(Int64 v) { $_setInt64(9, v); }
-  $core.bool hasForwardState() => $_has(9);
-  void clearForwardState() => clearField(10);
+  Int64 get forwardChatID => $_getI64(9);
+  set forwardChatID(Int64 v) { $_setInt64(9, v); }
+  $core.bool hasForwardChatID() => $_has(9);
+  void clearForwardChatID() => clearField(10);
+
+  Int64 get forwardState => $_getI64(10);
+  set forwardState(Int64 v) { $_setInt64(10, v); }
+  $core.bool hasForwardState() => $_has(10);
+  void clearForwardState() => clearField(11);
 }
 
 class ChatSendMessageReq extends $pb.GeneratedMessage {
@@ -2673,6 +2784,7 @@ class ChatSendMessageResp extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('ChatSendMessageResp', package: const $pb.PackageName('kproto'))
     ..a<Int64>(1, 'messageID', $pb.PbFieldType.OU6, Int64.ZERO)
     ..a<Int64>(2, 'state', $pb.PbFieldType.OU6, Int64.ZERO)
+    ..a<Int64>(3, 'clientMessageID', $pb.PbFieldType.OU6, Int64.ZERO)
     ..hasRequiredFields = false
   ;
 
@@ -2699,6 +2811,11 @@ class ChatSendMessageResp extends $pb.GeneratedMessage {
   set state(Int64 v) { $_setInt64(1, v); }
   $core.bool hasState() => $_has(1);
   void clearState() => clearField(2);
+
+  Int64 get clientMessageID => $_getI64(2);
+  set clientMessageID(Int64 v) { $_setInt64(2, v); }
+  $core.bool hasClientMessageID() => $_has(2);
+  void clearClientMessageID() => clearField(3);
 }
 
 class ChatDeleteMessageReq extends $pb.GeneratedMessage {

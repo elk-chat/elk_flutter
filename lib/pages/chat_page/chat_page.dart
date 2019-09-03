@@ -60,9 +60,7 @@ class _ChatWindowPageState extends State<ChatWindowPage> {
   Int64 pageSize;
   Int64 allCount;
   // 消息列表，优化：滚动太多的时候，从内存中移除
-  List<StateUpdate> msgs = [];
-  // 新来的消息列表
-  List<StateUpdate> coming_msgs = [];
+  List<StateUpdate> chatMsgs = [];
 
   // 发送中或者待发送列表
   List<QueueMsg> queue_msgs = [];
@@ -159,31 +157,33 @@ class _ChatWindowPageState extends State<ChatWindowPage> {
       }
     });
 
-    unSupscription = $WS.on(CHEvent.ALL_MSG(_chat.chatID), (res) {
-      if (res.messageType == ChatMessageType.ReadState) return;
-      // 有新消息
-      if (mounted) {
-        List<StateUpdate> new_msgs = [];
-        for (var i in msgs) {
-          if (i.state == res.state) {
-            print('重复消息，可能是编辑 $res');
-          } else {
-            new_msgs.add(i);
-          }
+    unSupscription = $WS.on(CHEvent.ALL_MSG(_chat.chatID), handleReceiveMsg);
+  }
+
+  handleReceiveMsg(res) {
+    if (res.messageType == ChatMessageType.ReadState) return;
+    // 有新消息
+    if (mounted) {
+      List<StateUpdate> new_msgs = [];
+      for (var i in chatMsgs) {
+        if (i.state == res.state) {
+          print('重复消息，可能是编辑 $res');
+        } else {
+          new_msgs.add(i);
         }
-
-        // 是否可以取后面的进行优化？
-        List<StateUpdate> msgList = [res]..addAll(new_msgs);
-        // 根据 messageID 排序，这里的 messageID 有可能是重复的
-        msgList.sort((a, b) => b.messageID.compareTo(a.messageID));
-        setState(() {
-          msgs = msgList;
-        });
-
-        _scrollController.animateTo(0.0,
-            duration: Duration(milliseconds: 300), curve: Curves.easeOut);
       }
-    });
+
+      // 是否可以取后面的进行优化？
+      List<StateUpdate> msgList = [res]..addAll(new_msgs);
+      // 根据 messageID 排序，这里的 messageID 有可能是重复的
+      msgList.sort((a, b) => b.messageID.compareTo(a.messageID));
+      setState(() {
+        chatMsgs = msgList;
+      });
+
+      _scrollController.animateTo(0.0,
+          duration: Duration(milliseconds: 300), curve: Curves.easeOut);
+    }
   }
 
   void onFocusChange() {
@@ -202,7 +202,7 @@ class _ChatWindowPageState extends State<ChatWindowPage> {
     if ((_scrollController.offset + 50) >=
         _scrollController.position.maxScrollExtent) {
       // print("reach the top");
-      var firstMsg = msgs[msgs.length - 1];
+      var firstMsg = chatMsgs[chatMsgs.length - 1];
       print('first msg $firstMsg');
       getMsgHistory(
         firstMsg == null ? null : firstMsg.state,
@@ -241,7 +241,7 @@ class _ChatWindowPageState extends State<ChatWindowPage> {
           loading = false;
           pageIndex = pageIndex + 1;
           pageSize = res.paging.pageSize;
-          msgs = (msgs.toList())..addAll(res.stateUpdates);
+          chatMsgs = (chatMsgs.toList())..addAll(res.stateUpdates);
         });
       }
     } catch (e) {
@@ -282,13 +282,14 @@ class _ChatWindowPageState extends State<ChatWindowPage> {
     print(error);
 
     Fluttertoast.showToast(
-        msg: error,
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        timeInSecForIos: 1,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: 14.0);
+      msg: error,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.CENTER,
+      timeInSecForIos: 1,
+      backgroundColor: Colors.red,
+      textColor: Colors.white,
+      fontSize: 14.0
+    );
   }
 
   onTyping() {
@@ -373,7 +374,7 @@ class _ChatWindowPageState extends State<ChatWindowPage> {
   }
 
   Widget buildMessageList() {
-    int msgsLength = msgs.length + queue_msgs.length;
+    int msgsLength = chatMsgs.length;
     int allMsgsLength = msgsLength + (loading ? 1 : 0);
     return Flexible(
       child: GestureDetector(
@@ -392,33 +393,30 @@ class _ChatWindowPageState extends State<ChatWindowPage> {
               );
             }
             // 如果是已经加载的消息
-            if (index < queue_msgs.length) {
-              QueueMsg queueMsg = queue_msgs[index];
-              return QueueMsgBubble(
-                key: ValueKey(queueMsg.actionTime),
-                queueMsg: queueMsg,
-                dateFormat: dateFormat,
-                remove: () {
-                  setState(() {
-                    queue_msgs = queue_msgs
-                      .where((i) => i.actionTime != queueMsg.actionTime)
-                      .toList();
-                  });
-                }
-              );
-            }
+            // if (index < queue_msgs.length) {
+            //   QueueMsg queueMsg = queue_msgs[index];
+            //   return QueueMsgBubble(
+            //     key: ValueKey(queueMsg.actionTime),
+            //     queueMsg: queueMsg,
+            //     dateFormat: dateFormat,
+            //     remove: () {
+            //       setState(() {
+            //         queue_msgs = queue_msgs
+            //           .where((i) => i.actionTime != queueMsg.actionTime)
+            //           .toList();
+            //       });
+            //     }
+            //   );
+            // }
 
-            StateUpdate stateUpdate = msgs[index - queue_msgs.length];
+            StateUpdate stateUpdate = chatMsgs[index];
             return MsgBubble(
               key: ValueKey(stateUpdate.messageID),
               chat: widget.chat,
               dateFormat: dateFormat,
               getStateRead: () => _stateRead,
               setOwnStateRead: (stateRead) {
-                print('stateRead $stateRead');
-
                 _stateRead.ownStateRead = stateRead;
-                print('stateReadAll $_stateRead');
               },
               userName: $CH.user.userName,
               isSelf: stateUpdate.senderID == $CH.user.userID,
@@ -576,6 +574,27 @@ class _ChatWindowPageState extends State<ChatWindowPage> {
       queue_msgs = list.toList();
     });
   }
+
+  // sendMsg(String message, [Int64 fileID]) async {
+  //   if (status != QueueMsgStatus.loading) {
+  //     setState(() {
+  //       status = QueueMsgStatus.loading;
+  //     });
+  //   }
+  //   try {
+  //     var res = await chatApi.sendMsg(
+  //       queueMsg.chatID, queueMsg.contentType, message, fileID
+  //     );
+
+  //     widget.remove();
+  //     print('send res: ${res}');
+  //   } catch (e) {
+  //     setState(() {
+  //       status = QueueMsgStatus.error;
+  //     });
+  //     print('发送失败 $e');
+  //   }
+  // }
 
   Widget buildAttachment() {
     return Container(

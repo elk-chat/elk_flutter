@@ -151,6 +151,7 @@ message UserLoginReq {
   string Token = 3;
   string ClientApplication = 4;
   string ClientPlatform = 5;
+  string JPushRegistrationID = 6;
 }
 
 message UserLoginResp {

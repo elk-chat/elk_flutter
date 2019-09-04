@@ -219,6 +219,7 @@ const UserLoginReq$json = const {
     const {'1': 'Token', '3': 3, '4': 1, '5': 9, '10': 'Token'},
     const {'1': 'ClientApplication', '3': 4, '4': 1, '5': 9, '10': 'ClientApplication'},
     const {'1': 'ClientPlatform', '3': 5, '4': 1, '5': 9, '10': 'ClientPlatform'},
+    const {'1': 'JPushRegistrationID', '3': 6, '4': 1, '5': 9, '10': 'JPushRegistrationID'},
   ],
 };
 

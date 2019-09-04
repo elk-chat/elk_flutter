@@ -200,16 +200,17 @@ class WebSocket extends EventEmitter {
       return;
     }
     send(
-        method: 'InitConnectionReq',
-        protobuf: _InitConnectionReq,
-        hasTimeout: false,
-        queue: false,
-        cb: (data) {
-          print('init connection back data: $data');
-          if (!data.hasError) {
-            this.heartBeat();
-          }
-        });
+      method: 'InitConnectionReq',
+      protobuf: _InitConnectionReq,
+      hasTimeout: false,
+      queue: false,
+      cb: (data) {
+        print('init connection back data: $data');
+        if (!data.hasError) {
+          this.heartBeat();
+        }
+      }
+    );
   }
 
   /// 登录后，定时发送心跳包

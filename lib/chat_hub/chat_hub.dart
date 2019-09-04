@@ -1,6 +1,7 @@
 // chathub
 
 import 'dart:async';
+import 'dart:io';
 
 import 'package:elk_chat/init_websocket.dart';
 import 'package:elk_chat/protocol/network/websocket.dart';
@@ -43,8 +44,10 @@ class ChatHub {
   // 文件上传映射，选择文件，获取本地 path，开始上传，上传成功，移除
   Map<Int64, dynamic> uploadFileQueueMap = {};
 
-  ChatHub(WebSocket $WS, AuthApi authApi, ChatApi chatApi,
-      ContactApi contactApi) {
+  ChatHub(
+    WebSocket $WS, AuthApi authApi, ChatApi chatApi,
+    ContactApi contactApi
+  ) {
     _$WS = $WS;
     _authApi = authApi;
     _chatApi = chatApi;

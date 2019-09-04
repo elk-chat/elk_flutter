@@ -909,6 +909,7 @@ class UserLoginReq extends $pb.GeneratedMessage {
     ..aOS(3, 'token')
     ..aOS(4, 'clientApplication')
     ..aOS(5, 'clientPlatform')
+    ..aOS(6, 'jPushRegistrationID')
     ..hasRequiredFields = false
   ;
 
@@ -950,6 +951,11 @@ class UserLoginReq extends $pb.GeneratedMessage {
   set clientPlatform($core.String v) { $_setString(4, v); }
   $core.bool hasClientPlatform() => $_has(4);
   void clearClientPlatform() => clearField(5);
+
+  $core.String get jPushRegistrationID => $_getS(5, '');
+  set jPushRegistrationID($core.String v) { $_setString(5, v); }
+  $core.bool hasJPushRegistrationID() => $_has(5);
+  void clearJPushRegistrationID() => clearField(6);
 }
 
 class UserLoginResp extends $pb.GeneratedMessage {

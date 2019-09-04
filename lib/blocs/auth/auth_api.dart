@@ -5,12 +5,14 @@ import 'package:meta/meta.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:elk_chat/init_websocket.dart';
 import 'package:elk_chat/protocol/api_util/api_util.dart';
+import 'package:elk_chat/jpush/jpush.dart';
 
 class AuthApi {
   final String AUTH_INFO = 'AUTH_INFO';
   SharedPreferences prefs;
   AuthApi({@required this.prefs});
-  final UserLoginReq _UserLoginReq = UserLoginReq();
+  final UserLoginReq userLoginReq = UserLoginReq();
+  JPushHelper jpushHelper = JPushHelper();
 
   // 获取当前登录账户信息，已保存账户列表
   Future<dynamic> getAuthInfo() async {
@@ -38,19 +40,21 @@ class AuthApi {
     if (userName.isEmpty || password.isEmpty) {
       throw '用户名或密码必填';
     }
-    _UserLoginReq.clear();
-    _UserLoginReq.userName = userName;
-    _UserLoginReq.password = password;
+    userLoginReq.clear();
+    userLoginReq.userName = userName;
+    userLoginReq.password = password;
     return handleLogin();
   }
 
-  handleLogin([String token]) {
+  handleLogin([String token]) async {
     if (token != null) {
-      _UserLoginReq.clear();
-      _UserLoginReq.token = token;
+      userLoginReq.clear();
+      userLoginReq.token = token;
     }
     Completer _completer = Completer();
-    login(_UserLoginReq, (data) {
+    // 添加极光推送的 registerID
+    userLoginReq.jPushRegistrationID = await jpushHelper.getJpushRegisterID();
+    login(userLoginReq, (data) {
       if (data.hasError) {
         _completer.completeError(data.res);
       } else {

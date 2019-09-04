@@ -10,7 +10,6 @@ import 'package:catcher/catcher_plugin.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:jpush_flutter/jpush_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app_config.dart';
@@ -46,7 +45,7 @@ void main() {
     final contactApi = ContactApi();
     final chatApi = ChatApi();
 
-    var App = MyApp(authApi: authApi, chatApi: chatApi, contactApi: contactApi);
+    var App = ElkChat(authApi: authApi, chatApi: chatApi, contactApi: contactApi);
 
     try {
       // 正式环境中 assert(1 == 2) 不会执行，所以不会报错
@@ -63,49 +62,25 @@ void main() {
     }
   }
 
-  JPush jpush = JPush();
-  jpush.addEventHandler(
-    // 接收通知回调方法。
-    onReceiveNotification: (Map<String, dynamic> message) async {
-      print("flutter onReceiveNotification: $message");
-    },
-    // 点击通知回调方法。
-    onOpenNotification: (Map<String, dynamic> message) async {
-      print("flutter onOpenNotification: $message");
-    },
-    // 接收自定义消息回调方法。
-    onReceiveMessage: (Map<String, dynamic> message) async {
-      print("flutter onReceiveMessage: $message");
-    },
-  );
-  if(Platform.isAndroid) {
-    jpush.setup(
-      appKey: "845e4cf18a9766b289679c1e",
-      // channel: "theChannel",
-      production: false,
-      debug: false, // 设置是否打印 debug 日志
-    );
-  }
-
   start();
 }
 
-class MyApp extends StatefulWidget {
+class ElkChat extends StatefulWidget {
   final AuthApi authApi;
   final ChatApi chatApi;
   final ContactApi contactApi;
 
-  MyApp(
+  ElkChat(
       {Key key,
       @required this.authApi,
       @required this.chatApi,
       @required this.contactApi})
       : super(key: key);
 
-  _MyAppState createState() => _MyAppState();
+  _ElkChatState createState() => _ElkChatState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _ElkChatState extends State<ElkChat> {
   @override
   void initState() {
     super.initState();
@@ -130,6 +105,7 @@ class _MyAppState extends State<MyApp> {
     $WS.clear();
     super.dispose();
   }
+
 
   @override
   Widget build(BuildContext context) {

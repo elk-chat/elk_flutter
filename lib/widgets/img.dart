@@ -29,12 +29,14 @@ class Img extends StatefulWidget {
   final Int64 fileID;
   final String title;
   final bool hasTap;
+  final bool circle;
 
   Img({
     Key key,
     this.type = 2,
     this.fileID,
     this.title,
+    this.circle = false,
     this.hasTap = false,
     @required this.width,
     @required this.height
@@ -92,9 +94,9 @@ class _ImageState extends State<Img> {
         )
       )
     );
-    Widget child;
+    Widget imgResWidget;
     if (imgSrc.isNotEmpty) {
-      child = GestureDetector(
+      imgResWidget = GestureDetector(
         onTap: widget.hasTap
           ? handleTapImg
           : null,
@@ -107,26 +109,29 @@ class _ImageState extends State<Img> {
         )
       );
     } else {
-      // child = placeholder;
-      child = widget.title != null && widget.title.length > 0 ? Container(
-        width: widget.width,
-        height: widget.height,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(5.0)),
-          color: Themes.themeColor,
-        ),
-        child: Center(
-          child: Text(widget.title[0].toUpperCase(),
-            style: TextStyle(
-              fontSize: widget.height / 1.5, 
-              color: Colors.white,
-              fontWeight: FontWeight.w500
-            ),
+      imgResWidget = widget.title != null && widget.title.length > 0 ? Center(
+        child: Text(widget.title[0].toUpperCase(),
+          style: TextStyle(
+            fontSize: widget.height / 1.8, 
+            color: Colors.white,
+            fontWeight: FontWeight.w500
           ),
         ),
       ) : placeholder;
     }
 
-    return child;
+    Widget container = Container(
+      width: widget.width,
+      height: widget.height,
+      decoration: BoxDecoration(
+        // borderRadius: BorderRadius.all(Radius.circular(5.0)),
+        color: Themes.themeColor,
+      ),
+      child: imgResWidget,
+    );
+
+    return widget.circle ? ClipOval(
+      child: container,
+    ) : container;
   }
 }

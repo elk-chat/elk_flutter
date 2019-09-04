@@ -137,12 +137,12 @@ class ContentWidgetByType extends StatelessWidget {
         );
         msgWidget.add(
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+            padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
             constraints: BoxConstraints(
               maxWidth: MediaQuery.of(context).size.width * 0.65
             ),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(3.0)),
+              borderRadius: BorderRadius.all(Radius.circular(4.0)),
               color: isSelf ? Themes.myBubbleColor : Colors.white,
             ),
             child: txtMsg

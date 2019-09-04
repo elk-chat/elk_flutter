@@ -75,6 +75,7 @@ class _ContactListState extends State<ContactList> {
                 return ContactWidget(
                   key: ValueKey(contact.userID),
                   hasCheckbox: widget.hasCheckbox,
+                  divid: true,
                   onChange: (value, contact) {
                     checkedCache[contact.userID] = value;
                     widget.onChange(value, contact);

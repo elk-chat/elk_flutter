@@ -1,4 +1,4 @@
-import 'package:myapp/software.dart';
+import 'package:elk_chat/update/software.dart';
 import 'package:http/http.dart';
 import 'dart:convert';
 import 'package:flutter_downloader/flutter_downloader.dart';

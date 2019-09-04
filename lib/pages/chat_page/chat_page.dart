@@ -19,6 +19,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:elk_chat/pages/chat_detail/chat_detail.dart';
 
 import 'package:intl/intl.dart';
+import 'chat_msg_render.dart';
 import 'msg_bubble.dart';
 import 'queue_msg.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -500,7 +501,15 @@ class _ChatWindowPageState extends State<ChatWindowPage> {
           children: <Widget>[
             Column(
               children: <Widget>[
-                buildMessageList(),
+                ChatMsgRender(
+                  onTap: unFocus,
+                  controller: _scrollController,
+                  loading: loading,
+                  chat: _chat,
+                  stateRead: _stateRead.ownStateRead,
+                  user: $CH.user,
+                  chatMsgs: chatMsgs,
+                ),
                 buildInput(),
                 // (showSticker ? buildSticker() : Container()),
                 (showAttachment ? buildAttachment() : Container()),
@@ -512,60 +521,92 @@ class _ChatWindowPageState extends State<ChatWindowPage> {
     );
   }
 
-  Widget buildMessageList() {
-    int msgsLength = chatMsgs.length;
-    int allMsgsLength = msgsLength + (loading ? 1 : 0);
-    return Flexible(
-      child: GestureDetector(
-        behavior: HitTestBehavior.translucent,
-        onTap: unFocus,
-        child: ListView.builder(
-          physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.all(10.0),
-          itemCount: allMsgsLength,
-          reverse: true,
-          controller: _scrollController,
-          itemBuilder: (context, index) {
-            if (loading && index == msgsLength) {
-              return CupertinoActivityIndicator(
-                radius: 10,
-              );
-            }
-            // 如果是已经加载的消息
-            // if (index < queue_msgs.length) {
-            //   QueueMsg queueMsg = queue_msgs[index];
-            //   return QueueMsgBubble(
-            //     key: ValueKey(queueMsg.actionTime),
-            //     queueMsg: queueMsg,
-            //     dateFormat: dateFormat,
-            //     remove: () {
-            //       setState(() {
-            //         queue_msgs = queue_msgs
-            //           .where((i) => i.actionTime != queueMsg.actionTime)
-            //           .toList();
-            //       });
-            //     }
-            //   );
-            // }
+  // static DateTime today = DateTime.now();
+  // int nowTime = today.millisecondsSinceEpoch;
+  // var todayDate = DateTime.to;
+  // int oneDayTime = 86400 * 1000;
+  // int timeDisplayDelay = 5 * 60;
 
-            StateUpdate stateUpdate = chatMsgs[index];
-            return MsgBubble(
-              key: ValueKey(stateUpdate.messageID),
-              chat: widget.chat,
-              dateFormat: dateFormat,
-              getStateRead: () => _stateRead,
-              setOwnStateRead: (stateRead) {
-                _stateRead.ownStateRead = stateRead;
-              },
-              userName: $CH.user.userName,
-              isSelf: stateUpdate.senderID == $CH.user.userID,
-              stateUpdate: stateUpdate,
-            );
-          },
-        )
-      ),
-    );
-  }
+  // timeFilter(time) {
+  //   var _time = time * 1000;
+  //   var currTimeDate = new Date(_time);
+  //   var isTodayTime = currTimeDate.getDate() - todayDate.getDate() == 0;
+  //   var dateDiff = nowTime - _time;
+  //   var format = 'hh:mm';
+  //   var prefix = '';
+  //   if (isTodayTime && dateDiff < oneDayTime) {
+  //     prefix = '今天';
+  //   } else if (dateDiff < oneDayTime * 2) {
+  //     prefix = '昨天';
+  //   } else if (dateDiff < oneDayTime * 3) {
+  //     prefix = '前天';
+  //   } else if (dateDiff >= oneDayTime * 3) {
+  //     format = 'YYYY-MM-DD hh:mm';
+  //   }
+  //   return prefix.isNotEmpty ? prefix + DateFormat(_time, format) : '';
+  // }
+
+  // Widget buildMessageList() {
+  //   int msgsLength = chatMsgs.length;
+  //   int allMsgsLength = msgsLength + (loading ? 1 : 0);
+
+  //   // 时间提示
+  //   var prevTime;
+    
+  //   return Flexible(
+  //     child: GestureDetector(
+  //       behavior: HitTestBehavior.translucent,
+  //       onTap: unFocus,
+  //       child: ListView.builder(
+  //         physics: const BouncingScrollPhysics(),
+  //         padding: const EdgeInsets.all(10.0),
+  //         itemCount: allMsgsLength,
+  //         reverse: true,
+  //         controller: _scrollController,
+  //         itemBuilder: (context, index) {
+  //           if (loading && index == msgsLength) {
+  //             return CupertinoActivityIndicator(
+  //               radius: 10,
+  //             );
+  //           }
+  //           StateUpdate stateUpdate = chatMsgs[index];
+
+  //           Widget bubble = MsgBubble(
+  //             key: ValueKey(stateUpdate.messageID),
+  //             chat: widget.chat,
+  //             dateFormat: dateFormat,
+  //             getStateRead: () => _stateRead,
+  //             setOwnStateRead: (stateRead) {
+  //               _stateRead.ownStateRead = stateRead;
+  //             },
+  //             userName: $CH.user.userName,
+  //             isSelf: stateUpdate.senderID == $CH.user.userID,
+  //             stateUpdate: stateUpdate,
+  //           );
+
+  //           Widget timeElem;
+
+  //           var actionTime = stateUpdate.actionTime;
+            
+  //           var timeout = actionTime - prevTime > timeDisplayDelay;
+  //           if (timeout) {
+  //             prevTime = actionTime;
+  //             timeElem = Text(
+  //               timeFilter(actionTime)
+  //             );
+  //           }
+
+  //           return Column(
+  //             children: <Widget>[
+  //               timeElem,
+  //               bubble,
+  //             ],
+  //           );
+  //         },
+  //       )
+  //     ),
+  //   );
+  // }
 
   Widget buildInput() {
     return GestureDetector(

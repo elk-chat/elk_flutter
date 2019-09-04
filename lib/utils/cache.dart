@@ -8,6 +8,7 @@ GetCacheAvatar(senderName) {
       height: 26.0,
       width: 26.0,
       // fileID: msg.avatarFileID,
+      circle: true,
       title: senderName,
       type: 3,
     );

@@ -225,56 +225,64 @@ class _ChatItemState extends State<ChatItem> {
         );
       },
       child: Padding(
-        padding: EdgeInsets.all(10.0),
+        padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Img(
               key: ValueKey(chatInfo['avatarFileID']),
               type: chat.chatType,
               fileID: chatInfo['avatarFileID'],
               title: chatInfo['title'],
+              circle: true,
               width: 48.0,
               height: 48.0
             ),
             SizedBox(width: 8),
             Flexible(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text(
-                        chatInfo['title'],
-                        style: const TextStyle(
-                            fontWeight: FontWeight.w600, fontSize: 16.0),
-                      ),
-                      Row(
-                        children: <Widget>[
-                          UnreadBadge(
-                            chatID: widget.chat.chatID,
-                          ),
-                          SizedBox(width: 8.0),
-                          Text(
-                            dateFormat.format(DateTime.fromMillisecondsSinceEpoch(
-                                (lastMsg == null
-                                            ? chat.updatedAt
-                                            : lastMsg.actionTime)
-                                        .toInt() *
-                                    1000)),
-                            style: const TextStyle(
-                                color: Colors.grey, fontSize: 14.0),
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                  Container(
-                    padding: const EdgeInsets.only(top: 6.0),
-                    // 最好一条消息，不同类型
-                    child: lastMessages.length == 0
-                        ? null
+              child: Container(
+                padding: EdgeInsets.only(top: 4.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text(
+                          chatInfo['title'],
+                          style: const TextStyle(
+                              fontWeight: FontWeight.w600, fontSize: 16.0),
+                        ),
+                        Row(
+                          children: <Widget>[
+                            UnreadBadge(
+                              chatID: widget.chat.chatID,
+                            ),
+                            SizedBox(width: 8.0),
+                            Text(
+                              dateFormat.format(
+                                DateTime.fromMillisecondsSinceEpoch(
+                                  (lastMsg == null
+                                      ? chat.updatedAt
+                                      : lastMsg.actionTime)
+                                  .toInt() * 1000
+                                )
+                              ),
+                              style: const TextStyle(
+                                color: Colors.grey, fontSize: 14.0
+                              ),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                    SizedBox(height: 4.0),
+                    Container(
+                      // padding: const EdgeInsets.only(top: 6.0),
+                      // 最好一条消息，不同类型
+                      child: lastMessages.length == 0
+                        ? SizedBox(height: 15.0)
                         : Text(
                             lastMsg is QueueMsg
                                 ? '${$CH.user.userName}: ${lastMsg.message}'
@@ -285,8 +293,10 @@ class _ChatItemState extends State<ChatItem> {
                             style: const TextStyle(
                                 color: Colors.black45, fontSize: 14.0),
                           ),
-                  )
-                ],
+                    ),
+                    Divider(),
+                  ],
+                ),
               ),
             ),
           ],

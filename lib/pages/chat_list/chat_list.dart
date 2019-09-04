@@ -33,7 +33,7 @@ class _ChatPageState extends State<ChatListPage> {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       backgroundColor: Color(0xffffffff),
-      navigationBar: new CupertinoNavigationBar(
+      navigationBar: CupertinoNavigationBar(
         heroTag: 'ChatList',
         transitionBetweenRoutes: false,
         middle: widget.title,
@@ -66,17 +66,17 @@ class _ChatPageState extends State<ChatListPage> {
                 child: Text('no chats'),
               );
             }
-            return ListView.separated(
-              physics: const BouncingScrollPhysics(),
-              itemBuilder: (BuildContext context, int index) {
-                var chat = state.chats[index];
-                return ChatItem(key: ValueKey(chat.chatID), chat: chat);
-              },
-              itemCount: state.chats.length,
-              controller: _scrollController,
-              separatorBuilder: (context, index) {
-                return EDivider();
-              },
+            return Container(
+              padding: EdgeInsets.symmetric(vertical: 10.0),
+              child: ListView.builder(
+                physics: const BouncingScrollPhysics(),
+                itemBuilder: (BuildContext context, int index) {
+                  var chat = state.chats[index];
+                  return ChatItem(key: ValueKey(chat.chatID), chat: chat);
+                },
+                itemCount: state.chats.length,
+                controller: _scrollController,
+              ),
             );
           }
           return Center(

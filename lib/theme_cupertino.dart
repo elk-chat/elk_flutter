@@ -18,7 +18,7 @@ class Themes {
   static Color borderColor = Color(0xffefefef);
 
   // static Color myBubbleColor = Color(0xff0a8cff);
-  static Color myBubbleColor = Color(0xffe0e0e0);
+  static Color myBubbleColor = Color(0xffe1f1ff);
   static Color myBubbleTextColor = Colors.black87;
   
   static Color lightPrimary = Color(0xfffcfcff);

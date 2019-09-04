@@ -69,7 +69,7 @@ class ListItem extends StatelessWidget {
             top: topBorder ? BorderSide(
               color: Themes.borderColor,
               width: 1.0,
-            ) : null
+            ) : BorderSide.none
           )
         ),
         child: Row(

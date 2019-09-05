@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:elk_chat/widgets/check_version.dart';
 import 'package:elk_chat/widgets/list_item.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,10 +16,6 @@ class SettingPage extends StatelessWidget {
     this.title = '设置',
   }) : super(key: key);
 
-  checkVersion() {
-
-  }
-
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
@@ -31,7 +30,10 @@ class SettingPage extends StatelessWidget {
                 ListItem(
                   title: Text('版本'),
                   actionTip: true,
-                  onTap: checkVersion,
+                  onTap: () {
+                    VersionChecker versionChecker = VersionChecker();
+                    versionChecker.checkVersion(context);
+                  },
                 ),
                 SizedBox(height: 30),
                 ListItem(

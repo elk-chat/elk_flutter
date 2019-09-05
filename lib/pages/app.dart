@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:elk_chat/blocs/blocs.dart';
 import 'package:elk_chat/widgets/widgets.dart';
-import 'package:elk_chat/update/update.dart';
-import 'package:global_configuration/global_configuration.dart';
 import 'pages.dart';
 import 'tabs.dart';
 
@@ -14,74 +12,9 @@ class App extends StatelessWidget {
   App({Key key}) : super(key: key);
 
   String resp = "Init";
-  void _checkVersion(BuildContext buildContext) async {
-    UpdateManager updateManager = new UpdateManager();
-    // var appVersion = await GlobalConfiguration().loadFromPath('assets/config/app_config.json');
-
-    UpdateInfo info = await updateManager.checkUpdate('1.0.0.0');
-    if (info.updateStatus == UpdateStatus.update && info.downloadUrl != "") {
-      showDialog(
-        barrierDismissible: false,
-        context: buildContext,
-        builder: (context) {
-          return WillPopScope(
-            child: CupertinoAlertDialog(
-              title: Text('有新的 APP 版本'),
-              content: Container(
-                padding: const EdgeInsets.only(top: 10.0),
-                child: Text('是否下载升级?')
-              ),
-              actions: <Widget>[
-                CupertinoDialogAction(
-                  onPressed: () {
-                    return Navigator.of(context).pop(false);
-                  },
-                  child: Text('取消')
-                ),
-                CupertinoDialogAction(
-                  onPressed: () {
-                    updateManager.downloadUpdate(info.downloadUrl, info.fileName, (id, status, progress) {
-                      print(status);
-                      // print('123123123123 ${progress}');
-                      // setState(() {
-                      //   resp = progress.toString();
-                      // });
-                    });
-                  },
-                  child: Text('确定')
-                )
-              ],
-            ),
-            onWillPop: () async {
-              return true;
-            }
-          );
-        }
-      );
-    } else {
-      String message = "";
-      if (info.updateStatus == UpdateStatus.noneed) {
-        message = "no need to update";
-      } else if (info.updateStatus == UpdateStatus.notfound) {
-        message = "not found update info";
-      } else if (info.updateStatus == UpdateStatus.error) {
-        if (info.errorMessage != "")
-          message = info.errorMessage;
-        else
-          message = "unknow error";
-      }
-      // setState(() {
-      //   resp = message;
-      // });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
-    // _checkVersion(context);
-    if(Platform.isAndroid) {
-      _checkVersion(context);
-    }
     final AuthBloc _authBloc = BlocProvider.of<AuthBloc>(context);
 
     return WillPopScope(

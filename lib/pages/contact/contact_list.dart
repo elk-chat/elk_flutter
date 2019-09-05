@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../contact_detail.dart';
+import 'contact_detail.dart';
 
 class ContactList extends StatefulWidget {
   final Widget beforeWidget;

@@ -1,10 +1,10 @@
+import 'package:elk_chat/pages/chat_content/chat_page.dart';
+import 'package:elk_chat/pages/contact/contact_list.dart';
 import 'package:elk_chat/protocol/api_util/api_util.dart';
 import 'package:elk_chat/protocol/protobuf/koi.pb.dart';
-import 'package:elk_chat/pages/chat_page/chat_page.dart';
 import 'package:elk_chat/widgets/list_item.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:elk_chat/pages/contact_list/list.dart';
 import 'new_group_select_users.dart';
 
 // 添加新消息

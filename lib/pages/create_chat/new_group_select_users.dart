@@ -1,9 +1,10 @@
 // 发起群聊
 
-import 'package:elk_chat/pages/contact_list/list.dart';
-import 'package:elk_chat/pages/new_chat/new_group_create.dart';
+import 'package:elk_chat/pages/contact/contact_list.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import 'new_group_create.dart';
 
 class NewGroupChatSelectUsersPage extends StatefulWidget {
   final String title;

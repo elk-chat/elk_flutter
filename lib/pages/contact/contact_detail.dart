@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:elk_chat/pages/chat_content/chat_page.dart';
 import 'package:elk_chat/widgets/divid.dart';
 import 'package:elk_chat/widgets/flushbar.dart';
 import 'package:elk_chat/widgets/list_item.dart';
@@ -10,8 +11,6 @@ import 'package:elk_chat/widgets/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:elk_chat/blocs/contact/contact.dart';
 import 'package:elk_chat/protocol/protobuf/koi.pb.dart';
-
-import 'chat_page/chat_page.dart';
 
 /// 个人资料
 class ProfilePage extends StatefulWidget {

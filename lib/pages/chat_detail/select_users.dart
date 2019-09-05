@@ -1,6 +1,6 @@
 // 发起群聊
 
-import 'package:elk_chat/pages/contact_list/list.dart';
+import 'package:elk_chat/pages/contact/contact_list.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -69,28 +69,30 @@ class _NewGroupChatState extends State<SelectUsersPage> {
                 //       ],
                 //     )),
                 Flexible(
-                    child: ContactList(
-                        onChange: (value, user) {
-                          var newSelectUsers = selectUsers.toList();
+                  child: ContactList(
+                      onChange: (value, user) {
+                        var newSelectUsers = selectUsers.toList();
 
-                          if (!value) {
-                            bool filter(i) {
-                              return i.userID == user.userID;
-                            }
-
-                            newSelectUsers.removeWhere(filter);
-                          } else {
-                            newSelectUsers.add(user);
+                        if (!value) {
+                          bool filter(i) {
+                            return i.userID == user.userID;
                           }
 
-                          setState(() {
-                            selectUsers = newSelectUsers;
-                            selectUsersText = newSelectUsers.map((i) {
-                              return i.userName;
-                            }).join(', ');
-                          });
-                        },
-                        hasCheckbox: true)),
+                          newSelectUsers.removeWhere(filter);
+                        } else {
+                          newSelectUsers.add(user);
+                        }
+
+                        setState(() {
+                          selectUsers = newSelectUsers;
+                          selectUsersText = newSelectUsers.map((i) {
+                            return i.userName;
+                          }).join(', ');
+                        });
+                      },
+                      hasCheckbox: true
+                    )
+                  ),
               ],
             )
           ],

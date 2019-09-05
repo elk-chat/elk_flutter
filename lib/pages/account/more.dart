@@ -1,10 +1,10 @@
 import 'dart:io';
 
 import 'package:elk_chat/init_websocket.dart';
+import 'package:elk_chat/pages/account/setting.dart';
 import 'package:elk_chat/protocol/api_util/api_util.dart';
 
 import 'package:elk_chat/protocol/protobuf/koi.pb.dart';
-import 'package:elk_chat/pages/edit_profile.dart';
 import 'package:elk_chat/theme_cupertino.dart';
 import 'package:elk_chat/widgets/divid.dart';
 import 'package:elk_chat/widgets/list_item.dart';
@@ -18,6 +18,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+
+import 'edit_profile.dart';
 // import 'package:flutter_icons/flutter_icons.dart';
 
 // 内置浏览器打开链接
@@ -74,9 +76,6 @@ class _MorePageState extends State<MorePage> {
     // super.build(context);
 
     return CupertinoPageScaffold(
-      // navigationBar: CupertinoNavigationBar(
-      //   middle: widget.title,
-      // ),
       child: SafeArea(
         child: Column(
           children: <Widget>[
@@ -121,15 +120,18 @@ class _MorePageState extends State<MorePage> {
               actionTip: true,
               leading: Icon(
                 Icons.settings,
-                color: Themes.red,
+                color: Themes.blue,
               ),
-              onTap: doing,
-            ),
-            SizedBox(height: 30),
-            ListItem(
-              title: Text('退出登录'),
-              actionTip: true,
-              onTap: onLogout,
+              onTap: () {
+                Navigator.push(
+                  context, 
+                  CupertinoPageRoute(
+                    builder: (BuildContext context) => SettingPage(
+                      onLogout: onLogout
+                    )
+                  )
+                );
+              },
             ),
             Divid(),
           ],

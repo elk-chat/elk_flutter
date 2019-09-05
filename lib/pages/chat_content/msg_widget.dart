@@ -1,6 +1,6 @@
 import 'package:elk_chat/protocol/api_util/api_util.dart';
 
-import 'package:elk_chat/pages/chat_page/queue_msg.dart';
+import 'package:elk_chat/pages/chat_content/queue_msg.dart';
 import 'package:elk_chat/theme_cupertino.dart';
 import 'package:elk_chat/utils/cache.dart';
 import 'package:elk_chat/widgets/img.dart';

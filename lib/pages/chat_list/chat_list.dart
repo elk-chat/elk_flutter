@@ -1,7 +1,6 @@
 import 'package:elk_chat/blocs/blocs.dart';
-import 'package:elk_chat/pages/new_chat/new_group_select_users.dart';
+import 'package:elk_chat/pages/create_chat/new_group_select_users.dart';
 import 'package:elk_chat/protocol/util/util.dart';
-import 'package:elk_chat/widgets/widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

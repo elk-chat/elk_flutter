@@ -1,8 +1,9 @@
 import 'package:elk_chat/widgets/c_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import '../new_contact.dart';
-import 'list.dart';
+
+import 'add_contact.dart';
+import 'contact_list.dart';
 
 class ContactPage extends StatefulWidget {
   final title;

@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:elk_chat/init_websocket.dart';
+import 'package:elk_chat/pages/chat_content/chat_page.dart';
 import 'package:elk_chat/protocol/api_util/api_util.dart';
 import 'package:elk_chat/pages/chat_list/unread_badge.dart';
-import 'package:elk_chat/pages/chat_page/queue_msg.dart';
-import 'package:elk_chat/pages/pages.dart';
+import 'package:elk_chat/pages/chat_content/queue_msg.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

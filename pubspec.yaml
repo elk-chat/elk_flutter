@@ -36,6 +36,7 @@ dependencies:
   flutter_bloc: ^0.21.0
   open_file: ^2.0.3
   sqflite: ^1.1.6+3
+  package_info: ^0.4.0+6
   jpush_flutter: 0.1.0
   path_provider: ^1.2.0
   connectivity: ^0.4.3+7

@@ -3,10 +3,10 @@ import 'package:elk_chat/icons.dart';
 import 'package:flutter/widgets.dart';
 import 'package:elk_chat/widgets/widgets.dart';
 import '../theme_cupertino.dart';
+import 'account/more.dart';
 import 'chat_list/chat_list.dart';
-import 'contact_list/contact_list.dart';
+import 'contact/contact_list_wrapper.dart';
 import 'discover/discover.dart';
-import 'more.dart';
 
 class TabsPage extends StatelessWidget {
   @override

@@ -92,10 +92,8 @@ class UpdateManager {
       url: url,
       savedDir: tempPath,
       fileName: fileName,
-      showNotification:
-          false, // show download progress in status bar (for Android)
-      openFileFromNotification:
-          false, // click on notification to open downloaded file (for Android)
+      showNotification: true, // show download progress in status bar (for Android)
+      openFileFromNotification: true, // click on notification to open downloaded file (for Android)
     );
 
     FlutterDownloader.registerCallback((id, status, progress) {

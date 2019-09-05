@@ -7,7 +7,7 @@ import 'package:open_file/open_file.dart';
 import 'dart:io';
 
 const updateUrl = 'http://13.114.235.181:33501/c/d';
-const softwareName = 'IM_kChat_test';
+const softwareName = 'IM_kChat';
 
 class UpdateStatus {
   final int _value;

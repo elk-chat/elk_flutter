@@ -92,12 +92,12 @@ class MsgBubble extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              userName != null &&
-                      updMsg.updateMessageChatAddMember.addedMemeberName ==
-                          userName
-                  ? Text('你', style: TextStyle(color: Colors.black38))
-                  : Text(updMsg.updateMessageChatAddMember.addedMemeberName,
-                      style: TextStyle(color: Colors.blue)),
+              userName != null
+                && updMsg.updateMessageChatAddMember.addedMemeberName == userName
+                ? Text('你', style: TextStyle(color: Colors.black38))
+                : Text(updMsg.updateMessageChatAddMember.addedMemeberName,
+                    style: TextStyle(color: Colors.blue)
+                  ),
               Text(
                 isAdminDid
                   // ? ' 被${updMsg.updateMessageChatAddMember.senderName}邀请入群'

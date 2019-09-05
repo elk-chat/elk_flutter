@@ -105,18 +105,16 @@ class ContentWidgetByType extends StatelessWidget {
     );
     switch (msg.contentType) {
       case ChatContentType.Text:
-        List<Widget> txtMsgGroup = [
-          Flexible(
-            child: Text(
-              msg.message,
-              style: TextStyle(
-                color: textColor,
-              ),
-            ),
-          )
-        ];
+        Widget txtMsgItem = Text(
+          msg.message,
+          style: TextStyle(
+            color: textColor,
+          ),
+        );
+        // List<Widget> txtMsgGroup = [];
+        List<Widget> extraInfoGroup = [];
         if(isRead != null) {
-          txtMsgGroup.add(
+          extraInfoGroup.add(
             Padding(
               padding: EdgeInsets.all(3.0),
               child: Icon(
@@ -127,12 +125,21 @@ class ContentWidgetByType extends StatelessWidget {
             )
           );
         }
-        txtMsgGroup.add(timeTip);
+        extraInfoGroup.add(timeTip);
         Widget txtMsg = (
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: txtMsgGroup,
+          Wrap(
+            // mainAxisSize: MainAxisSize.min,
+            // mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            alignment: WrapAlignment.end,
+            children: [
+              txtMsgItem,
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: extraInfoGroup,
+              )
+            ],
           )
         );
         msgWidget.add(

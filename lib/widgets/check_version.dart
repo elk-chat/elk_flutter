@@ -12,7 +12,7 @@ class VersionChecker {
     UpdateManager updateManager = new UpdateManager();
     // var appVersion = await GlobalConfiguration().loadFromPath('assets/config/app_config.json');
 
-    UpdateInfo info = await updateManager.checkUpdate('1.0.0.0');
+    UpdateInfo info = await updateManager.checkUpdate('1.0.0.2');
     if (info.updateStatus == UpdateStatus.update && info.downloadUrl != "") {
       showDialog(
         barrierDismissible: false,

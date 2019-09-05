@@ -29,7 +29,7 @@ class SettingPage extends StatelessWidget {
             Column(
               children: <Widget>[
                 ListItem(
-                  title: Text('版本更新'),
+                  title: Text('版本'),
                   actionTip: true,
                   onTap: checkVersion,
                 ),

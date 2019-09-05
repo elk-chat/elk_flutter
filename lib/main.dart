@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:elk_chat/styles.dart';
 import 'package:elk_chat/theme_cupertino.dart';
-import 'package:elk_chat/update/update.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -99,44 +98,12 @@ class _ElkChatState extends State<ElkChat> {
 
     // TODO(redbrogdon): 有些安卓机拍照后，应用内存不足会重启，下面这个方法可以获取重启前拍的照片
     retrieveLostData();
-
-    _checkVersion();
   }
 
   @override
   void dispose() {
     $WS.clear();
     super.dispose();
-  }
-
-  String resp = "Init";
-  void _checkVersion() async {
-    UpdateManager updateManager = new UpdateManager();
-    UpdateInfo info = await updateManager.checkUpdate('1.0.0.0');
-    if (info.updateStatus == UpdateStatus.update && info.downloadUrl != "") {
-      updateManager.downloadUpdate(info.downloadUrl, info.fileName, (id, status, progress) {
-        print(status);
-        print(progress);
-        setState(() {
-          resp = progress.toString();
-        });
-      });
-    } else {
-      String message = "";
-      if (info.updateStatus == UpdateStatus.noneed) {
-        message = "no need to update";
-      } else if (info.updateStatus == UpdateStatus.notfound) {
-        message = "not found update info";
-      } else if (info.updateStatus == UpdateStatus.error) {
-        if (info.errorMessage != "")
-          message = info.errorMessage;
-        else
-          message = "unknow error";
-      }
-      setState(() {
-        resp = message;
-      });
-    }
   }
 
   @override

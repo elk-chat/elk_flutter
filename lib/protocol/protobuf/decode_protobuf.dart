@@ -131,6 +131,12 @@ decodeProto = (buffer) => proto.UserChangePasswordReq.fromBuffer(buffer);
 } else if (sig == SigMapper['SIG_USER_CHANGE_PASSWORD_RESP']) {
 decodeMethod ='SIG_USER_CHANGE_PASSWORD_RESP';
 decodeProto = (buffer) => proto.UserChangePasswordResp.fromBuffer(buffer);
+} else if (sig == SigMapper['SIG_USER_UPDATE_NICK_NAME_REQ']) {
+decodeMethod ='SIG_USER_UPDATE_NICK_NAME_REQ';
+decodeProto = (buffer) => proto.UserUpdateNickNameReq.fromBuffer(buffer);
+} else if (sig == SigMapper['SIG_USER_UPDATE_NICK_NAME_RESP']) {
+decodeMethod ='SIG_USER_UPDATE_NICK_NAME_RESP';
+decodeProto = (buffer) => proto.UserUpdateNickNameResp.fromBuffer(buffer);
 } else if (sig == SigMapper['SIG_USER_GET_FULL_USER_REQ']) {
 decodeMethod ='SIG_USER_GET_FULL_USER_REQ';
 decodeProto = (buffer) => proto.UserGetFullUserReq.fromBuffer(buffer);

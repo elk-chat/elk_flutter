@@ -28,9 +28,9 @@ class ChatMsgRender extends StatelessWidget {
   static final DateTime today = DateTime.now();
   static final int nowTime = today.millisecondsSinceEpoch;
   // static final DateTime _today = DateTime.fromMicrosecondsSinceEpoch(nowTime);
-  static final int oneDayHours = 86400;
-  // static final int nowTimeMillSec = (nowTime / 1000).toInt();
-  int timeDisplayDelay = 5 * 60;
+  static final int oneDayHours = 86400000;
+  static final int nowTimeMillSec = (nowTime / 1000).toInt();
+  static final int timeDisplayDelay = 300;
 
   String timeFilter(time) {
     var _time = (time * 1000).toInt();
@@ -46,19 +46,20 @@ class ChatMsgRender extends StatelessWidget {
     } else if (dateTimestampDiff < oneDayHours * 3) {
       prefix = '前天';
     } else if (dateTimestampDiff >= oneDayHours * 3) {
-      dateFormat = DateFormat('y-MM-d H:m');
+      dateFormat = DateFormat('y-MM-d H:mm');
     }
     return (prefix.isNotEmpty ? (prefix + ' ') : '') + dateFormat.format(currTimeDate);
   }
-
-  // 时间提示
-  int prevTime = 0;
 
   @override
   Widget build(BuildContext context) {
     int msgsLength = chatMsgs.length;
     int allMsgsLength = msgsLength + (loading ? 1 : 0);
     
+    // 时间提示
+    int prevTime = 0;
+    print('prevTime ${prevTime}');
+
     return Flexible(
       child: GestureDetector(
         behavior: HitTestBehavior.translucent,
@@ -96,9 +97,8 @@ class ChatMsgRender extends StatelessWidget {
 
             var actionTime = stateUpdate.actionTime.toInt();
             
-            bool timeout = prevTime - actionTime < timeDisplayDelay;
+            bool timeout = prevTime == 0 || prevTime - actionTime > timeDisplayDelay;
             // bool timeout = true;
-            print('actionTime: ${actionTime}');
             if (timeout) {
               timeElem = Center(
                 child: Text(

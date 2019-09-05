@@ -810,7 +810,8 @@ class User extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('User', package: const $pb.PackageName('kproto'))
     ..aInt64(1, 'userID')
     ..aOS(2, 'userName')
-    ..aInt64(3, 'avatarFileID')
+    ..aOS(3, 'nickName')
+    ..aInt64(4, 'avatarFileID')
     ..hasRequiredFields = false
   ;
 
@@ -838,10 +839,15 @@ class User extends $pb.GeneratedMessage {
   $core.bool hasUserName() => $_has(1);
   void clearUserName() => clearField(2);
 
-  Int64 get avatarFileID => $_getI64(2);
-  set avatarFileID(Int64 v) { $_setInt64(2, v); }
-  $core.bool hasAvatarFileID() => $_has(2);
-  void clearAvatarFileID() => clearField(3);
+  $core.String get nickName => $_getS(2, '');
+  set nickName($core.String v) { $_setString(2, v); }
+  $core.bool hasNickName() => $_has(2);
+  void clearNickName() => clearField(3);
+
+  Int64 get avatarFileID => $_getI64(3);
+  set avatarFileID(Int64 v) { $_setInt64(3, v); }
+  $core.bool hasAvatarFileID() => $_has(3);
+  void clearAvatarFileID() => clearField(4);
 }
 
 class UserRegisterReq extends $pb.GeneratedMessage {
@@ -910,6 +916,7 @@ class UserLoginReq extends $pb.GeneratedMessage {
     ..aOS(4, 'clientApplication')
     ..aOS(5, 'clientPlatform')
     ..aOS(6, 'jPushRegistrationID')
+    ..aOS(7, 'language')
     ..hasRequiredFields = false
   ;
 
@@ -956,6 +963,11 @@ class UserLoginReq extends $pb.GeneratedMessage {
   set jPushRegistrationID($core.String v) { $_setString(5, v); }
   $core.bool hasJPushRegistrationID() => $_has(5);
   void clearJPushRegistrationID() => clearField(6);
+
+  $core.String get language => $_getS(6, '');
+  set language($core.String v) { $_setString(6, v); }
+  $core.bool hasLanguage() => $_has(6);
+  void clearLanguage() => clearField(7);
 }
 
 class UserLoginResp extends $pb.GeneratedMessage {
@@ -1196,6 +1208,52 @@ class UserChangePasswordResp extends $pb.GeneratedMessage {
   static $pb.PbList<UserChangePasswordResp> createRepeated() => $pb.PbList<UserChangePasswordResp>();
   static UserChangePasswordResp getDefault() => _defaultInstance ??= create()..freeze();
   static UserChangePasswordResp _defaultInstance;
+}
+
+class UserUpdateNickNameReq extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('UserUpdateNickNameReq', package: const $pb.PackageName('kproto'))
+    ..aOS(1, 'nickName')
+    ..hasRequiredFields = false
+  ;
+
+  UserUpdateNickNameReq._() : super();
+  factory UserUpdateNickNameReq() => create();
+  factory UserUpdateNickNameReq.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory UserUpdateNickNameReq.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  UserUpdateNickNameReq clone() => UserUpdateNickNameReq()..mergeFromMessage(this);
+  UserUpdateNickNameReq copyWith(void Function(UserUpdateNickNameReq) updates) => super.copyWith((message) => updates(message as UserUpdateNickNameReq));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static UserUpdateNickNameReq create() => UserUpdateNickNameReq._();
+  UserUpdateNickNameReq createEmptyInstance() => create();
+  static $pb.PbList<UserUpdateNickNameReq> createRepeated() => $pb.PbList<UserUpdateNickNameReq>();
+  static UserUpdateNickNameReq getDefault() => _defaultInstance ??= create()..freeze();
+  static UserUpdateNickNameReq _defaultInstance;
+
+  $core.String get nickName => $_getS(0, '');
+  set nickName($core.String v) { $_setString(0, v); }
+  $core.bool hasNickName() => $_has(0);
+  void clearNickName() => clearField(1);
+}
+
+class UserUpdateNickNameResp extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('UserUpdateNickNameResp', package: const $pb.PackageName('kproto'))
+    ..hasRequiredFields = false
+  ;
+
+  UserUpdateNickNameResp._() : super();
+  factory UserUpdateNickNameResp() => create();
+  factory UserUpdateNickNameResp.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory UserUpdateNickNameResp.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  UserUpdateNickNameResp clone() => UserUpdateNickNameResp()..mergeFromMessage(this);
+  UserUpdateNickNameResp copyWith(void Function(UserUpdateNickNameResp) updates) => super.copyWith((message) => updates(message as UserUpdateNickNameResp));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static UserUpdateNickNameResp create() => UserUpdateNickNameResp._();
+  UserUpdateNickNameResp createEmptyInstance() => create();
+  static $pb.PbList<UserUpdateNickNameResp> createRepeated() => $pb.PbList<UserUpdateNickNameResp>();
+  static UserUpdateNickNameResp getDefault() => _defaultInstance ??= create()..freeze();
+  static UserUpdateNickNameResp _defaultInstance;
 }
 
 class UserGetFullUserReq extends $pb.GeneratedMessage {

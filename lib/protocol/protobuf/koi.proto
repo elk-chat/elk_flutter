@@ -133,7 +133,8 @@ message CheckAppUpdateResp {
 message User {
   int64 UserID = 1;
   string UserName = 2;
-  int64 AvatarFileID = 3;
+  string NickName = 3;
+  int64 AvatarFileID = 4;
 }
 
 message UserRegisterReq {
@@ -152,6 +153,7 @@ message UserLoginReq {
   string ClientApplication = 4;
   string ClientPlatform = 5;
   string JPushRegistrationID = 6;
+  string Language = 7;
 }
 
 message UserLoginResp {
@@ -190,6 +192,14 @@ message UserChangePasswordReq {
 
 message UserChangePasswordResp {
 }
+
+message UserUpdateNickNameReq {
+  string NickName = 1;
+}
+
+message UserUpdateNickNameResp {
+}
+
 
 message UserGetFullUserReq {
   int64 UserID = 1;

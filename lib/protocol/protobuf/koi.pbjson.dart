@@ -192,7 +192,8 @@ const User$json = const {
   '2': const [
     const {'1': 'UserID', '3': 1, '4': 1, '5': 3, '10': 'UserID'},
     const {'1': 'UserName', '3': 2, '4': 1, '5': 9, '10': 'UserName'},
-    const {'1': 'AvatarFileID', '3': 3, '4': 1, '5': 3, '10': 'AvatarFileID'},
+    const {'1': 'NickName', '3': 3, '4': 1, '5': 9, '10': 'NickName'},
+    const {'1': 'AvatarFileID', '3': 4, '4': 1, '5': 3, '10': 'AvatarFileID'},
   ],
 };
 
@@ -220,6 +221,7 @@ const UserLoginReq$json = const {
     const {'1': 'ClientApplication', '3': 4, '4': 1, '5': 9, '10': 'ClientApplication'},
     const {'1': 'ClientPlatform', '3': 5, '4': 1, '5': 9, '10': 'ClientPlatform'},
     const {'1': 'JPushRegistrationID', '3': 6, '4': 1, '5': 9, '10': 'JPushRegistrationID'},
+    const {'1': 'Language', '3': 7, '4': 1, '5': 9, '10': 'Language'},
   ],
 };
 
@@ -277,6 +279,17 @@ const UserChangePasswordReq$json = const {
 
 const UserChangePasswordResp$json = const {
   '1': 'UserChangePasswordResp',
+};
+
+const UserUpdateNickNameReq$json = const {
+  '1': 'UserUpdateNickNameReq',
+  '2': const [
+    const {'1': 'NickName', '3': 1, '4': 1, '5': 9, '10': 'NickName'},
+  ],
+};
+
+const UserUpdateNickNameResp$json = const {
+  '1': 'UserUpdateNickNameResp',
 };
 
 const UserGetFullUserReq$json = const {

@@ -16,6 +16,12 @@
 - 业务逻辑，在 `blocs`|`chat_hub`文件夹，
 - 界面交互层：界面展示/用户交互；`pages`|`widgets` 文件夹
 
+## Build APK
+
+```bash
+sh ./build-apk
+```
+
 ### Plans
 
 - [x] protocol

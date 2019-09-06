@@ -4,6 +4,7 @@ import 'package:elk_chat/blocs/blocs.dart';
 import 'package:elk_chat/init_websocket.dart';
 import 'package:elk_chat/protocol/api_util/api_util.dart';
 import 'package:elk_chat/protocol/protobuf/koi.pb.dart';
+import 'package:elk_chat/utils/cache.dart';
 import 'package:elk_chat/utils/chat_msg_config.dart';
 import 'package:elk_chat/widgets/c_icon_button.dart';
 import 'package:elk_chat/widgets/flushbar.dart';
@@ -19,6 +20,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:elk_chat/pages/chat_detail/chat_detail.dart';
 
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'chat_msg_render.dart';
 import 'queue_msg.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -30,13 +32,13 @@ class ChatWindowPage extends StatefulWidget {
   final Chat chat;
   final User user;
 
-  ChatWindowPage(
-      {Key key,
-      @required this.title,
-      @required this.chat,
-      this.user,
-      @required this.avatarFileID})
-      : super(key: key);
+  ChatWindowPage({
+    Key key,
+    @required this.title,
+    @required this.chat,
+    this.user,
+    @required this.avatarFileID
+  }) : super(key: key);
 
   @override
   _ChatWindowPageState createState() => _ChatWindowPageState();
@@ -81,16 +83,29 @@ class _ChatWindowPageState extends State<ChatWindowPage> {
   ChatBloc _chatBloc;
 
   ChatGetStateReadResp _stateRead = ChatGetStateReadResp();
+  SharedPreferences prefs;
 
   @override
   void initState() {
-    avatarFileID = widget.avatarFileID;
     super.initState();
+
+    _chat = widget.chat;
+
+    final ChatContentStorageKey = '${widget.user.userID}_${_chat.chatID}_CHAT_MSG_STROAGE';
+    var msgList = GetChatMsgCache(ChatContentStorageKey);
+    // prefs = await SharedPreferences.getInstance();
+    // List<StateUpdate> msgList = await prefs.get(ChatContentStorageKey);
+    // msgList.toString();
+    if(msgList != null) {
+      setState(() {
+        chatMsgs = msgList;
+      });
+    }
+    avatarFileID = widget.avatarFileID;
 
     _unFocusNode = FocusNode();
     _chatBloc = BlocProvider.of<ChatBloc>(context);
 
-    _chat = widget.chat;
     // 判断有没有初始化聊天（从详情点击过去的）
     hasInit = _chat.chatID.toInt() != 0;
 
@@ -139,6 +154,11 @@ class _ChatWindowPageState extends State<ChatWindowPage> {
     }
   }
 
+  void persistChatMsgContent(chatMsgs) {
+    // await prefs.set(ChatContentStorageKey);
+
+  }
+
   void handleReceiveMsg(res) {
     if (res.messageType == ChatMessageType.ReadState) return;
     // 有新消息
@@ -159,6 +179,7 @@ class _ChatWindowPageState extends State<ChatWindowPage> {
       setState(() {
         chatMsgs = msgList;
       });
+      persistChatMsgContent(msgList);
 
       _scrollController.animateTo(
         0.0,
@@ -269,6 +290,8 @@ class _ChatWindowPageState extends State<ChatWindowPage> {
           pageIndex = pageIndex + 1;
           pageSize = res.paging.pageSize;
           chatMsgs = (chatMsgs.toList())..addAll(res.stateUpdates);
+
+          persistChatMsgContent(chatMsgs);
         });
         readMSG();
       }

@@ -15,3 +15,11 @@ GetCacheAvatar(senderName) {
   }
   return CacheAvatar[senderName];
 }
+
+Map<String, dynamic> CacheChatMsgData = {};
+SetChatMsgCache(String key, storageData) {
+  return CacheChatMsgData[key] = storageData;
+}
+GetChatMsgCache(String key) {
+  return CacheChatMsgData[key];
+}

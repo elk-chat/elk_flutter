@@ -21,8 +21,7 @@ class _UnreadBadgeState extends State<UnreadBadge> {
       count = $CH.getUnreadCount(widget.chatID);
     });
 
-    unreadCountSupscription =
-        $WS.on(CHEvent.INIT_CHAT_UNREAD(widget.chatID), (payload) {
+    unreadCountSupscription = $WS.on(CHEvent.INIT_CHAT_UNREAD(widget.chatID), (payload) {
       setState(() {
         count = payload;
       });

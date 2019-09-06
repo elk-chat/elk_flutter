@@ -167,6 +167,33 @@ class _ChatWindowPageState extends State<ChatWindowPage> {
     }
   }
 
+  void readMSG() {
+    var lastChatMsg = chatMsgs[0];
+    if (
+      (lastChatMsg.messageType == ChatMessageType.SendMessage)
+      && _stateRead.ownStateRead < lastChatMsg.state
+    ) {
+      ChatReadMessageReq chatReadMessageReq = ChatReadMessageReq();
+      chatReadMessageReq.chatID = lastChatMsg.chatID;
+      chatReadMessageReq.stateRead = lastChatMsg.state;
+      // widget.setOwnStateRead(lastChatMsg.state);
+      readMsg(chatReadMessageReq, (data) {
+        if (data.hasError) {
+          print("标为已读失败 $data");
+        } else {
+          if (mounted) {
+            //  未读清空，有 bug：目前直接清零，本来应该是，读到哪条就减少多少未读数
+            Int64 zero = Int64(0);
+            $CH.unreadMap[lastChatMsg.chatID] = zero;
+            $WS.emit(CHEvent.INIT_CHAT_UNREAD(lastChatMsg.chatID), zero);
+            $WS.emit(CHEvent.GET_ALL_CHAT_UNREAD, $CH.getAllUnreadCount());
+          }
+          print('已标为已读');
+        }
+      });
+    }
+  }
+
   void init() {
     _focusNode.addListener(onFocusChange);
     _scrollController.addListener(_scrollListener);
@@ -243,6 +270,7 @@ class _ChatWindowPageState extends State<ChatWindowPage> {
           pageSize = res.paging.pageSize;
           chatMsgs = (chatMsgs.toList())..addAll(res.stateUpdates);
         });
+        readMSG();
       }
     } catch (e) {
       if (mounted) {

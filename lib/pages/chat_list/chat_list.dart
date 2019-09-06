@@ -71,7 +71,10 @@ class _ChatPageState extends State<ChatListPage> {
                 physics: const BouncingScrollPhysics(),
                 itemBuilder: (BuildContext context, int index) {
                   var chat = state.chats[index];
-                  return ChatItem(key: ValueKey(chat.chatID), chat: chat);
+                  return ChatItem(
+                    key: ValueKey(chat.chatID),
+                    chat: chat
+                  );
                 },
                 itemCount: state.chats.length,
                 controller: _scrollController,

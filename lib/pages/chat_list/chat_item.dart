@@ -252,7 +252,8 @@ class _ChatItemState extends State<ChatItem> {
                         Text(
                           chatInfo['title'],
                           style: const TextStyle(
-                              fontWeight: FontWeight.w600, fontSize: 16.0),
+                            fontWeight: FontWeight.w600, fontSize: 16.0
+                          ),
                         ),
                         Row(
                           children: <Widget>[
@@ -291,7 +292,8 @@ class _ChatItemState extends State<ChatItem> {
                             maxLines: 2,
                             softWrap: false,
                             style: const TextStyle(
-                                color: Colors.black45, fontSize: 14.0),
+                              color: Colors.black45, fontSize: 14.0
+                            ),
                           ),
                     ),
                     Divider(),

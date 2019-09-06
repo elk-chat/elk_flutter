@@ -232,7 +232,7 @@ class _ChatWindowPageState extends State<ChatWindowPage> {
         stateAfter, // stateAfter,
       );
       if (!mounted) return;
-
+      $WS.emit(CHEvent.INIT_CHAT_UNREAD(_chat.chatID), Int64(0));
       if (res.stateUpdates.length < INIT_PAGE_SIZE) {
         hasReachedMax = true;
       }
